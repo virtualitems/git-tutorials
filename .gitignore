@@ -21,5 +21,9 @@
 *.sqlite
 *.sqlite3
 
+# OS generated files
+.DS_Store
+Thumbs.db
+
 # Logs
 *.log
