@@ -2,22 +2,17 @@
 title: "git config"
 source: "https://git-scm.com/docs/git-config"
 section: "setup-and-config"
-status: "option-expanded"
+status: "source-audited"
+version: "2.55.0"
 ---
 
 # `git config`
 
-Este caso usa `git config` para leer y cambiar opciones de configuración por ámbito. Los nombres de archivo, revisiones, ramas y direcciones del ejemplo representan valores que debes sustituir por los de tu repositorio.
-
-## Responsabilidad y efecto
-
-git config define cómo Git localiza configuración, ejecutables, repositorios y diagnósticos. Recibe como entrada el ámbito, la clave o el dato del entorno indicado por la orden. La operación consiste en leer y cambiar opciones de configuración por ámbito.
-
-Las formas de escritura modifican el archivo del alcance seleccionado; las formas get y list solo consultan.
+Este caso usa `git config` para leer y cambiar opciones de configuración por ámbito.
 
 ## Preparación
 
-Los ejemplos que necesitan un repositorio parten del [laboratorio base de `git init`](../getting-and-creating-projects/init.md#laboratorio-base). La posición de opciones, revisiones y rutas sigue las [convenciones de la interfaz de Git](../guides/gitcli.md#convenciones-de-la-cli). Antes de ejecutar una forma que escriba datos, registra `git status --short` y las referencias que puedan cambiar.
+Usa el [laboratorio base](../getting-and-creating-projects/init.md#laboratorio-base) para las operaciones que necesitan un repositorio. Consulta las [convenciones de la CLI](../guides/gitcli.md) antes de combinar opciones, revisiones y rutas.
 
 ## Cómo funciona
 
@@ -33,7 +28,7 @@ git config --global user.email user@example.com
 git config --get user.name
 ```
 
-La invocación `git config --global user.name "Ana Torres"` ejecuta esta operación: leer y cambiar opciones de configuración por ámbito. Después, una consulta posterior muestra el valor efectivo o la información generada. Conserva stdout, stderr y el código de terminación cuando el ejemplo forme parte de un script.
+La invocación `git config --global user.name "Ana Torres"` ejecuta esta operación: leer y cambiar opciones de configuración por ámbito. Después, una consulta posterior muestra el valor efectivo o la información generada.
 
 ## Sintaxis y formas de invocación
 
@@ -44,7 +39,7 @@ git config set [<file-option>] [--type=<type>] [--all] [--value=<pattern>] [--fi
 git config unset [<file-option>] [--all] [--value=<pattern>] [--fixed-value] <name>
 ```
 
-### Uso verificado con `git version 2.51.1`
+### Ayuda corta de la instalación de prueba (`git 2.51.1`)
 
 ```text
 git config list [<file-option>] [<display-option>] [--includes]
@@ -59,162 +54,128 @@ git config list [<file-option>] [<display-option>] [--includes]
 
 Los corchetes indican elementos opcionales; `<valor>` exige sustitución; los puntos suspensivos permiten repetición; `|` separa formas excluyentes. Usa `git config -h` para consultar la sintaxis que corresponde a la instalación donde ejecutarás la orden.
 
-## Flujos de uso
-
-### Caso base
-
-leer y cambiar opciones de configuración por ámbito. Usa el [ejemplo mínimo](#ejemplo-mínimo) como punto de partida. Ejecuta el ejemplo mínimo y registra el estado antes y después.
-
-### Alcance explícito
-
-Aplicar git config a una referencia, rango o ruta identificada. Usa el [ejemplo mínimo](#ejemplo-mínimo) como punto de partida. Resuelve cada argumento antes de ejecutar y usa `--` para rutas.
-
-### Validación
-
-Comprobar el resultado de git config con una orden de lectura independiente. Usa el [ejemplo mínimo](#ejemplo-mínimo) como punto de partida. No uses la misma salida como única prueba del cambio.
-
 ## Opciones
 
-Cada apartado usa una opción en una invocación concreta. Las opciones equivalentes comparten la explicación, pero cada alias tiene su propio ejemplo. Ejecuta una opción por vez antes de combinarlas.
+Las [convenciones de la CLI](../guides/gitcli.md) explican alias, valores, negación, opciones interactivas y códigos de terminación. Cada apartado muestra el comportamiento específico de esta orden.
 
 ### `--includes`
 
 Activa includes durante leer y cambiar opciones de configuración por ámbito. La opción afecta esta invocación y no cambia la configuración de otras órdenes salvo que la propia función escriba esa configuración.
-
-La opción limita o amplía el conjunto sobre el que se ejecuta leer y cambiar opciones de configuración por ámbito. Comprueba la selección con una forma de lectura antes de combinarla con una opción que escriba estado.
 
 ```bash
 git config --includes --global user.name "Ana Torres"
 git config --show-origin --list
 ```
 
-La opción no recibe un valor separado en la forma mostrada por la ayuda corta. Los argumentos que aparecen después pertenecen a `git config` o a otra opción. La salida identifica el archivo que aporta cada valor. Ejecuta la comprobación inmediatamente después para que ningún comando intermedio cambie el estado que estás observando.
+ La salida identifica el archivo que aporta cada valor. Ejecuta la comprobación inmediatamente después para que ningún comando intermedio cambie el estado que estás observando.
 
 ### `--all`
 
 Amplía la selección a todos los elementos del alcance definido.
-
-La opción limita o amplía el conjunto sobre el que se ejecuta leer y cambiar opciones de configuración por ámbito. Comprueba la selección con una forma de lectura antes de combinarla con una opción que escriba estado.
 
 ```bash
 git config --all --global user.name "Ana Torres"
 git config --show-origin --list
 ```
 
-La opción no recibe un valor separado en la forma mostrada por la ayuda corta. Los argumentos que aparecen después pertenecen a `git config` o a otra opción. La salida identifica el archivo que aporta cada valor. Ejecuta la comprobación inmediatamente después para que ningún comando intermedio cambie el estado que estás observando.
+ La salida identifica el archivo que aporta cada valor. Ejecuta la comprobación inmediatamente después para que ningún comando intermedio cambie el estado que estás observando.
 
 ### `--regexp`
 
 Activa regexp durante leer y cambiar opciones de configuración por ámbito. La opción afecta esta invocación y no cambia la configuración de otras órdenes salvo que la propia función escriba esa configuración.
-
-En `git config`, regexp modifica la forma en que se ejecuta leer y cambiar opciones de configuración por ámbito. Mantén iguales los demás argumentos para atribuir el cambio observado a esta opción.
 
 ```bash
 git config --regexp --global user.name "Ana Torres"
 git config --show-origin --list
 ```
 
-La opción no recibe un valor separado en la forma mostrada por la ayuda corta. Los argumentos que aparecen después pertenecen a `git config` o a otra opción. La salida identifica el archivo que aporta cada valor. Ejecuta la comprobación inmediatamente después para que ningún comando intermedio cambie el estado que estás observando.
+ La salida identifica el archivo que aporta cada valor. Ejecuta la comprobación inmediatamente después para que ningún comando intermedio cambie el estado que estás observando.
 
 ### `--value`
 
 Activa value durante leer y cambiar opciones de configuración por ámbito. La opción afecta esta invocación y no cambia la configuración de otras órdenes salvo que la propia función escriba esa configuración.
-
-En `git config`, value modifica la forma en que se ejecuta leer y cambiar opciones de configuración por ámbito. Mantén iguales los demás argumentos para atribuir el cambio observado a esta opción.
 
 ```bash
 git config --value --global user.name "Ana Torres"
 git config --show-origin --list
 ```
 
-La opción no recibe un valor separado en la forma mostrada por la ayuda corta. Los argumentos que aparecen después pertenecen a `git config` o a otra opción. La salida identifica el archivo que aporta cada valor. Ejecuta la comprobación inmediatamente después para que ningún comando intermedio cambie el estado que estás observando.
+ La salida identifica el archivo que aporta cada valor. Ejecuta la comprobación inmediatamente después para que ningún comando intermedio cambie el estado que estás observando.
 
 ### `--fixed-value`
 
 Activa fixed value durante leer y cambiar opciones de configuración por ámbito. La opción afecta esta invocación y no cambia la configuración de otras órdenes salvo que la propia función escriba esa configuración.
-
-En `git config`, fixed value modifica la forma en que se ejecuta leer y cambiar opciones de configuración por ámbito. Mantén iguales los demás argumentos para atribuir el cambio observado a esta opción.
 
 ```bash
 git config --fixed-value --global user.name "Ana Torres"
 git config --show-origin --list
 ```
 
-La opción no recibe un valor separado en la forma mostrada por la ayuda corta. Los argumentos que aparecen después pertenecen a `git config` o a otra opción. La salida identifica el archivo que aporta cada valor. Ejecuta la comprobación inmediatamente después para que ningún comando intermedio cambie el estado que estás observando.
+ La salida identifica el archivo que aporta cada valor. Ejecuta la comprobación inmediatamente después para que ningún comando intermedio cambie el estado que estás observando.
 
 ### `--default`
 
 Activa default durante leer y cambiar opciones de configuración por ámbito. La opción afecta esta invocación y no cambia la configuración de otras órdenes salvo que la propia función escriba esa configuración.
-
-En `git config`, default modifica la forma en que se ejecuta leer y cambiar opciones de configuración por ámbito. Mantén iguales los demás argumentos para atribuir el cambio observado a esta opción.
 
 ```bash
 git config --default --global user.name "Ana Torres"
 git config --show-origin --list
 ```
 
-La opción no recibe un valor separado en la forma mostrada por la ayuda corta. Los argumentos que aparecen después pertenecen a `git config` o a otra opción. La salida identifica el archivo que aporta cada valor. Ejecuta la comprobación inmediatamente después para que ningún comando intermedio cambie el estado que estás observando.
+ La salida identifica el archivo que aporta cada valor. Ejecuta la comprobación inmediatamente después para que ningún comando intermedio cambie el estado que estás observando.
 
 ### `--url`
 
 Activa url durante leer y cambiar opciones de configuración por ámbito. La opción afecta esta invocación y no cambia la configuración de otras órdenes salvo que la propia función escriba esa configuración.
-
-En `git config`, url modifica la forma en que se ejecuta leer y cambiar opciones de configuración por ámbito. Mantén iguales los demás argumentos para atribuir el cambio observado a esta opción.
 
 ```bash
 git config --url --global user.name "Ana Torres"
 git config --show-origin --list
 ```
 
-La opción no recibe un valor separado en la forma mostrada por la ayuda corta. Los argumentos que aparecen después pertenecen a `git config` o a otra opción. La salida identifica el archivo que aporta cada valor. Ejecuta la comprobación inmediatamente después para que ningún comando intermedio cambie el estado que estás observando.
+ La salida identifica el archivo que aporta cada valor. Ejecuta la comprobación inmediatamente después para que ningún comando intermedio cambie el estado que estás observando.
 
 ### `--type`
 
 Activa type durante leer y cambiar opciones de configuración por ámbito. La opción afecta esta invocación y no cambia la configuración de otras órdenes salvo que la propia función escriba esa configuración.
-
-En `git config`, type modifica la forma en que se ejecuta leer y cambiar opciones de configuración por ámbito. Mantén iguales los demás argumentos para atribuir el cambio observado a esta opción.
 
 ```bash
 git config --type --global user.name "Ana Torres"
 git config --show-origin --list
 ```
 
-La opción no recibe un valor separado en la forma mostrada por la ayuda corta. Los argumentos que aparecen después pertenecen a `git config` o a otra opción. La salida identifica el archivo que aporta cada valor. Ejecuta la comprobación inmediatamente después para que ningún comando intermedio cambie el estado que estás observando.
+ La salida identifica el archivo que aporta cada valor. Ejecuta la comprobación inmediatamente después para que ningún comando intermedio cambie el estado que estás observando.
 
 ### `--get-colorbool`
 
 Activa get colorbool durante leer y cambiar opciones de configuración por ámbito. La opción afecta esta invocación y no cambia la configuración de otras órdenes salvo que la propia función escriba esa configuración.
-
-La opción cambia la representación o el canal del resultado. Úsala cuando una persona o un script necesite campos, separadores o cantidad de mensajes definidos. El contenido mostrado puede cambiar aunque el repositorio permanezca igual.
 
 ```bash
 git config --get-colorbool --global user.name "Ana Torres"
 git config --show-origin --list
 ```
 
-La opción no recibe un valor separado en la forma mostrada por la ayuda corta. Los argumentos que aparecen después pertenecen a `git config` o a otra opción. La salida identifica el archivo que aporta cada valor. Ejecuta la comprobación inmediatamente después para que ningún comando intermedio cambie el estado que estás observando.
+ La salida identifica el archivo que aporta cada valor. Ejecuta la comprobación inmediatamente después para que ningún comando intermedio cambie el estado que estás observando.
 
-## Errores y diagnóstico
+### `--value` y `--no-value`
 
-### El valor aplicado no coincide
+Con `get`, `set` y `unset`, `--value=<patrón>` limita las entradas cuyo valor coincide con una expresión regular extendida; `--fixed-value` cambia esa comparación por igualdad literal. `--no-value` retira el filtro establecido por una opción anterior.
 
-Comprueba esta causa: Otra capa de configuración tiene precedencia. Ejecuta `git config --show-origin --get-all <clave>`.
+```bash
+git config get --all --value='^main$' init.defaultBranch
+git config get --all --fixed-value --value=main init.defaultBranch
+```
 
-### Git no localiza el repositorio
+### `--show-names` y `--no-show-names`
 
-Comprueba esta causa: `--git-dir`, `--work-tree` o el directorio actual apuntan a otra ruta. Ejecuta `git rev-parse --show-toplevel`.
+Con `get`, la forma positiva imprime cada clave además de su valor. La forma negativa conserva solo los valores y es la predeterminada, salvo el caso especial de `--url` sin subsecciones que define el manual.
 
-### La orden no existe
+```bash
+git config get --all --show-names user.name
+git config get --all --no-show-names user.name
+```
 
-Comprueba esta causa: La versión instalada no incluye la función. Comprueba `git --version` y `git help -a`.
-
-## Automatización y recuperación
-
-Persistencia: Las formas de escritura modifican el archivo del alcance seleccionado; las formas get y list solo consultan. Antes de una operación que mueva o elimine referencias, registra sus hashes con `git show-ref`. Antes de cambiar archivos, conserva `git diff` y `git diff --cached`. Para objetos y commits que dejaron de estar referenciados, consulta el reflog antes de ejecutar mantenimiento que pueda eliminarlos.
-
-Ejecuta el ejemplo en un repositorio temporal y usa `git config --show-origin --list` o el comando de consulta correspondiente para identificar el origen del resultado.
-
-Añade una segunda ejecución con una entrada inválida. El ejercicio queda verificado cuando puedes explicar el código de terminación, el canal del diagnóstico y el estado que permaneció sin cambios.
+Mantén el formato fijo en scripts porque ambas salidas tienen distinto número de campos.
 
 ## Páginas relacionadas
 

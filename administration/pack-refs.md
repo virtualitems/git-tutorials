@@ -2,22 +2,17 @@
 title: "git pack-refs"
 source: "https://git-scm.com/docs/git-pack-refs"
 section: "administration"
-status: "option-expanded"
+status: "source-audited"
+version: "2.55.0"
 ---
 
 # `git pack-refs`
 
-Este caso usa `git pack-refs` para compactar referencias sueltas dentro del archivo packed-refs. Los nombres de archivo, revisiones, ramas y direcciones del ejemplo representan valores que debes sustituir por los de tu repositorio.
-
-## Responsabilidad y efecto
-
-git pack-refs comprueba integridad, administra reflogs y reorganiza o elimina datos del almacén. Recibe como entrada los objetos, referencias o archivos de almacenamiento que se van a inspeccionar. La operación consiste en compactar referencias sueltas dentro del archivo packed-refs.
-
-Puede persistir el estado implicado por esta operación: compactar referencias sueltas dentro del archivo packed-refs. Las opciones pueden limitar o ampliar ese efecto.
+Este caso usa `git pack-refs` para compactar referencias sueltas dentro del archivo packed-refs.
 
 ## Preparación
 
-Los ejemplos que necesitan un repositorio parten del [laboratorio base de `git init`](../getting-and-creating-projects/init.md#laboratorio-base). La posición de opciones, revisiones y rutas sigue las [convenciones de la interfaz de Git](../guides/gitcli.md#convenciones-de-la-cli). Antes de ejecutar una forma que escriba datos, registra `git status --short` y las referencias que puedan cambiar.
+Usa el [laboratorio base](../getting-and-creating-projects/init.md#laboratorio-base) para las operaciones que necesitan un repositorio. Consulta las [convenciones de la CLI](../guides/gitcli.md) antes de combinar opciones, revisiones y rutas.
 
 ## Cómo funciona
 
@@ -32,7 +27,7 @@ git show-ref --heads
 git pack-refs --all --prune
 ```
 
-La invocación `git pack-refs --all --prune` ejecuta esta operación: compactar referencias sueltas dentro del archivo packed-refs. Después, los modos de simulación y las consultas de tamaño muestran el efecto antes y después. Conserva stdout, stderr y el código de terminación cuando el ejemplo forme parte de un script.
+La invocación `git pack-refs --all --prune` ejecuta esta operación: compactar referencias sueltas dentro del archivo packed-refs. Después, los modos de simulación y las consultas de tamaño muestran el efecto antes y después.
 
 ## Sintaxis y formas de invocación
 
@@ -40,7 +35,7 @@ La invocación `git pack-refs --all --prune` ejecuta esta operación: compactar 
 git pack-refs [--all] [--no-prune] [--auto] [--include <pattern>] [--exclude <pattern>]
 ```
 
-### Uso verificado con `git version 2.51.1`
+### Ayuda corta de la instalación de prueba (`git 2.51.1`)
 
 ```text
 git pack-refs [--all] [--no-prune] [--auto] [--include <pattern>] [--exclude <pattern>]
@@ -48,68 +43,46 @@ git pack-refs [--all] [--no-prune] [--auto] [--include <pattern>] [--exclude <pa
 
 Los corchetes indican elementos opcionales; `<valor>` exige sustitución; los puntos suspensivos permiten repetición; `|` separa formas excluyentes. Usa `git pack-refs -h` para consultar la sintaxis que corresponde a la instalación donde ejecutarás la orden.
 
-## Flujos de uso
-
-### Caso base
-
-compactar referencias sueltas dentro del archivo packed-refs. Usa el [ejemplo mínimo](#ejemplo-mínimo) como punto de partida. Ejecuta el ejemplo mínimo y registra el estado antes y después.
-
-### Alcance explícito
-
-Aplicar git pack-refs a una referencia, rango o ruta identificada. Usa el [ejemplo mínimo](#ejemplo-mínimo) como punto de partida. Resuelve cada argumento antes de ejecutar y usa `--` para rutas.
-
-### Validación
-
-Comprobar el resultado de git pack-refs con una orden de lectura independiente. Usa el [ejemplo mínimo](#ejemplo-mínimo) como punto de partida. No uses la misma salida como única prueba del cambio.
-
 ## Opciones
 
-Cada apartado usa una opción en una invocación concreta. Las opciones equivalentes comparten la explicación, pero cada alias tiene su propio ejemplo. Ejecuta una opción por vez antes de combinarlas.
+Las [convenciones de la CLI](../guides/gitcli.md) explican alias, valores, negación, opciones interactivas y códigos de terminación. Cada apartado muestra el comportamiento específico de esta orden.
 
 ### `--all`
 
 Amplía la selección a todos los elementos del alcance definido.
-
-La opción limita o amplía el conjunto sobre el que se ejecuta compactar referencias sueltas dentro del archivo packed-refs. Comprueba la selección con una forma de lectura antes de combinarla con una opción que escriba estado.
 
 ```bash
 git pack-refs --all --prune
 git count-objects -vH
 ```
 
-La opción no recibe un valor separado en la forma mostrada por la ayuda corta. Los argumentos que aparecen después pertenecen a `git pack-refs` o a otra opción. La salida permite comprobar objetos sueltos, packs y espacio registrado. Ejecuta la comprobación inmediatamente después para que ningún comando intermedio cambie el estado que estás observando.
+ La salida permite comprobar objetos sueltos, packs y espacio registrado. Ejecuta la comprobación inmediatamente después para que ningún comando intermedio cambie el estado que estás observando.
 
 ### `--no-prune`
 
 Desactiva el comportamiento `prune` para esta invocación.
-
-La opción controla desactivar podar. Registra el estado de las referencias y conserva los cambios sin commit antes de usarla, porque compactar referencias sueltas dentro del archivo packed-refs puede retirar o reemplazar datos dentro del alcance seleccionado.
 
 ```bash
 git pack-refs --no-prune --all
 git count-objects -vH
 ```
 
-La opción no recibe un valor separado en la forma mostrada por la ayuda corta. Los argumentos que aparecen después pertenecen a `git pack-refs` o a otra opción. La salida permite comprobar objetos sueltos, packs y espacio registrado. Ejecuta la comprobación inmediatamente después para que ningún comando intermedio cambie el estado que estás observando.
+ La salida permite comprobar objetos sueltos, packs y espacio registrado. Ejecuta la comprobación inmediatamente después para que ningún comando intermedio cambie el estado que estás observando.
 
 ### `--auto`
 
 Activa auto durante compactar referencias sueltas dentro del archivo packed-refs. La opción afecta esta invocación y no cambia la configuración de otras órdenes salvo que la propia función escriba esa configuración. En Git 2.51.1, la ayuda corta expresa el contrato como `auto-pack refs as needed`. Conserva esa formulación al comparar el efecto entre versiones de Git.
-
-En `git pack-refs`, auto modifica la forma en que se ejecuta compactar referencias sueltas dentro del archivo packed-refs. Mantén iguales los demás argumentos para atribuir el cambio observado a esta opción.
 
 ```bash
 git pack-refs --auto --all --prune
 git count-objects -vH
 ```
 
-La opción no recibe un valor separado en la forma mostrada por la ayuda corta. Los argumentos que aparecen después pertenecen a `git pack-refs` o a otra opción. La salida permite comprobar objetos sueltos, packs y espacio registrado. Ejecuta la comprobación inmediatamente después para que ningún comando intermedio cambie el estado que estás observando.
+ La salida permite comprobar objetos sueltos, packs y espacio registrado. Ejecuta la comprobación inmediatamente después para que ningún comando intermedio cambie el estado que estás observando.
 
 ### `--include`
 
 Incluye elementos adicionales dentro del alcance indicado.
-
-La opción limita o amplía el conjunto sobre el que se ejecuta compactar referencias sueltas dentro del archivo packed-refs. Comprueba la selección con una forma de lectura antes de combinarla con una opción que escriba estado.
 
 ```bash
 git pack-refs --include=TODO --all --prune
@@ -122,8 +95,6 @@ El ejemplo usa `TODO` como valor. Sustitúyelo por un valor del tipo que muestra
 
 Excluye elementos que cumplan la condición indicada.
 
-La opción limita o amplía el conjunto sobre el que se ejecuta compactar referencias sueltas dentro del archivo packed-refs. Comprueba la selección con una forma de lectura antes de combinarla con una opción que escriba estado.
-
 ```bash
 git pack-refs --exclude=TODO --all --prune
 git count-objects -vH
@@ -135,88 +106,34 @@ El ejemplo usa `TODO` como valor. Sustitúyelo por un valor del tipo que muestra
 
 Retira entradas que ya no cumplen la condición documentada.
 
-La opción controla podar. Registra el estado de las referencias y conserva los cambios sin commit antes de usarla, porque compactar referencias sueltas dentro del archivo packed-refs puede retirar o reemplazar datos dentro del alcance seleccionado.
-
 ```bash
 git pack-refs --prune --all
 git count-objects -vH
 ```
 
-La opción no recibe un valor separado en la forma mostrada por la ayuda corta. Los argumentos que aparecen después pertenecen a `git pack-refs` o a otra opción. La salida permite comprobar objetos sueltos, packs y espacio registrado. Ejecuta la comprobación inmediatamente después para que ningún comando intermedio cambie el estado que estás observando.
-
-### `--no-all`
-
-Desactiva para esta invocación el comportamiento que habilita `--all`. Mantén iguales los demás argumentos y compara el resultado con la forma positiva para comprobar la diferencia.
-
-La opción limita o amplía el conjunto sobre el que se ejecuta compactar referencias sueltas dentro del archivo packed-refs. Comprueba la selección con una forma de lectura antes de combinarla con una opción que escriba estado.
-
-```bash
-git pack-refs --no-all --prune
-git count-objects -vH
-```
-
-La opción no recibe un valor separado en la forma mostrada por la ayuda corta. Los argumentos que aparecen después pertenecen a `git pack-refs` o a otra opción. La salida permite comprobar objetos sueltos, packs y espacio registrado. Ejecuta la comprobación inmediatamente después para que ningún comando intermedio cambie el estado que estás observando.
-
-### `--no-auto`
-
-Desactiva para esta invocación el comportamiento que habilita `--auto`. Mantén iguales los demás argumentos y compara el resultado con la forma positiva para comprobar la diferencia.
-
-En `git pack-refs`, desactivar auto modifica la forma en que se ejecuta compactar referencias sueltas dentro del archivo packed-refs. Mantén iguales los demás argumentos para atribuir el cambio observado a esta opción.
-
-```bash
-git pack-refs --no-auto --all --prune
-git count-objects -vH
-```
-
-La opción no recibe un valor separado en la forma mostrada por la ayuda corta. Los argumentos que aparecen después pertenecen a `git pack-refs` o a otra opción. La salida permite comprobar objetos sueltos, packs y espacio registrado. Ejecuta la comprobación inmediatamente después para que ningún comando intermedio cambie el estado que estás observando.
+ La salida permite comprobar objetos sueltos, packs y espacio registrado. Ejecuta la comprobación inmediatamente después para que ningún comando intermedio cambie el estado que estás observando.
 
 ### `--no-include`
 
 Desactiva para esta invocación el comportamiento que habilita `--include`. Mantén iguales los demás argumentos y compara el resultado con la forma positiva para comprobar la diferencia.
-
-La opción limita o amplía el conjunto sobre el que se ejecuta compactar referencias sueltas dentro del archivo packed-refs. Comprueba la selección con una forma de lectura antes de combinarla con una opción que escriba estado.
 
 ```bash
 git pack-refs --no-include --all --prune
 git count-objects -vH
 ```
 
-La opción no recibe un valor separado en la forma mostrada por la ayuda corta. Los argumentos que aparecen después pertenecen a `git pack-refs` o a otra opción. La salida permite comprobar objetos sueltos, packs y espacio registrado. Ejecuta la comprobación inmediatamente después para que ningún comando intermedio cambie el estado que estás observando.
+ La salida permite comprobar objetos sueltos, packs y espacio registrado. Ejecuta la comprobación inmediatamente después para que ningún comando intermedio cambie el estado que estás observando.
 
 ### `--no-exclude`
 
 Desactiva para esta invocación el comportamiento que habilita `--exclude`. Mantén iguales los demás argumentos y compara el resultado con la forma positiva para comprobar la diferencia.
-
-La opción limita o amplía el conjunto sobre el que se ejecuta compactar referencias sueltas dentro del archivo packed-refs. Comprueba la selección con una forma de lectura antes de combinarla con una opción que escriba estado.
 
 ```bash
 git pack-refs --no-exclude --all --prune
 git count-objects -vH
 ```
 
-La opción no recibe un valor separado en la forma mostrada por la ayuda corta. Los argumentos que aparecen después pertenecen a `git pack-refs` o a otra opción. La salida permite comprobar objetos sueltos, packs y espacio registrado. Ejecuta la comprobación inmediatamente después para que ningún comando intermedio cambie el estado que estás observando.
-
-## Errores y diagnóstico
-
-### Un objeto aparece como inalcanzable
-
-Comprueba esta causa: Ninguna referencia o reflog lo conserva. Determina si debe recuperarse antes de podar.
-
-### El tamaño no disminuye
-
-Comprueba esta causa: Los objetos siguen alcanzables o aún están protegidos por reflogs. Inspecciona alcanzabilidad y vencimientos.
-
-### La operación se interrumpe
-
-Comprueba esta causa: Otro proceso mantiene un lock. Comprueba procesos activos antes de retirar un lock obsoleto.
-
-## Automatización y recuperación
-
-Persistencia: Puede persistir el estado implicado por esta operación: compactar referencias sueltas dentro del archivo packed-refs. Las opciones pueden limitar o ampliar ese efecto. Antes de una operación que mueva o elimine referencias, registra sus hashes con `git show-ref`. Antes de cambiar archivos, conserva `git diff` y `git diff --cached`. Para objetos y commits que dejaron de estar referenciados, consulta el reflog antes de ejecutar mantenimiento que pueda eliminarlos.
-
-Haz la prueba en una copia. Ejecuta primero el modo de inspección o simulación disponible y registra referencias, reflogs y tamaño antes de modificar datos.
-
-Añade una segunda ejecución con una entrada inválida. El ejercicio queda verificado cuando puedes explicar el código de terminación, el canal del diagnóstico y el estado que permaneció sin cambios.
+ La salida permite comprobar objetos sueltos, packs y espacio registrado. Ejecuta la comprobación inmediatamente después para que ningún comando intermedio cambie el estado que estás observando.
 
 ## Páginas relacionadas
 

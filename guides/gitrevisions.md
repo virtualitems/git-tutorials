@@ -2,24 +2,19 @@
 title: "gitrevisions"
 source: "https://git-scm.com/docs/gitrevisions"
 section: "guides"
-status: "option-expanded"
+status: "source-audited"
+version: "2.55.0"
 ---
 
 # `gitrevisions`
 
-Este caso usa `gitrevisions` para seleccionar commits y rangos mediante la sintaxis de revisiones. Los nombres del ejemplo representan un repositorio de práctica. Sustitúyelos después de identificar qué objeto, referencia, ruta o valor de configuración representa cada uno.
+Este caso usa `gitrevisions` para seleccionar commits y rangos mediante la sintaxis de revisiones.
 
 La guía cubre **objetos nombrados**, **sufijos de alcance**, **ancestros**, **rangos de dos y tres puntos**, **exclusiones**.
 
-## Responsabilidad y efecto
-
-gitrevisions define reglas compartidas por comandos, archivos y flujos de trabajo. Recibe como entrada el estado de repositorio representado por el caso. La operación consiste en seleccionar commits y rangos mediante la sintaxis de revisiones.
-
-La guía no ejecuta cambios. Un productor que implemente el formato o regla puede escribir la salida que su contrato defina.
-
 ## Preparación
 
-Los ejemplos que necesitan un repositorio parten del [laboratorio base de `git init`](../getting-and-creating-projects/init.md#laboratorio-base). Los nombres como `HEAD`, `main`, `HEAD~2` y `A..B` se explican en [revisiones y rangos](../guides/gitrevisions.md#revisiones-y-rangos). Antes de ejecutar una forma que escriba datos, registra `git status --short` y las referencias que puedan cambiar.
+Usa el [laboratorio base](../getting-and-creating-projects/init.md#laboratorio-base) para las operaciones que necesitan un repositorio. Consulta las [convenciones de la CLI](../guides/gitcli.md) antes de combinar opciones, revisiones y rutas.
 
 ## Revisiones y rangos
 
@@ -46,7 +41,7 @@ git log main..tema-portada
 git diff v1.0...main
 ```
 
-La invocación `gitrevisions` ejecuta esta operación: seleccionar commits y rangos mediante la sintaxis de revisiones. Después, los comandos de inspección permiten relacionar el resultado con objetos, referencias, rutas o configuración. Conserva stdout, stderr y el código de terminación cuando el ejemplo forme parte de un script.
+La invocación `gitrevisions` ejecuta esta operación: seleccionar commits y rangos mediante la sintaxis de revisiones. Después, los comandos de inspección permiten relacionar el resultado con objetos, referencias, rutas o configuración.
 
 ## Sintaxis y formas de invocación
 
@@ -57,32 +52,6 @@ git diff v1.0...main
 ```
 
 Los corchetes indican elementos opcionales; `<valor>` exige sustitución; los puntos suspensivos permiten repetición; `|` separa formas excluyentes. Usa la fuente oficial enlazada para consultar la sintaxis que corresponde a la instalación donde ejecutarás la orden.
-
-## Flujos de uso
-
-### Caso base
-
-seleccionar commits y rangos mediante la sintaxis de revisiones. Usa el [ejemplo mínimo](#ejemplo-mínimo) como punto de partida. Ejecuta el ejemplo mínimo y registra el estado antes y después.
-
-### objetos nombrados
-
-Aplicar las reglas de objetos nombrados. Usa el [ejemplo mínimo](#ejemplo-mínimo) como punto de partida. Cambia una entrada y comprueba el efecto que define la guía.
-
-### sufijos de alcance
-
-Aplicar las reglas de sufijos de alcance. Usa el [ejemplo mínimo](#ejemplo-mínimo) como punto de partida. Cambia una entrada y comprueba el efecto que define la guía.
-
-### ancestros
-
-Aplicar las reglas de ancestros. Usa el [ejemplo mínimo](#ejemplo-mínimo) como punto de partida. Cambia una entrada y comprueba el efecto que define la guía.
-
-### rangos de dos y tres puntos
-
-Aplicar las reglas de rangos de dos y tres puntos. Usa el [ejemplo mínimo](#ejemplo-mínimo) como punto de partida. Cambia una entrada y comprueba el efecto que define la guía.
-
-### exclusiones
-
-Aplicar las reglas de exclusiones. Usa el [ejemplo mínimo](#ejemplo-mínimo) como punto de partida. Cambia una entrada y comprueba el efecto que define la guía.
 
 ## Funciones y reglas
 
@@ -119,28 +88,6 @@ Compara con `rev-list B ^A`. Usa el [ejemplo mínimo](#ejemplo-mínimo) y cambia
 `A...B` selecciona la diferencia simétrica respecto a bases de fusión.
 
 Calcula antes las bases con `merge-base --all`. Usa el [ejemplo mínimo](#ejemplo-mínimo) y cambia solo la regla descrita en este apartado. Repite la comprobación después de cambiar una sola entrada para identificar qué regla produjo la diferencia.
-
-## Errores y diagnóstico
-
-### La regla no se aplica
-
-Comprueba esta causa: El patrón, alcance o precedencia no coincide. Consulta la regla efectiva y el archivo que la definió.
-
-### Una revisión se interpreta como ruta
-
-Comprueba esta causa: El nombre es ambiguo. Separa revisiones y rutas con `--`.
-
-### El resultado cambia entre equipos
-
-Comprueba esta causa: La regla vive en configuración no compartida. Decide qué parte debe versionarse en el repositorio.
-
-## Automatización y recuperación
-
-Persistencia: La guía no ejecuta cambios. Un productor que implemente el formato o regla puede escribir la salida que su contrato defina. Antes de una operación que mueva o elimine referencias, registra sus hashes con `git show-ref`. Antes de cambiar archivos, conserva `git diff` y `git diff --cached`. Para objetos y commits que dejaron de estar referenciados, consulta el reflog antes de ejecutar mantenimiento que pueda eliminarlos.
-
-Reproduce el ejemplo en un repositorio temporal. Anota qué objeto, referencia, ruta o valor de configuración explica cada resultado.
-
-Añade una segunda ejecución con una entrada inválida. El ejercicio queda verificado cuando puedes explicar el código de terminación, el canal del diagnóstico y el estado que permaneció sin cambios.
 
 ## Páginas relacionadas
 

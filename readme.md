@@ -1,6 +1,6 @@
 # Guía técnica de Git en español
 
-Menú completo de la referencia: **194 guías canónicas** y **28 rutas alternativas**, organizadas en **22 secciones**.
+Índice de **194 guías canónicas**, organizadas en **19 secciones**. Cada tema tiene una sola página para que las correcciones y los ejemplos no diverjan entre rutas duplicadas.
 
 Cada enlace abre una guía con sintaxis, ejemplos, casos de uso, opciones, diagnóstico, automatización, recuperación y su fuente oficial.
 
@@ -25,12 +25,6 @@ Cada enlace abre una guía con sintaxis, ejemplos, casos de uso, opciones, diagn
 - [Automatización y comandos auxiliares](#scripting-and-helpers) — 19 contenidos
 - [Guías conceptuales](#guides) — 21 contenidos
 - [Formatos y protocolos](#formats-and-protocols) — 11 contenidos
-
-### Clasificaciones alternativas
-
-- [Correo](#email) — 6 rutas
-- [Comandos de plomería](#plumbing-commands) — 20 rutas
-- [Administración de servidores](#server-admin) — 2 rutas
 
 ---
 
@@ -382,70 +376,17 @@ Formatos internos y protocolos de comunicación de Git.
 
 ---
 
-## Clasificaciones alternativas
+## Alcance y convenciones
 
-Estas rutas conservan categorías adicionales para facilitar el descubrimiento. Cada página remite a una única guía canónica, evitando duplicar el contenido.
+La referencia toma Git 2.55.0 como versión objetivo. Una instalación anterior puede carecer de opciones documentadas aquí. Comprueba la versión instalada con `git --version` y la sintaxis disponible con `git <comando> --help-all`.
 
-<a id="email"></a>
-### Correo
+Las [convenciones de la CLI](guides/gitcli.md) explican el orden de argumentos, la negación de opciones, los valores opcionales, el separador `--`, los pathspecs y los códigos de terminación. El [laboratorio base](getting-and-creating-projects/init.md#laboratorio-base) proporciona un repositorio desechable para ejecutar los ejemplos que modifican estado.
 
-Clasificación alternativa de comandos relacionados con correo.
+## Cambios de la revisión del 11 de agosto de 2026
 
-- [git am](email/am.md) → [guía canónica](email-and-patches/am.md)
-- [git apply](email/apply.md) → [guía canónica](patching/apply.md)
-- [git format-patch](email/format-patch.md) → [guía canónica](email-and-patches/format-patch.md)
-- [git imap-send](email/imap-send.md) → [guía canónica](email-and-patches/imap-send.md)
-- [git request-pull](email/request-pull.md) → [guía canónica](sharing-and-updating-projects/request-pull.md)
-- [git send-email](email/send-email.md) → [guía canónica](email-and-patches/send-email.md)
-
-[↑ Volver al menú](#menú-de-secciones)
-
-<a id="plumbing-commands"></a>
-### Comandos de plomería
-
-Clasificación alternativa de operaciones internas.
-
-- [git cat-file](plumbing-commands/cat-file.md) → [guía canónica](plumbing-read/cat-file.md)
-- [git check-ignore](plumbing-commands/check-ignore.md) → [guía canónica](scripting-and-helpers/check-ignore.md)
-- [git checkout-index](plumbing-commands/checkout-index.md) → [guía canónica](plumbing-write/checkout-index.md)
-- [git commit-tree](plumbing-commands/commit-tree.md) → [guía canónica](plumbing-write/commit-tree.md)
-- [git count-objects](plumbing-commands/count-objects.md) → [guía canónica](administration/count-objects.md)
-- [git diff-index](plumbing-commands/diff-index.md) → [guía canónica](plumbing-read/diff-index.md)
-- [git for-each-ref](plumbing-commands/for-each-ref.md) → [guía canónica](plumbing-read/for-each-ref.md)
-- [git hash-object](plumbing-commands/hash-object.md) → [guía canónica](plumbing-write/hash-object.md)
-- [git ls-files](plumbing-commands/ls-files.md) → [guía canónica](plumbing-read/ls-files.md)
-- [git ls-tree](plumbing-commands/ls-tree.md) → [guía canónica](plumbing-read/ls-tree.md)
-- [git merge-base](plumbing-commands/merge-base.md) → [guía canónica](plumbing-read/merge-base.md)
-- [git read-tree](plumbing-commands/read-tree.md) → [guía canónica](plumbing-write/read-tree.md)
-- [git rev-list](plumbing-commands/rev-list.md) → [guía canónica](plumbing-read/rev-list.md)
-- [git rev-parse](plumbing-commands/rev-parse.md) → [guía canónica](plumbing-read/rev-parse.md)
-- [git show-ref](plumbing-commands/show-ref.md) → [guía canónica](plumbing-read/show-ref.md)
-- [git symbolic-ref](plumbing-commands/symbolic-ref.md) → [guía canónica](plumbing-write/symbolic-ref.md)
-- [git update-index](plumbing-commands/update-index.md) → [guía canónica](plumbing-write/update-index.md)
-- [git update-ref](plumbing-commands/update-ref.md) → [guía canónica](plumbing-write/update-ref.md)
-- [git verify-pack](plumbing-commands/verify-pack.md) → [guía canónica](plumbing-read/verify-pack.md)
-- [git write-tree](plumbing-commands/write-tree.md) → [guía canónica](plumbing-write/write-tree.md)
-
-[↑ Volver al menú](#menú-de-secciones)
-
-<a id="server-admin"></a>
-### Administración de servidores
-
-Clasificación alternativa de comandos de servidor.
-
-- [git daemon](server-admin/daemon.md) → [guía canónica](server-and-transport/daemon.md)
-- [git update-server-info](server-admin/update-server-info.md) → [guía canónica](server-and-transport/update-server-info.md)
-
-[↑ Volver al menú](#menú-de-secciones)
-
----
-
-## Convenciones rápidas
-
-- Comprueba tu versión con **git --version** y consulta **git help comando** antes de automatizar una opción.
-- Ejecuta los ejemplos que modifican estado en un repositorio desechable.
-- Sustituye revisiones, ramas, rutas y URL únicamente después de identificar el tipo de argumento.
-- Usa la ruta canónica para corregir o ampliar contenido; las rutas alternativas solo redirigen.
+- Se eliminaron 28 páginas alias de `email`, `plumbing-commands` y `server-admin`; el índice enlaza únicamente la ubicación canónica de cada tema.
+- Se centralizaron las reglas compartidas de invocación y verificación en `guides/gitcli.md` para evitar que cada guía repita explicaciones divergentes.
+- Se fijó Git 2.55.0 como versión documental y se contrastaron las opciones con la documentación oficial de esa versión.
 
 ## Licencia
 

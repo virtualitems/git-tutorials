@@ -2,106 +2,59 @@
 title: "Referencia de Git"
 source: "https://git-scm.com/docs"
 section: "overview"
-status: "option-expanded"
+status: "reviewed"
+version: "2.55.0"
 ---
 
-# `Referencia de Git`
+# Referencia de Git
 
-Este caso usa `Referencia de Git` para localizar comandos y guías dentro de la referencia de Git. Los nombres de archivo, revisiones, ramas y direcciones del ejemplo representan valores que debes sustituir por los de tu repositorio.
+El [README](../README.md#menú-de-secciones) es el índice único del proyecto. Organiza cada guía por la responsabilidad principal del comando o concepto y enlaza una sola ubicación canónica.
 
-## Responsabilidad y efecto
+## Localizar un comando
 
-Referencia de Git organiza las páginas por estado, tipo de entrada y efecto observable. Recibe como entrada el nombre del comando o concepto que quieres consultar. La operación consiste en localizar comandos y guías dentro de la referencia de Git.
-
-La guía no ejecuta cambios. Un productor que implemente el formato o regla puede escribir la salida que su contrato defina.
-
-## Preparación
-
- Antes de ejecutar una forma que escriba datos, registra `git status --short` y las referencias que puedan cambiar.
-
-## Cómo funciona
-
-La referencia organiza comandos de usuario, comandos de plomería, guías y formatos. El nombre de una página identifica una operación o un modelo que otras páginas reutilizan.
-
-Usa el nombre de la operación como punto de entrada. Sigue los enlaces conceptuales cuando la sintaxis dependa de revisiones, rutas, atributos o protocolos.
-
-## Ejemplo mínimo
+`git help --all` enumera los comandos instalados. Usa `--no-external-commands` para excluir ejecutables `git-*` externos y `--no-aliases` para excluir alias de configuración.
 
 ```bash
 git help --all
+git help --all --no-external-commands --no-aliases
+```
+
+Busca después el nombre en el [README](../README.md). Si una función pertenece a varias categorías, el índice la coloca donde se explica su efecto principal y las demás páginas la enlazan.
+
+## Abrir un manual
+
+```bash
+git help add
 git help revisions
 git help gitignore
 ```
 
-La invocación `Referencia de Git` ejecuta esta operación: localizar comandos y guías dentro de la referencia de Git. Después, la página elegida enlaza su sintaxis, su modelo y sus referencias relacionadas. Conserva stdout, stderr y el código de terminación cuando el ejemplo forme parte de un script.
+`git help add` abre el manual de un comando. `revisions` y `gitignore` son guías conceptuales: se consultan mediante `git help`, pero no se ejecutan como `git revisions` o `git gitignore`.
 
-## Sintaxis y formas de invocación
-
-```text
-git help --all
-git help revisions
-git help gitignore
-```
-
-Los corchetes indican elementos opcionales; `<valor>` exige sustitución; los puntos suspensivos permiten repetición; `|` separa formas excluyentes. Usa la fuente oficial enlazada para consultar la sintaxis que corresponde a la instalación donde ejecutarás la orden.
-
-## Flujos de uso
-
-### Caso base
-
-localizar comandos y guías dentro de la referencia de Git. Usa el [ejemplo mínimo](#ejemplo-mínimo) como punto de partida. Ejecuta el ejemplo mínimo y registra el estado antes y después.
-
-### Alcance explícito
-
-Aplicar Referencia de Git a una referencia, rango o ruta identificada. Usa el [ejemplo mínimo](#ejemplo-mínimo) como punto de partida. Resuelve cada argumento antes de ejecutar y usa `--` para rutas.
-
-### Validación
-
-Comprobar el resultado de Referencia de Git con una orden de lectura independiente. Usa el [ejemplo mínimo](#ejemplo-mínimo) como punto de partida. No uses la misma salida como única prueba del cambio.
-
-## Opciones
-
-Cada apartado usa una opción en una invocación concreta. Las opciones equivalentes comparten la explicación, pero cada alias tiene su propio ejemplo. Ejecuta una opción por vez antes de combinarlas.
-
-### `--all`
-
-Amplía la selección a todos los elementos del alcance definido.
-
-La opción limita o amplía el conjunto sobre el que se ejecuta localizar comandos y guías dentro de la referencia de Git. Comprueba la selección con una forma de lectura antes de combinarla con una opción que escriba estado.
+La opción `--help-all` de un comando incluye opciones de plomería u obsoletas que pueden faltar en la ayuda normal.
 
 ```bash
-git help --all
-printf 'exit=%s\n' "$?"
+git fetch --help-all
 ```
 
-La opción no recibe un valor separado en la forma mostrada por la ayuda corta. Los argumentos que aparecen después pertenecen a `Referencia de Git` o a otra opción. El código de terminación distingue una ejecución aceptada de un error y, en algunos comandos de consulta, de una respuesta negativa. Ejecuta la comprobación inmediatamente después para que ningún comando intermedio cambie el estado que estás observando.
+## Rutas de aprendizaje
 
-## Errores y diagnóstico
+- Para crear un repositorio y registrar cambios: [`git init`](../getting-and-creating-projects/init.md), [`git add`](../basic-snapshotting/add.md) y [`git commit`](../basic-snapshotting/commit.md).
+- Para compartir historia: [`git remote`](../sharing-and-updating-projects/remote.md), [`git fetch`](../sharing-and-updating-projects/fetch.md), [`git pull`](../sharing-and-updating-projects/pull.md) y [`git push`](../sharing-and-updating-projects/push.md).
+- Para interpretar argumentos comunes: [convenciones de la CLI](../guides/gitcli.md), [revisiones](../guides/gitrevisions.md) y [pathspecs](../guides/gitcli.md#pathspecs-y-expansión-del-shell).
+- Para opciones reutilizadas por varios comandos: [opciones de diff](../plumbing-read/diff-pairs.md#opciones) y [recorrido de revisiones](../plumbing-read/rev-list.md#opciones).
 
-### Una página no aparece
+## Versión documental
 
-Comprueba esta causa: La versión instalada no contiene ese comando. Consulta `git --version` y la fuente enlazada.
+Las guías toman Git 2.55.0 como referencia. Comprueba la instalación antes de automatizar una opción:
 
-### Un nombre no se reconoce
+```bash
+git --version
+git <comando> --help-all
+```
 
-Comprueba esta causa: Se confundió una orden con una guía o un formato. Comprueba si se invoca como `git <orden>` o se consulta como documento.
-
-### La ruta lleva a otra sección
-
-Comprueba esta causa: Una función participa en más de un flujo. Usa la página canónica indicada por el índice.
-
-## Automatización y recuperación
-
-Persistencia: La guía no ejecuta cambios. Un productor que implemente el formato o regla puede escribir la salida que su contrato defina. Antes de una operación que mueva o elimine referencias, registra sus hashes con `git show-ref`. Antes de cambiar archivos, conserva `git diff` y `git diff --cached`. Para objetos y commits que dejaron de estar referenciados, consulta el reflog antes de ejecutar mantenimiento que pueda eliminarlos.
-
-Abre la página de referencia, elige un comando y sigue sus enlaces hacia una guía conceptual y un formato relacionado.
-
-Añade una segunda ejecución con una entrada inválida. El ejercicio queda verificado cuando puedes explicar el código de terminación, el canal del diagnóstico y el estado que permaneció sin cambios.
-
-## Páginas relacionadas
-
-- Consulta el índice de la sección.
+Una versión anterior puede no reconocer una opción y una versión posterior puede añadir otras. Contrasta los cambios con la carpeta `Documentation` de la versión oficial que quieras adoptar.
 
 ## Fuente
 
-- [Referencia de Git](https://git-scm.com/docs)
+- [Documentación oficial de Git](https://git-scm.com/docs)

@@ -2,22 +2,17 @@
 title: "git notes"
 source: "https://git-scm.com/docs/git-notes"
 section: "basic-snapshotting"
-status: "option-expanded"
+status: "source-audited"
+version: "2.55.0"
 ---
 
 # `git notes`
 
-Este caso usa `git notes` para asociar anotaciones a objetos sin cambiar los objetos. Los nombres de archivo, revisiones, ramas y direcciones del ejemplo representan valores que debes sustituir por los de tu repositorio.
-
-## Responsabilidad y efecto
-
-git notes mueve contenido entre el área de trabajo, el índice y el commit señalado por `HEAD`. Recibe como entrada las rutas y el estado de origen seleccionados por los argumentos. La operación consiste en asociar anotaciones a objetos sin cambiar los objetos.
-
-Puede persistir el estado implicado por esta operación: asociar anotaciones a objetos sin cambiar los objetos. Las opciones pueden limitar o ampliar ese efecto.
+Este caso usa `git notes` para asociar anotaciones a objetos sin cambiar los objetos.
 
 ## Preparación
 
-Los ejemplos que necesitan un repositorio parten del [laboratorio base de `git init`](../getting-and-creating-projects/init.md#laboratorio-base). La posición de opciones, revisiones y rutas sigue las [convenciones de la interfaz de Git](../guides/gitcli.md#convenciones-de-la-cli). Los nombres como `HEAD`, `main`, `HEAD~2` y `A..B` se explican en [revisiones y rangos](../guides/gitrevisions.md#revisiones-y-rangos). La selección de rutas se explica en [pathspecs y separación con `--`](../guides/gitcli.md#pathspecs). Antes de ejecutar una forma que escriba datos, registra `git status --short` y las referencias que puedan cambiar.
+Usa el [laboratorio base](../getting-and-creating-projects/init.md#laboratorio-base) para las operaciones que necesitan un repositorio. Consulta las [convenciones de la CLI](../guides/gitcli.md) antes de combinar opciones, revisiones y rutas.
 
 ## Cómo funciona
 
@@ -32,7 +27,7 @@ git notes add -m "Revisado en clase" HEAD
 git notes show HEAD
 ```
 
-La invocación `git notes add -m "Revisado en clase" HEAD` ejecuta esta operación: asociar anotaciones a objetos sin cambiar los objetos. Después, `git status` permite distinguir cambios en el área de trabajo, el índice y HEAD. Conserva stdout, stderr y el código de terminación cuando el ejemplo forme parte de un script.
+La invocación `git notes add -m "Revisado en clase" HEAD` ejecuta esta operación: asociar anotaciones a objetos sin cambiar los objetos. Después, `git status` permite distinguir cambios en el área de trabajo, el índice y HEAD.
 
 ## Sintaxis y formas de invocación
 
@@ -43,7 +38,7 @@ git notes copy [-f] ( --stdin | <from-object> [<to-object>] )
 git notes append [--allow-empty] [--[no-]separator | --separator=<paragraph-break>] [--[no-]stripspace] [-F <file> | -m <msg> | (-c | -C) <object>] [-e] [<object>]
 ```
 
-### Uso verificado con `git version 2.51.1`
+### Ayuda corta de la instalación de prueba (`git 2.51.1`)
 
 ```text
 git notes [--ref <notes-ref>] [list [<object>]]
@@ -62,144 +57,108 @@ git notes [--ref <notes-ref>] [list [<object>]]
 
 Los corchetes indican elementos opcionales; `<valor>` exige sustitución; los puntos suspensivos permiten repetición; `|` separa formas excluyentes. Usa `git notes -h` para consultar la sintaxis que corresponde a la instalación donde ejecutarás la orden.
 
-## Flujos de uso
-
-### Caso base
-
-asociar anotaciones a objetos sin cambiar los objetos. Usa el [ejemplo mínimo](#ejemplo-mínimo) como punto de partida. Ejecuta el ejemplo mínimo y registra el estado antes y después.
-
-### Alcance explícito
-
-Aplicar git notes a una referencia, rango o ruta identificada. Usa el [ejemplo mínimo](#ejemplo-mínimo) como punto de partida. Resuelve cada argumento antes de ejecutar y usa `--` para rutas.
-
-### Sesión interrumpida
-
-Continuar o cancelar una secuencia después de revisar el estado. Usa el [ejemplo mínimo](#ejemplo-mínimo) como punto de partida. Consulta `git status` antes de elegir la acción.
-
-### Validación
-
-Comprobar el resultado de git notes con una orden de lectura independiente. Usa el [ejemplo mínimo](#ejemplo-mínimo) como punto de partida. No uses la misma salida como única prueba del cambio.
-
 ## Opciones
 
-Cada apartado usa una opción en una invocación concreta. Las opciones equivalentes comparten la explicación, pero cada alias tiene su propio ejemplo. Ejecuta una opción por vez antes de combinarlas.
+Las [convenciones de la CLI](../guides/gitcli.md) explican alias, valores, negación, opciones interactivas y códigos de terminación. Cada apartado muestra el comportamiento específico de esta orden.
 
 ### `-f`
 
 Activa f durante asociar anotaciones a objetos sin cambiar los objetos. La opción afecta esta invocación y no cambia la configuración de otras órdenes salvo que la propia función escriba esa configuración.
-
-En `git notes`, f modifica la forma en que se ejecuta asociar anotaciones a objetos sin cambiar los objetos. Mantén iguales los demás argumentos para atribuir el cambio observado a esta opción.
 
 ```bash
 git notes -f add -m "Revisado en clase" HEAD
 git status --short
 ```
 
-La opción no recibe un valor separado en la forma mostrada por la ayuda corta. Los argumentos que aparecen después pertenecen a `git notes` o a otra opción. El estado muestra si cambió el área de trabajo, el índice o la operación en curso. Ejecuta la comprobación inmediatamente después para que ningún comando intermedio cambie el estado que estás observando.
+El estado muestra si cambió el área de trabajo, el índice o la operación en curso. Ejecuta la comprobación inmediatamente después para que ningún comando intermedio cambie el estado que estás observando.
 
 ### `--allow-empty`
 
 Permite continuar cuando el cambio produce un commit sin diferencias.
-
-La opción limita o amplía el conjunto sobre el que se ejecuta asociar anotaciones a objetos sin cambiar los objetos. Comprueba la selección con una forma de lectura antes de combinarla con una opción que escriba estado.
 
 ```bash
 git notes --allow-empty add -m "Revisado en clase" HEAD
 git status --short
 ```
 
-La opción no recibe un valor separado en la forma mostrada por la ayuda corta. Los argumentos que aparecen después pertenecen a `git notes` o a otra opción. El estado muestra si cambió el área de trabajo, el índice o la operación en curso. Ejecuta la comprobación inmediatamente después para que ningún comando intermedio cambie el estado que estás observando.
+El estado muestra si cambió el área de trabajo, el índice o la operación en curso. Ejecuta la comprobación inmediatamente después para que ningún comando intermedio cambie el estado que estás observando.
 
 ### `--separator`
 
 Activa separator durante asociar anotaciones a objetos sin cambiar los objetos. La opción afecta esta invocación y no cambia la configuración de otras órdenes salvo que la propia función escriba esa configuración.
-
-En `git notes`, separator modifica la forma en que se ejecuta asociar anotaciones a objetos sin cambiar los objetos. Mantén iguales los demás argumentos para atribuir el cambio observado a esta opción.
 
 ```bash
 git notes --separator add -m "Revisado en clase" HEAD
 git status --short
 ```
 
-La opción no recibe un valor separado en la forma mostrada por la ayuda corta. Los argumentos que aparecen después pertenecen a `git notes` o a otra opción. El estado muestra si cambió el área de trabajo, el índice o la operación en curso. Ejecuta la comprobación inmediatamente después para que ningún comando intermedio cambie el estado que estás observando.
+El estado muestra si cambió el área de trabajo, el índice o la operación en curso. Ejecuta la comprobación inmediatamente después para que ningún comando intermedio cambie el estado que estás observando.
 
 ### `--stripspace`
 
 Activa stripspace durante asociar anotaciones a objetos sin cambiar los objetos. La opción afecta esta invocación y no cambia la configuración de otras órdenes salvo que la propia función escriba esa configuración.
-
-En `git notes`, stripspace modifica la forma en que se ejecuta asociar anotaciones a objetos sin cambiar los objetos. Mantén iguales los demás argumentos para atribuir el cambio observado a esta opción.
 
 ```bash
 git notes --stripspace add -m "Revisado en clase" HEAD
 git status --short
 ```
 
-La opción no recibe un valor separado en la forma mostrada por la ayuda corta. Los argumentos que aparecen después pertenecen a `git notes` o a otra opción. El estado muestra si cambió el área de trabajo, el índice o la operación en curso. Ejecuta la comprobación inmediatamente después para que ningún comando intermedio cambie el estado que estás observando.
+El estado muestra si cambió el área de trabajo, el índice o la operación en curso. Ejecuta la comprobación inmediatamente después para que ningún comando intermedio cambie el estado que estás observando.
 
 ### `-F`
 
 Activa F durante asociar anotaciones a objetos sin cambiar los objetos. La opción afecta esta invocación y no cambia la configuración de otras órdenes salvo que la propia función escriba esa configuración.
-
-En `git notes`, F modifica la forma en que se ejecuta asociar anotaciones a objetos sin cambiar los objetos. Mantén iguales los demás argumentos para atribuir el cambio observado a esta opción.
 
 ```bash
 git notes -F add -m "Revisado en clase" HEAD
 git status --short
 ```
 
-La opción no recibe un valor separado en la forma mostrada por la ayuda corta. Los argumentos que aparecen después pertenecen a `git notes` o a otra opción. El estado muestra si cambió el área de trabajo, el índice o la operación en curso. Ejecuta la comprobación inmediatamente después para que ningún comando intermedio cambie el estado que estás observando.
+El estado muestra si cambió el área de trabajo, el índice o la operación en curso. Ejecuta la comprobación inmediatamente después para que ningún comando intermedio cambie el estado que estás observando.
 
 ### `-m`
 
 Activa m durante asociar anotaciones a objetos sin cambiar los objetos. La opción afecta esta invocación y no cambia la configuración de otras órdenes salvo que la propia función escriba esa configuración.
-
-En `git notes`, m modifica la forma en que se ejecuta asociar anotaciones a objetos sin cambiar los objetos. Mantén iguales los demás argumentos para atribuir el cambio observado a esta opción.
 
 ```bash
 git notes -m add "Revisado en clase" HEAD
 git status --short
 ```
 
-La opción no recibe un valor separado en la forma mostrada por la ayuda corta. Los argumentos que aparecen después pertenecen a `git notes` o a otra opción. El estado muestra si cambió el área de trabajo, el índice o la operación en curso. Ejecuta la comprobación inmediatamente después para que ningún comando intermedio cambie el estado que estás observando.
+El estado muestra si cambió el área de trabajo, el índice o la operación en curso. Ejecuta la comprobación inmediatamente después para que ningún comando intermedio cambie el estado que estás observando.
 
 ### `-c`
 
 Aplica una clave de configuración solo a esta invocación.
-
-En `git notes`, c modifica la forma en que se ejecuta asociar anotaciones a objetos sin cambiar los objetos. Mantén iguales los demás argumentos para atribuir el cambio observado a esta opción.
 
 ```bash
 git notes -c add -m "Revisado en clase" HEAD
 git status --short
 ```
 
-La opción no recibe un valor separado en la forma mostrada por la ayuda corta. Los argumentos que aparecen después pertenecen a `git notes` o a otra opción. El estado muestra si cambió el área de trabajo, el índice o la operación en curso. Ejecuta la comprobación inmediatamente después para que ningún comando intermedio cambie el estado que estás observando.
+El estado muestra si cambió el área de trabajo, el índice o la operación en curso. Ejecuta la comprobación inmediatamente después para que ningún comando intermedio cambie el estado que estás observando.
 
 ### `-C`
 
 Ejecuta Git como si se hubiera iniciado en el directorio indicado.
-
-En `git notes`, C modifica la forma en que se ejecuta asociar anotaciones a objetos sin cambiar los objetos. Mantén iguales los demás argumentos para atribuir el cambio observado a esta opción.
 
 ```bash
 git notes -C add -m "Revisado en clase" HEAD
 git status --short
 ```
 
-La opción no recibe un valor separado en la forma mostrada por la ayuda corta. Los argumentos que aparecen después pertenecen a `git notes` o a otra opción. El estado muestra si cambió el área de trabajo, el índice o la operación en curso. Ejecuta la comprobación inmediatamente después para que ningún comando intermedio cambie el estado que estás observando.
+El estado muestra si cambió el área de trabajo, el índice o la operación en curso. Ejecuta la comprobación inmediatamente después para que ningún comando intermedio cambie el estado que estás observando.
 
 ### `-e`
 
 Activa e durante asociar anotaciones a objetos sin cambiar los objetos. La opción afecta esta invocación y no cambia la configuración de otras órdenes salvo que la propia función escriba esa configuración.
-
-En `git notes`, e modifica la forma en que se ejecuta asociar anotaciones a objetos sin cambiar los objetos. Mantén iguales los demás argumentos para atribuir el cambio observado a esta opción.
 
 ```bash
 git notes -e add -m "Revisado en clase" HEAD
 git status --short
 ```
 
-La opción no recibe un valor separado en la forma mostrada por la ayuda corta. Los argumentos que aparecen después pertenecen a `git notes` o a otra opción. El estado muestra si cambió el área de trabajo, el índice o la operación en curso. Ejecuta la comprobación inmediatamente después para que ningún comando intermedio cambie el estado que estás observando.
+El estado muestra si cambió el área de trabajo, el índice o la operación en curso. Ejecuta la comprobación inmediatamente después para que ningún comando intermedio cambie el estado que estás observando.
 
 ### `--stdin`
 
@@ -212,13 +171,11 @@ git notes --stdin add -m "Revisado en clase" HEAD
 git status --short
 ```
 
-La opción no recibe un valor separado en la forma mostrada por la ayuda corta. Los argumentos que aparecen después pertenecen a `git notes` o a otra opción. El estado muestra si cambió el área de trabajo, el índice o la operación en curso. Ejecuta la comprobación inmediatamente después para que ningún comando intermedio cambie el estado que estás observando.
+El estado muestra si cambió el área de trabajo, el índice o la operación en curso. Ejecuta la comprobación inmediatamente después para que ningún comando intermedio cambie el estado que estás observando.
 
 ### `--ref`
 
 Selecciona o modifica referencias dentro del alcance de la orden.
-
-En `git notes`, referencia modifica la forma en que se ejecuta asociar anotaciones a objetos sin cambiar los objetos. Mantén iguales los demás argumentos para atribuir el cambio observado a esta opción.
 
 ```bash
 git notes --ref=refs/heads/main add -m "Revisado en clase" HEAD
@@ -231,53 +188,45 @@ El ejemplo usa `refs/heads/main` como valor. Sustitúyelo por un valor del tipo 
 
 Activa v durante asociar anotaciones a objetos sin cambiar los objetos. La opción afecta esta invocación y no cambia la configuración de otras órdenes salvo que la propia función escriba esa configuración.
 
-La opción limita o amplía el conjunto sobre el que se ejecuta asociar anotaciones a objetos sin cambiar los objetos. Comprueba la selección con una forma de lectura antes de combinarla con una opción que escriba estado.
-
 ```bash
 git notes -v add -m "Revisado en clase" HEAD
 git status --short
 ```
 
-La opción no recibe un valor separado en la forma mostrada por la ayuda corta. Los argumentos que aparecen después pertenecen a `git notes` o a otra opción. El estado muestra si cambió el área de trabajo, el índice o la operación en curso. Ejecuta la comprobación inmediatamente después para que ningún comando intermedio cambie el estado que estás observando.
+El estado muestra si cambió el área de trabajo, el índice o la operación en curso. Ejecuta la comprobación inmediatamente después para que ningún comando intermedio cambie el estado que estás observando.
 
 ### `-q`
 
 Activa q durante asociar anotaciones a objetos sin cambiar los objetos. La opción afecta esta invocación y no cambia la configuración de otras órdenes salvo que la propia función escriba esa configuración.
-
-En `git notes`, q modifica la forma en que se ejecuta asociar anotaciones a objetos sin cambiar los objetos. Mantén iguales los demás argumentos para atribuir el cambio observado a esta opción.
 
 ```bash
 git notes -q add -m "Revisado en clase" HEAD
 git status --short
 ```
 
-La opción no recibe un valor separado en la forma mostrada por la ayuda corta. Los argumentos que aparecen después pertenecen a `git notes` o a otra opción. El estado muestra si cambió el área de trabajo, el índice o la operación en curso. Ejecuta la comprobación inmediatamente después para que ningún comando intermedio cambie el estado que estás observando.
+El estado muestra si cambió el área de trabajo, el índice o la operación en curso. Ejecuta la comprobación inmediatamente después para que ningún comando intermedio cambie el estado que estás observando.
 
 ### `-s`
 
 Activa s durante asociar anotaciones a objetos sin cambiar los objetos. La opción afecta esta invocación y no cambia la configuración de otras órdenes salvo que la propia función escriba esa configuración.
-
-En `git notes`, s modifica la forma en que se ejecuta asociar anotaciones a objetos sin cambiar los objetos. Mantén iguales los demás argumentos para atribuir el cambio observado a esta opción.
 
 ```bash
 git notes -s add -m "Revisado en clase" HEAD
 git status --short
 ```
 
-La opción no recibe un valor separado en la forma mostrada por la ayuda corta. Los argumentos que aparecen después pertenecen a `git notes` o a otra opción. El estado muestra si cambió el área de trabajo, el índice o la operación en curso. Ejecuta la comprobación inmediatamente después para que ningún comando intermedio cambie el estado que estás observando.
+El estado muestra si cambió el área de trabajo, el índice o la operación en curso. Ejecuta la comprobación inmediatamente después para que ningún comando intermedio cambie el estado que estás observando.
 
 ### `--commit`
 
 Activa commit durante asociar anotaciones a objetos sin cambiar los objetos. La opción afecta esta invocación y no cambia la configuración de otras órdenes salvo que la propia función escriba esa configuración.
-
-En `git notes`, commit modifica la forma en que se ejecuta asociar anotaciones a objetos sin cambiar los objetos. Mantén iguales los demás argumentos para atribuir el cambio observado a esta opción.
 
 ```bash
 git notes --commit add -m "Revisado en clase" HEAD
 git status --short
 ```
 
-La opción no recibe un valor separado en la forma mostrada por la ayuda corta. Los argumentos que aparecen después pertenecen a `git notes` o a otra opción. El estado muestra si cambió el área de trabajo, el índice o la operación en curso. Ejecuta la comprobación inmediatamente después para que ningún comando intermedio cambie el estado que estás observando.
+El estado muestra si cambió el área de trabajo, el índice o la operación en curso. Ejecuta la comprobación inmediatamente después para que ningún comando intermedio cambie el estado que estás observando.
 
 ### `--abort`
 
@@ -290,81 +239,86 @@ git notes --abort
 git status --short
 ```
 
-La opción no recibe un valor separado en la forma mostrada por la ayuda corta. Los argumentos que aparecen después pertenecen a `git notes` o a otra opción. El estado muestra si cambió el área de trabajo, el índice o la operación en curso. Ejecuta la comprobación inmediatamente después para que ningún comando intermedio cambie el estado que estás observando.
+El estado muestra si cambió el área de trabajo, el índice o la operación en curso. Ejecuta la comprobación inmediatamente después para que ningún comando intermedio cambie el estado que estás observando.
 
 ### `-n`
 
 Activa n durante asociar anotaciones a objetos sin cambiar los objetos. La opción afecta esta invocación y no cambia la configuración de otras órdenes salvo que la propia función escriba esa configuración.
-
-En `git notes`, n modifica la forma en que se ejecuta asociar anotaciones a objetos sin cambiar los objetos. Mantén iguales los demás argumentos para atribuir el cambio observado a esta opción.
 
 ```bash
 git notes -n add -m "Revisado en clase" HEAD
 git status --short
 ```
 
-La opción no recibe un valor separado en la forma mostrada por la ayuda corta. Los argumentos que aparecen después pertenecen a `git notes` o a otra opción. El estado muestra si cambió el área de trabajo, el índice o la operación en curso. Ejecuta la comprobación inmediatamente después para que ningún comando intermedio cambie el estado que estás observando.
+El estado muestra si cambió el área de trabajo, el índice o la operación en curso. Ejecuta la comprobación inmediatamente después para que ningún comando intermedio cambie el estado que estás observando.
 
 ### `--no-separator`
 
 Desactiva para esta invocación el comportamiento que habilita `--separator`. Mantén iguales los demás argumentos y compara el resultado con la forma positiva para comprobar la diferencia.
-
-En `git notes`, desactivar separator modifica la forma en que se ejecuta asociar anotaciones a objetos sin cambiar los objetos. Mantén iguales los demás argumentos para atribuir el cambio observado a esta opción.
 
 ```bash
 git notes --no-separator add -m "Revisado en clase" HEAD
 git status --short
 ```
 
-La opción no recibe un valor separado en la forma mostrada por la ayuda corta. Los argumentos que aparecen después pertenecen a `git notes` o a otra opción. El estado muestra si cambió el área de trabajo, el índice o la operación en curso. Ejecuta la comprobación inmediatamente después para que ningún comando intermedio cambie el estado que estás observando.
+El estado muestra si cambió el área de trabajo, el índice o la operación en curso. Ejecuta la comprobación inmediatamente después para que ningún comando intermedio cambie el estado que estás observando.
 
 ### `--no-stripspace`
 
 Desactiva para esta invocación el comportamiento que habilita `--stripspace`. Mantén iguales los demás argumentos y compara el resultado con la forma positiva para comprobar la diferencia.
-
-En `git notes`, desactivar stripspace modifica la forma en que se ejecuta asociar anotaciones a objetos sin cambiar los objetos. Mantén iguales los demás argumentos para atribuir el cambio observado a esta opción.
 
 ```bash
 git notes --no-stripspace add -m "Revisado en clase" HEAD
 git status --short
 ```
 
-La opción no recibe un valor separado en la forma mostrada por la ayuda corta. Los argumentos que aparecen después pertenecen a `git notes` o a otra opción. El estado muestra si cambió el área de trabajo, el índice o la operación en curso. Ejecuta la comprobación inmediatamente después para que ningún comando intermedio cambie el estado que estás observando.
+El estado muestra si cambió el área de trabajo, el índice o la operación en curso. Ejecuta la comprobación inmediatamente después para que ningún comando intermedio cambie el estado que estás observando.
 
-### `--no-ref`
+### `--message`, `--file`, `--reuse-message` y `--reedit-message`
 
-Desactiva para esta invocación el comportamiento que habilita `--ref`. Mantén iguales los demás argumentos y compara el resultado con la forma positiva para comprobar la diferencia.
-
-En `git notes`, desactivar referencia modifica la forma en que se ejecuta asociar anotaciones a objetos sin cambiar los objetos. Mantén iguales los demás argumentos para atribuir el cambio observado a esta opción.
+Estas opciones proporcionan el texto de una nota sin partir de un editor vacío. `--message=<texto>` usa el argumento y concatena varios usos como párrafos; `--file=<archivo>` lee un archivo o stdin si el valor es `-`; `--reuse-message=<objeto>` copia literalmente el blob indicado; `--reedit-message=<objeto>` carga ese blob y abre el editor.
 
 ```bash
-git notes --no-ref add -m "Revisado en clase" HEAD
-git status --short
+git notes add --message='Revisado por QA' HEAD
+printf 'Nota desde stdin\n' | git notes add --file=- HEAD~1
+git notes show HEAD
 ```
 
-La opción no recibe un valor separado en la forma mostrada por la ayuda corta. Los argumentos que aparecen después pertenecen a `git notes` o a otra opción. El estado muestra si cambió el área de trabajo, el índice o la operación en curso. Ejecuta la comprobación inmediatamente después para que ningún comando intermedio cambie el estado que estás observando.
+### `--force`
 
-## Errores y diagnóstico
+Sobrescribe la nota cuando el objeto ya tiene una. Sin esta opción, `git notes add` termina con error para evitar una sustitución accidental.
 
-### El cambio no entra al commit
+```bash
+git notes add --force --message='Texto corregido' HEAD
+git notes show HEAD
+```
 
-Comprueba esta causa: El índice no contiene la versión esperada. Compara `git diff` con `git diff --cached`.
+### `--ignore-missing` y `--dry-run`
 
-### Un pathspec no coincide
+`--ignore-missing` permite que `notes remove` reciba objetos sin nota. `--dry-run` muestra los objetos cuyas notas retiraría sin modificar la referencia de notas.
 
-Comprueba esta causa: La ruta se evalúa desde otro directorio o está ignorada. Usa `git status --short --untracked-files=all` y separa opciones con `--`.
+```bash
+git notes remove --dry-run --ignore-missing HEAD HEAD~1
+```
 
-### Se reemplaza contenido local
+### `--strategy`
 
-Comprueba esta causa: La orden escribe el área de trabajo. Guarda el diff o crea un stash antes de repetir la operación.
+Selecciona cómo `notes merge` resuelve conflictos: `manual` (predeterminado), `ours`, `theirs`, `union` o `cat_sort_uniq`. La opción sustituye `notes.mergeStrategy` para esa invocación.
 
-## Automatización y recuperación
+```bash
+git notes merge --strategy=union refs/notes/revision
+git notes list
+```
 
-Persistencia: Puede persistir el estado implicado por esta operación: asociar anotaciones a objetos sin cambiar los objetos. Las opciones pueden limitar o ampliar ese efecto. Antes de una operación que mueva o elimine referencias, registra sus hashes con `git show-ref`. Antes de cambiar archivos, conserva `git diff` y `git diff --cached`. Para objetos y commits que dejaron de estar referenciados, consulta el reflog antes de ejecutar mantenimiento que pueda eliminarlos.
+### `--quiet` y `--verbose`
 
-Crea un repositorio temporal, modifica una ruta y ejecuta `git status --short` antes y después de cada línea del ejemplo.
+Durante `notes merge`, `--quiet` reduce mensajes y `--verbose` los amplía. Con `notes prune`, `--verbose` muestra los objetos cuyas notas elimina.
 
-Añade una segunda ejecución con una entrada inválida. El ejercicio queda verificado cuando puedes explicar el código de terminación, el canal del diagnóstico y el estado que permaneció sin cambios.
+```bash
+git notes prune --dry-run --verbose
+```
+
+El ejemplo combina `--verbose` con la simulación para enumerar candidatos sin borrarlos.
 
 ## Páginas relacionadas
 
