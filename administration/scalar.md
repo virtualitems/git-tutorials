@@ -28,11 +28,11 @@ Relaciona cada archivo con su alcanzabilidad y retención. La compactación camb
 ## Ejemplo mínimo
 
 ```bash
-scalar clone https://example.test/equipo/biblioteca.git biblioteca
+scalar clone https://example.com/equipo/biblioteca.git biblioteca
 scalar list
 ```
 
-La invocación `scalar clone https://example.test/equipo/biblioteca.git biblioteca` ejecuta esta operación: administrar repositorios con funciones orientadas a conjuntos de archivos extensos. Después, los modos de simulación y las consultas de tamaño muestran el efecto antes y después. Conserva stdout, stderr y el código de terminación cuando el ejemplo forme parte de un script.
+La invocación `scalar clone https://example.com/equipo/biblioteca.git biblioteca` ejecuta esta operación: administrar repositorios con funciones orientadas a conjuntos de archivos extensos. Después, los modos de simulación y las consultas de tamaño muestran el efecto antes y después. Conserva stdout, stderr y el código de terminación cuando el ejemplo forme parte de un script.
 
 ## Sintaxis y formas de invocación
 
@@ -76,7 +76,7 @@ Selecciona o modifica referencias dentro del alcance de la orden.
 La opción limita o amplía el conjunto sobre el que se ejecuta administrar repositorios con funciones orientadas a conjuntos de archivos extensos. Comprueba la selección con una forma de lectura antes de combinarla con una opción que escriba estado.
 
 ```bash
-scalar --single-branch clone https://example.test/equipo/biblioteca.git biblioteca
+scalar --single-branch clone https://example.com/equipo/biblioteca.git biblioteca
 git count-objects -vH
 ```
 
@@ -89,7 +89,7 @@ Selecciona o modifica referencias dentro del alcance de la orden.
 La opción limita o amplía el conjunto sobre el que se ejecuta administrar repositorios con funciones orientadas a conjuntos de archivos extensos. Comprueba la selección con una forma de lectura antes de combinarla con una opción que escriba estado.
 
 ```bash
-scalar --branch clone https://example.test/equipo/biblioteca.git biblioteca
+scalar --branch clone https://example.com/equipo/biblioteca.git biblioteca
 git count-objects -vH
 ```
 
@@ -102,7 +102,7 @@ Activa full clone durante administrar repositorios con funciones orientadas a co
 En `scalar`, full clone modifica la forma en que se ejecuta administrar repositorios con funciones orientadas a conjuntos de archivos extensos. Mantén iguales los demás argumentos para atribuir el cambio observado a esta opción.
 
 ```bash
-scalar --full-clone clone https://example.test/equipo/biblioteca.git biblioteca
+scalar --full-clone clone https://example.com/equipo/biblioteca.git biblioteca
 git count-objects -vH
 ```
 
@@ -115,7 +115,7 @@ Activa src durante administrar repositorios con funciones orientadas a conjuntos
 En `scalar`, src modifica la forma en que se ejecuta administrar repositorios con funciones orientadas a conjuntos de archivos extensos. Mantén iguales los demás argumentos para atribuir el cambio observado a esta opción.
 
 ```bash
-scalar --src clone https://example.test/equipo/biblioteca.git biblioteca
+scalar --src clone https://example.com/equipo/biblioteca.git biblioteca
 git count-objects -vH
 ```
 
@@ -128,7 +128,7 @@ Incluye o selecciona etiquetas según la operación.
 La opción limita o amplía el conjunto sobre el que se ejecuta administrar repositorios con funciones orientadas a conjuntos de archivos extensos. Comprueba la selección con una forma de lectura antes de combinarla con una opción que escriba estado.
 
 ```bash
-scalar --tags clone https://example.test/equipo/biblioteca.git biblioteca
+scalar --tags clone https://example.com/equipo/biblioteca.git biblioteca
 git count-objects -vH
 ```
 
@@ -141,7 +141,7 @@ Activa maintenance durante administrar repositorios con funciones orientadas a c
 En `scalar`, maintenance modifica la forma en que se ejecuta administrar repositorios con funciones orientadas a conjuntos de archivos extensos. Mantén iguales los demás argumentos para atribuir el cambio observado a esta opción.
 
 ```bash
-scalar --maintenance clone https://example.test/equipo/biblioteca.git biblioteca
+scalar --maintenance clone https://example.com/equipo/biblioteca.git biblioteca
 git count-objects -vH
 ```
 
@@ -154,7 +154,7 @@ Ejecuta Git como si se hubiera iniciado en el directorio indicado.
 En `scalar`, C modifica la forma en que se ejecuta administrar repositorios con funciones orientadas a conjuntos de archivos extensos. Mantén iguales los demás argumentos para atribuir el cambio observado a esta opción.
 
 ```bash
-scalar -C clone https://example.test/equipo/biblioteca.git biblioteca
+scalar -C clone https://example.com/equipo/biblioteca.git biblioteca
 git count-objects -vH
 ```
 
@@ -167,7 +167,7 @@ Aplica una clave de configuración solo a esta invocación.
 En `scalar`, c modifica la forma en que se ejecuta administrar repositorios con funciones orientadas a conjuntos de archivos extensos. Mantén iguales los demás argumentos para atribuir el cambio observado a esta opción.
 
 ```bash
-scalar -c clone https://example.test/equipo/biblioteca.git biblioteca
+scalar -c clone https://example.com/equipo/biblioteca.git biblioteca
 git count-objects -vH
 ```
 

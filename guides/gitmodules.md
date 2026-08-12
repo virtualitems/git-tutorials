@@ -32,7 +32,7 @@ Cambia un solo elemento del caso y vuelve a observar el repositorio. La diferenc
 ```ini
 [submodule "temas/base"]
     path = temas/base
-    url = https://example.test/equipo/tema.git
+    url = https://example.com/equipo/tema.git
 ```
 
 La invocación `gitmodules` ejecuta esta operación: declarar la ruta, URL y comportamiento de submódulos. Después, los comandos de inspección permiten relacionar el resultado con objetos, referencias, rutas o configuración. Conserva stdout, stderr y el código de terminación cuando el ejemplo forme parte de un script.
@@ -42,7 +42,7 @@ La invocación `gitmodules` ejecuta esta operación: declarar la ruta, URL y com
 ```text
 [submodule "temas/base"]
     path = temas/base
-    url = https://example.test/equipo/tema.git
+    url = https://example.com/equipo/tema.git
 ```
 
 Los corchetes indican elementos opcionales; `<valor>` exige sustitución; los puntos suspensivos permiten repetición; `|` separa formas excluyentes. Usa la fuente oficial enlazada para consultar la sintaxis que corresponde a la instalación donde ejecutarás la orden.

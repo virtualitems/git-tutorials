@@ -28,10 +28,10 @@ Define una regla para autores, ramas, etiquetas y finales de línea antes de imp
 ## Ejemplo mínimo
 
 ```bash
-git svn clone https://example.test/svn/biblioteca/trunk biblioteca
+git svn clone https://example.com/svn/biblioteca/trunk biblioteca
 ```
 
-La invocación `git svn clone https://example.test/svn/biblioteca/trunk biblioteca` ejecuta esta operación: usar un repositorio Subversion desde un repositorio Git. Después, el destino conserva el contenido, autores, ramas y etiquetas que admita la conversión. Conserva stdout, stderr y el código de terminación cuando el ejemplo forme parte de un script.
+La invocación `git svn clone https://example.com/svn/biblioteca/trunk biblioteca` ejecuta esta operación: usar un repositorio Subversion desde un repositorio Git. Después, el destino conserva el contenido, autores, ramas y etiquetas que admita la conversión. Conserva stdout, stderr y el código de terminación cuando el ejemplo forme parte de un script.
 
 ## Sintaxis y formas de invocación
 

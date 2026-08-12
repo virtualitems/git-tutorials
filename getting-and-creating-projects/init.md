@@ -23,7 +23,7 @@ Crea este repositorio una vez. Las demás guías enlazan este apartado y contin�
 lab_dir="$(mktemp -d)"
 git init "$lab_dir/proyecto"
 git -C "$lab_dir/proyecto" config user.name "Persona de prueba"
-git -C "$lab_dir/proyecto" config user.email "prueba@example.test"
+git -C "$lab_dir/proyecto" config user.email "user@example.com"
 printf 'línea base\n' > "$lab_dir/proyecto/archivo.txt"
 git -C "$lab_dir/proyecto" add archivo.txt
 git -C "$lab_dir/proyecto" commit -m "base"

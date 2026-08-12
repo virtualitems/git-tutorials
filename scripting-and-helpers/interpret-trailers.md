@@ -28,7 +28,7 @@ Define entrada, salida y código de retorno como contrato del proceso. No depend
 ## Ejemplo mínimo
 
 ```bash
-printf '%s\n' 'Corrige el índice' | git interpret-trailers --trailer 'Reviewed-by: Ana <ana@example.test>'
+printf '%s\n' 'Corrige el índice' | git interpret-trailers --trailer 'Reviewed-by: Ana <user@example.com>'
 ```
 
 La invocación `git interpret-trailers` ejecuta esta operación: analizar y añadir campos al final de mensajes de commit. Después, la salida y el código de retorno distinguen el caso aceptado del rechazado. Conserva stdout, stderr y el código de terminación cuando el ejemplo forme parte de un script.

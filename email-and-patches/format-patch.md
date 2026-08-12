@@ -527,11 +527,11 @@ Incluye to en la entrada, el resultado o el registro que construye `git format-p
 En `git format-patch`, to modifica la forma en que se ejecuta representar commits como archivos de parche para correo. Mantén iguales los demás argumentos para atribuir el cambio observado a esta opción.
 
 ```bash
-git format-patch --to=ana@example.test origin/main..HEAD --output-directory parches/
+git format-patch --to=user@example.com origin/main..HEAD --output-directory parches/
 printf 'exit=%s\n' "$?"
 ```
 
-El ejemplo usa `ana@example.test` como valor. Sustitúyelo por un valor del tipo que muestra la sintaxis de tu versión. Un valor numérico conserva su unidad y un nombre de referencia debe resolver antes de ejecutar la orden. El código de terminación distingue una ejecución aceptada de un error y, en algunos comandos de consulta, de una respuesta negativa. Ejecuta la comprobación inmediatamente después para que ningún comando intermedio cambie el estado que estás observando.
+El ejemplo usa `user@example.com` como valor. Sustitúyelo por un valor del tipo que muestra la sintaxis de tu versión. Un valor numérico conserva su unidad y un nombre de referencia debe resolver antes de ejecutar la orden. El código de terminación distingue una ejecución aceptada de un error y, en algunos comandos de consulta, de una respuesta negativa. Ejecuta la comprobación inmediatamente después para que ningún comando intermedio cambie el estado que estás observando.
 
 ### `--cc`
 
@@ -540,11 +540,11 @@ Incluye cc en la entrada, el resultado o el registro que construye `git format-p
 En `git format-patch`, cc modifica la forma en que se ejecuta representar commits como archivos de parche para correo. Mantén iguales los demás argumentos para atribuir el cambio observado a esta opción.
 
 ```bash
-git format-patch --cc=ana@example.test origin/main..HEAD --output-directory parches/
+git format-patch --cc=user@example.com origin/main..HEAD --output-directory parches/
 printf 'exit=%s\n' "$?"
 ```
 
-El ejemplo usa `ana@example.test` como valor. Sustitúyelo por un valor del tipo que muestra la sintaxis de tu versión. Un valor numérico conserva su unidad y un nombre de referencia debe resolver antes de ejecutar la orden. El código de terminación distingue una ejecución aceptada de un error y, en algunos comandos de consulta, de una respuesta negativa. Ejecuta la comprobación inmediatamente después para que ningún comando intermedio cambie el estado que estás observando.
+El ejemplo usa `user@example.com` como valor. Sustitúyelo por un valor del tipo que muestra la sintaxis de tu versión. Un valor numérico conserva su unidad y un nombre de referencia debe resolver antes de ejecutar la orden. El código de terminación distingue una ejecución aceptada de un error y, en algunos comandos de consulta, de una respuesta negativa. Ejecuta la comprobación inmediatamente después para que ningún comando intermedio cambie el estado que estás observando.
 
 ### `--from`
 

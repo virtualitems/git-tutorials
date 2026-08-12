@@ -28,7 +28,7 @@ Relaciona cada archivo con su alcanzabilidad y retención. La compactación camb
 ## Ejemplo mínimo
 
 ```bash
-git clone --filter=blob:none https://example.test/biblioteca.git
+git clone --filter=blob:none https://example.com/biblioteca.git
 cd biblioteca
 git backfill main~50..main
 ```

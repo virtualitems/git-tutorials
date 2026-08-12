@@ -28,12 +28,12 @@ Separa los datos del repositorio de los archivos materializados. Un repositorio 
 ## Ejemplo mínimo
 
 ```bash
-git clone https://example.test/equipo/biblioteca.git
+git clone https://example.com/equipo/biblioteca.git
 cd biblioteca
 git status
 ```
 
-La invocación `git clone https://example.test/equipo/biblioteca.git` ejecuta esta operación: crear un repositorio local a partir de otro repositorio. Después, el directorio resultante contiene el repositorio y, cuando corresponde, un área de trabajo. Conserva stdout, stderr y el código de terminación cuando el ejemplo forme parte de un script.
+La invocación `git clone https://example.com/equipo/biblioteca.git` ejecuta esta operación: crear un repositorio local a partir de otro repositorio. Después, el directorio resultante contiene el repositorio y, cuando corresponde, un área de trabajo. Conserva stdout, stderr y el código de terminación cuando el ejemplo forme parte de un script.
 
 ## Sintaxis y formas de invocación
 
@@ -77,7 +77,7 @@ Usa el directorio indicado como fuente de plantillas para crear archivos inicial
 En `git clone`, template modifica la forma en que se ejecuta crear un repositorio local a partir de otro repositorio. Mantén iguales los demás argumentos para atribuir el cambio observado a esta opción.
 
 ```bash
-git clone --template=../plantillas https://example.test/equipo/biblioteca.git
+git clone --template=../plantillas https://example.com/equipo/biblioteca.git
 printf 'exit=%s\n' "$?"
 ```
 
@@ -94,7 +94,7 @@ En `git clone`, alcance local modifica la forma en que se ejecuta crear un repos
 #### Ejemplo con `-l`
 
 ```bash
-git clone -l https://example.test/equipo/biblioteca.git
+git clone -l https://example.com/equipo/biblioteca.git
 printf 'exit=%s\n' "$?"
 ```
 
@@ -103,7 +103,7 @@ Esta forma no recibe un valor separado; los argumentos posteriores pertenecen a 
 #### Ejemplo con `--local`
 
 ```bash
-git clone --local https://example.test/equipo/biblioteca.git
+git clone --local https://example.com/equipo/biblioteca.git
 printf 'exit=%s\n' "$?"
 ```
 
@@ -122,7 +122,7 @@ En `git clone`, shared modifica la forma en que se ejecuta crear un repositorio 
 #### Ejemplo con `-s`
 
 ```bash
-git clone -s https://example.test/equipo/biblioteca.git
+git clone -s https://example.com/equipo/biblioteca.git
 printf 'exit=%s\n' "$?"
 ```
 
@@ -131,7 +131,7 @@ Esta forma no recibe un valor separado; los argumentos posteriores pertenecen a 
 #### Ejemplo con `--shared`
 
 ```bash
-git clone --shared https://example.test/equipo/biblioteca.git
+git clone --shared https://example.com/equipo/biblioteca.git
 printf 'exit=%s\n' "$?"
 ```
 
@@ -146,7 +146,7 @@ Desactiva el comportamiento `hardlinks` para esta invocación.
 En `git clone`, desactivar hardlinks modifica la forma en que se ejecuta crear un repositorio local a partir de otro repositorio. Mantén iguales los demás argumentos para atribuir el cambio observado a esta opción.
 
 ```bash
-git clone --no-hardlinks https://example.test/equipo/biblioteca.git
+git clone --no-hardlinks https://example.com/equipo/biblioteca.git
 printf 'exit=%s\n' "$?"
 ```
 
@@ -163,7 +163,7 @@ La opción cambia la representación o el canal del resultado. Úsala cuando una
 #### Ejemplo con `-q`
 
 ```bash
-git clone -q https://example.test/equipo/biblioteca.git
+git clone -q https://example.com/equipo/biblioteca.git
 printf 'exit=%s\n' "$?"
 ```
 
@@ -172,7 +172,7 @@ Esta forma no recibe un valor separado; los argumentos posteriores pertenecen a 
 #### Ejemplo con `--quiet`
 
 ```bash
-git clone --quiet https://example.test/equipo/biblioteca.git
+git clone --quiet https://example.com/equipo/biblioteca.git
 printf 'exit=%s\n' "$?"
 ```
 
@@ -187,7 +187,7 @@ Crea n como parte de crear un repositorio local a partir de otro repositorio. En
 La opción añade, retira o consulta una comprobación previa. Ejecuta primero la forma que no escribe cuando exista y conserva el código de terminación como parte del resultado.
 
 ```bash
-git clone -n https://example.test/equipo/biblioteca.git
+git clone -n https://example.com/equipo/biblioteca.git
 printf 'exit=%s\n' "$?"
 ```
 
@@ -200,7 +200,7 @@ Opera sin un área de trabajo asociada.
 En `git clone`, repositorio bare modifica la forma en que se ejecuta crear un repositorio local a partir de otro repositorio. Mantén iguales los demás argumentos para atribuir el cambio observado a esta opción.
 
 ```bash
-git clone --bare https://example.test/equipo/biblioteca.git
+git clone --bare https://example.com/equipo/biblioteca.git
 printf 'exit=%s\n' "$?"
 ```
 
@@ -213,7 +213,7 @@ Crea espejo como parte de crear un repositorio local a partir de otro repositori
 En `git clone`, espejo modifica la forma en que se ejecuta crear un repositorio local a partir de otro repositorio. Mantén iguales los demás argumentos para atribuir el cambio observado a esta opción.
 
 ```bash
-git clone --mirror https://example.test/equipo/biblioteca.git
+git clone --mirror https://example.com/equipo/biblioteca.git
 printf 'exit=%s\n' "$?"
 ```
 
@@ -230,7 +230,7 @@ En `git clone`, origin modifica la forma en que se ejecuta crear un repositorio 
 #### Ejemplo con `-o`
 
 ```bash
-git clone -o tema https://example.test/equipo/biblioteca.git
+git clone -o tema https://example.com/equipo/biblioteca.git
 printf 'exit=%s\n' "$?"
 ```
 
@@ -239,7 +239,7 @@ En esta forma, `tema` es un valor de ejemplo. Sustitúyelo por un valor que cump
 #### Ejemplo con `--origin`
 
 ```bash
-git clone --origin=tema https://example.test/equipo/biblioteca.git
+git clone --origin=tema https://example.com/equipo/biblioteca.git
 printf 'exit=%s\n' "$?"
 ```
 
@@ -258,7 +258,7 @@ La opción limita o amplía el conjunto sobre el que se ejecuta crear un reposit
 #### Ejemplo con `-b`
 
 ```bash
-git clone -b main https://example.test/equipo/biblioteca.git
+git clone -b main https://example.com/equipo/biblioteca.git
 printf 'exit=%s\n' "$?"
 ```
 
@@ -267,7 +267,7 @@ En esta forma, `main` es un valor de ejemplo. Sustitúyelo por un valor que cump
 #### Ejemplo con `--branch`
 
 ```bash
-git clone --branch=main https://example.test/equipo/biblioteca.git
+git clone --branch=main https://example.com/equipo/biblioteca.git
 printf 'exit=%s\n' "$?"
 ```
 
@@ -286,7 +286,7 @@ En `git clone`, upload pack modifica la forma en que se ejecuta crear un reposit
 #### Ejemplo con `-u`
 
 ```bash
-git clone -u archivo.txt https://example.test/equipo/biblioteca.git
+git clone -u archivo.txt https://example.com/equipo/biblioteca.git
 printf 'exit=%s\n' "$?"
 ```
 
@@ -295,7 +295,7 @@ En esta forma, `archivo.txt` es un valor de ejemplo. Sustitúyelo por un valor q
 #### Ejemplo con `--upload-pack`
 
 ```bash
-git clone --upload-pack=archivo.txt https://example.test/equipo/biblioteca.git
+git clone --upload-pack=archivo.txt https://example.com/equipo/biblioteca.git
 printf 'exit=%s\n' "$?"
 ```
 
@@ -310,7 +310,7 @@ Activa reference durante crear un repositorio local a partir de otro repositorio
 En `git clone`, reference modifica la forma en que se ejecuta crear un repositorio local a partir de otro repositorio. Mantén iguales los demás argumentos para atribuir el cambio observado a esta opción.
 
 ```bash
-git clone --reference=valor https://example.test/equipo/biblioteca.git
+git clone --reference=valor https://example.com/equipo/biblioteca.git
 printf 'exit=%s\n' "$?"
 ```
 
@@ -323,7 +323,7 @@ Limita crear un repositorio local a partir de otro repositorio al alcance identi
 En `git clone`, dissociate modifica la forma en que se ejecuta crear un repositorio local a partir de otro repositorio. Mantén iguales los demás argumentos para atribuir el cambio observado a esta opción.
 
 ```bash
-git clone --dissociate https://example.test/equipo/biblioteca.git
+git clone --dissociate https://example.com/equipo/biblioteca.git
 printf 'exit=%s\n' "$?"
 ```
 
@@ -336,7 +336,7 @@ Guarda los datos del repositorio en otra ruta y deja en el área de trabajo un a
 En `git clone`, separate git dir modifica la forma en que se ejecuta crear un repositorio local a partir de otro repositorio. Mantén iguales los demás argumentos para atribuir el cambio observado a esta opción.
 
 ```bash
-git clone --separate-git-dir=../datos-git https://example.test/equipo/biblioteca.git
+git clone --separate-git-dir=../datos-git https://example.com/equipo/biblioteca.git
 printf 'exit=%s\n' "$?"
 ```
 
@@ -353,7 +353,7 @@ La opción cambia la representación o el canal del resultado. Úsala cuando una
 #### Ejemplo con `-v`
 
 ```bash
-git clone -v https://example.test/equipo/biblioteca.git
+git clone -v https://example.com/equipo/biblioteca.git
 printf 'exit=%s\n' "$?"
 ```
 
@@ -362,7 +362,7 @@ Esta forma no recibe un valor separado; los argumentos posteriores pertenecen a 
 #### Ejemplo con `--verbose`
 
 ```bash
-git clone --verbose https://example.test/equipo/biblioteca.git
+git clone --verbose https://example.com/equipo/biblioteca.git
 printf 'exit=%s\n' "$?"
 ```
 
@@ -377,7 +377,7 @@ Muestra progreso aunque la salida no sea un terminal.
 La opción controla progreso. Registra el estado de las referencias y conserva los cambios sin commit antes de usarla, porque crear un repositorio local a partir de otro repositorio puede retirar o reemplazar datos dentro del alcance seleccionado.
 
 ```bash
-git clone --progress https://example.test/equipo/biblioteca.git
+git clone --progress https://example.com/equipo/biblioteca.git
 printf 'exit=%s\n' "$?"
 ```
 
@@ -390,7 +390,7 @@ Impide rechazos historial shallow durante esta invocación de `git clone`.
 La opción limita o amplía el conjunto sobre el que se ejecuta crear un repositorio local a partir de otro repositorio. Comprueba la selección con una forma de lectura antes de combinarla con una opción que escriba estado.
 
 ```bash
-git clone --reject-shallow https://example.test/equipo/biblioteca.git
+git clone --reject-shallow https://example.com/equipo/biblioteca.git
 printf 'exit=%s\n' "$?"
 ```
 
@@ -403,7 +403,7 @@ Desactiva el comportamiento `checkout` para esta invocación.
 La opción añade, retira o consulta una comprobación previa. Ejecuta primero la forma que no escribe cuando exista y conserva el código de terminación como parte del resultado.
 
 ```bash
-git clone --no-checkout https://example.test/equipo/biblioteca.git
+git clone --no-checkout https://example.com/equipo/biblioteca.git
 printf 'exit=%s\n' "$?"
 ```
 
@@ -416,7 +416,7 @@ Selecciona la relación indicada por checkout; la ayuda de Git la define respect
 La opción añade, retira o consulta una comprobación previa. Ejecuta primero la forma que no escribe cuando exista y conserva el código de terminación como parte del resultado.
 
 ```bash
-git clone --checkout https://example.test/equipo/biblioteca.git
+git clone --checkout https://example.com/equipo/biblioteca.git
 printf 'exit=%s\n' "$?"
 ```
 
@@ -429,7 +429,7 @@ Selecciona la relación indicada por hardlinks; la ayuda de Git la define respec
 En `git clone`, hardlinks modifica la forma en que se ejecuta crear un repositorio local a partir de otro repositorio. Mantén iguales los demás argumentos para atribuir el cambio observado a esta opción.
 
 ```bash
-git clone --hardlinks https://example.test/equipo/biblioteca.git
+git clone --hardlinks https://example.com/equipo/biblioteca.git
 printf 'exit=%s\n' "$?"
 ```
 
@@ -442,7 +442,7 @@ Propaga la operación a submódulos dentro del alcance.
 En `git clone`, recorrer submódulos modifica la forma en que se ejecuta crear un repositorio local a partir de otro repositorio. Mantén iguales los demás argumentos para atribuir el cambio observado a esta opción.
 
 ```bash
-git clone --recurse-submodules=archivo.txt https://example.test/equipo/biblioteca.git
+git clone --recurse-submodules=archivo.txt https://example.com/equipo/biblioteca.git
 printf 'exit=%s\n' "$?"
 ```
 
@@ -455,7 +455,7 @@ Extiende la operación de forma recursiva al ámbito documentado.
 En `git clone`, recursión modifica la forma en que se ejecuta crear un repositorio local a partir de otro repositorio. Mantén iguales los demás argumentos para atribuir el cambio observado a esta opción.
 
 ```bash
-git clone --recursive=archivo.txt https://example.test/equipo/biblioteca.git
+git clone --recursive=archivo.txt https://example.com/equipo/biblioteca.git
 printf 'exit=%s\n' "$?"
 ```
 
@@ -472,7 +472,7 @@ La opción limita o amplía el conjunto sobre el que se ejecuta crear un reposit
 #### Ejemplo con `-j`
 
 ```bash
-git clone -j 5 https://example.test/equipo/biblioteca.git
+git clone -j 5 https://example.com/equipo/biblioteca.git
 printf 'exit=%s\n' "$?"
 ```
 
@@ -481,7 +481,7 @@ En esta forma, `5` es un valor de ejemplo. Sustitúyelo por un valor que cumpla 
 #### Ejemplo con `--jobs`
 
 ```bash
-git clone --jobs=5 https://example.test/equipo/biblioteca.git
+git clone --jobs=5 https://example.com/equipo/biblioteca.git
 printf 'exit=%s\n' "$?"
 ```
 
@@ -496,7 +496,7 @@ Activa reference if able durante crear un repositorio local a partir de otro rep
 En `git clone`, reference if able modifica la forma en que se ejecuta crear un repositorio local a partir de otro repositorio. Mantén iguales los demás argumentos para atribuir el cambio observado a esta opción.
 
 ```bash
-git clone --reference-if-able=valor https://example.test/equipo/biblioteca.git
+git clone --reference-if-able=valor https://example.com/equipo/biblioteca.git
 printf 'exit=%s\n' "$?"
 ```
 
@@ -509,7 +509,7 @@ Comprueba revision antes de aceptar el resultado de `git clone`.
 La opción añade, retira o consulta una comprobación previa. Ejecuta primero la forma que no escribe cuando exista y conserva el código de terminación como parte del resultado.
 
 ```bash
-git clone --revision=valor https://example.test/equipo/biblioteca.git
+git clone --revision=valor https://example.com/equipo/biblioteca.git
 printf 'exit=%s\n' "$?"
 ```
 
@@ -522,7 +522,7 @@ Establece un límite numérico para la selección o el recorrido.
 La opción limita o amplía el conjunto sobre el que se ejecuta crear un repositorio local a partir de otro repositorio. Comprueba la selección con una forma de lectura antes de combinarla con una opción que escriba estado.
 
 ```bash
-git clone --depth=2 https://example.test/equipo/biblioteca.git
+git clone --depth=2 https://example.com/equipo/biblioteca.git
 printf 'exit=%s\n' "$?"
 ```
 
@@ -535,7 +535,7 @@ Crea historial shallow desde una fecha como parte de crear un repositorio local 
 La opción limita o amplía el conjunto sobre el que se ejecuta crear un repositorio local a partir de otro repositorio. Comprueba la selección con una forma de lectura antes de combinarla con una opción que escriba estado.
 
 ```bash
-git clone --shallow-since=2026-01-15T10:00:00Z https://example.test/equipo/biblioteca.git
+git clone --shallow-since=2026-01-15T10:00:00Z https://example.com/equipo/biblioteca.git
 printf 'exit=%s\n' "$?"
 ```
 
@@ -548,7 +548,7 @@ Excluye elementos que cumplan la condición indicada.
 La opción limita o amplía el conjunto sobre el que se ejecuta crear un repositorio local a partir de otro repositorio. Comprueba la selección con una forma de lectura antes de combinarla con una opción que escriba estado.
 
 ```bash
-git clone --shallow-exclude=refs/heads/main https://example.test/equipo/biblioteca.git
+git clone --shallow-exclude=refs/heads/main https://example.com/equipo/biblioteca.git
 printf 'exit=%s\n' "$?"
 ```
 
@@ -561,7 +561,7 @@ Selecciona o modifica referencias dentro del alcance de la orden.
 La opción limita o amplía el conjunto sobre el que se ejecuta crear un repositorio local a partir de otro repositorio. Comprueba la selección con una forma de lectura antes de combinarla con una opción que escriba estado.
 
 ```bash
-git clone --single-branch https://example.test/equipo/biblioteca.git
+git clone --single-branch https://example.com/equipo/biblioteca.git
 printf 'exit=%s\n' "$?"
 ```
 
@@ -574,7 +574,7 @@ Incluye o selecciona etiquetas según la operación.
 La opción limita o amplía el conjunto sobre el que se ejecuta crear un repositorio local a partir de otro repositorio. Comprueba la selección con una forma de lectura antes de combinarla con una opción que escriba estado.
 
 ```bash
-git clone --tags https://example.test/equipo/biblioteca.git
+git clone --tags https://example.com/equipo/biblioteca.git
 printf 'exit=%s\n' "$?"
 ```
 
@@ -587,7 +587,7 @@ Activa historial shallow submódulos durante crear un repositorio local a partir
 La opción limita o amplía el conjunto sobre el que se ejecuta crear un repositorio local a partir de otro repositorio. Comprueba la selección con una forma de lectura antes de combinarla con una opción que escriba estado.
 
 ```bash
-git clone --shallow-submodules https://example.test/equipo/biblioteca.git
+git clone --shallow-submodules https://example.com/equipo/biblioteca.git
 printf 'exit=%s\n' "$?"
 ```
 
@@ -600,7 +600,7 @@ Selecciona el formato de almacenamiento de referencias que usará el repositorio
 La opción cambia la representación o el canal del resultado. Úsala cuando una persona o un script necesite campos, separadores o cantidad de mensajes definidos. El contenido mostrado puede cambiar aunque el repositorio permanezca igual.
 
 ```bash
-git clone --ref-format=reftable https://example.test/equipo/biblioteca.git
+git clone --ref-format=reftable https://example.com/equipo/biblioteca.git
 printf 'exit=%s\n' "$?"
 ```
 
@@ -617,7 +617,7 @@ En `git clone`, config modifica la forma en que se ejecuta crear un repositorio 
 #### Ejemplo con `-c`
 
 ```bash
-git clone -c user.name https://example.test/equipo/biblioteca.git
+git clone -c user.name https://example.com/equipo/biblioteca.git
 printf 'exit=%s\n' "$?"
 ```
 
@@ -626,7 +626,7 @@ En esta forma, `user.name` es un valor de ejemplo. Sustitúyelo por un valor que
 #### Ejemplo con `--config`
 
 ```bash
-git clone --config=user.name https://example.test/equipo/biblioteca.git
+git clone --config=user.name https://example.com/equipo/biblioteca.git
 printf 'exit=%s\n' "$?"
 ```
 
@@ -641,7 +641,7 @@ Activa server option durante crear un repositorio local a partir de otro reposit
 En `git clone`, server option modifica la forma en que se ejecuta crear un repositorio local a partir de otro repositorio. Mantén iguales los demás argumentos para atribuir el cambio observado a esta opción.
 
 ```bash
-git clone --server-option=valor https://example.test/equipo/biblioteca.git
+git clone --server-option=valor https://example.com/equipo/biblioteca.git
 printf 'exit=%s\n' "$?"
 ```
 
@@ -658,7 +658,7 @@ En `git clone`, ipv4 modifica la forma en que se ejecuta crear un repositorio lo
 #### Ejemplo con `-4`
 
 ```bash
-git clone -4 https://example.test/equipo/biblioteca.git
+git clone -4 https://example.com/equipo/biblioteca.git
 printf 'exit=%s\n' "$?"
 ```
 
@@ -667,7 +667,7 @@ Esta forma no recibe un valor separado; los argumentos posteriores pertenecen a 
 #### Ejemplo con `--ipv4`
 
 ```bash
-git clone --ipv4 https://example.test/equipo/biblioteca.git
+git clone --ipv4 https://example.com/equipo/biblioteca.git
 printf 'exit=%s\n' "$?"
 ```
 
@@ -686,7 +686,7 @@ En `git clone`, ipv6 modifica la forma en que se ejecuta crear un repositorio lo
 #### Ejemplo con `-6`
 
 ```bash
-git clone -6 https://example.test/equipo/biblioteca.git
+git clone -6 https://example.com/equipo/biblioteca.git
 printf 'exit=%s\n' "$?"
 ```
 
@@ -695,7 +695,7 @@ Esta forma no recibe un valor separado; los argumentos posteriores pertenecen a 
 #### Ejemplo con `--ipv6`
 
 ```bash
-git clone --ipv6 https://example.test/equipo/biblioteca.git
+git clone --ipv6 https://example.com/equipo/biblioteca.git
 printf 'exit=%s\n' "$?"
 ```
 
@@ -710,7 +710,7 @@ Limita los objetos transferidos mediante una especificación de filtro de clon p
 La opción limita o amplía el conjunto sobre el que se ejecuta crear un repositorio local a partir de otro repositorio. Comprueba la selección con una forma de lectura antes de combinarla con una opción que escriba estado.
 
 ```bash
-git clone --filter=valor https://example.test/equipo/biblioteca.git
+git clone --filter=valor https://example.com/equipo/biblioteca.git
 printf 'exit=%s\n' "$?"
 ```
 
@@ -723,7 +723,7 @@ Activa also filtro submódulos durante crear un repositorio local a partir de ot
 La opción limita o amplía el conjunto sobre el que se ejecuta crear un repositorio local a partir de otro repositorio. Comprueba la selección con una forma de lectura antes de combinarla con una opción que escriba estado.
 
 ```bash
-git clone --also-filter-submodules https://example.test/equipo/biblioteca.git
+git clone --also-filter-submodules https://example.com/equipo/biblioteca.git
 printf 'exit=%s\n' "$?"
 ```
 
@@ -736,7 +736,7 @@ Define remote submódulos para esta ejecución de `git clone`. En Git 2.51.1, la
 La opción limita o amplía el conjunto sobre el que se ejecuta crear un repositorio local a partir de otro repositorio. Comprueba la selección con una forma de lectura antes de combinarla con una opción que escriba estado.
 
 ```bash
-git clone --remote-submodules https://example.test/equipo/biblioteca.git
+git clone --remote-submodules https://example.com/equipo/biblioteca.git
 printf 'exit=%s\n' "$?"
 ```
 
@@ -749,7 +749,7 @@ Permite operar sobre entradas que quedan fuera de la selección sparse activa.
 La opción limita o amplía el conjunto sobre el que se ejecuta crear un repositorio local a partir de otro repositorio. Comprueba la selección con una forma de lectura antes de combinarla con una opción que escriba estado.
 
 ```bash
-git clone --sparse https://example.test/equipo/biblioteca.git
+git clone --sparse https://example.com/equipo/biblioteca.git
 printf 'exit=%s\n' "$?"
 ```
 
@@ -762,7 +762,7 @@ Activa bundle uri durante crear un repositorio local a partir de otro repositori
 En `git clone`, bundle uri modifica la forma en que se ejecuta crear un repositorio local a partir de otro repositorio. Mantén iguales los demás argumentos para atribuir el cambio observado a esta opción.
 
 ```bash
-git clone --bundle-uri=valor https://example.test/equipo/biblioteca.git
+git clone --bundle-uri=valor https://example.com/equipo/biblioteca.git
 printf 'exit=%s\n' "$?"
 ```
 
@@ -775,7 +775,7 @@ Desactiva para esta invocación el comportamiento que habilita `--template`. Man
 En `git clone`, desactivar template modifica la forma en que se ejecuta crear un repositorio local a partir de otro repositorio. Mantén iguales los demás argumentos para atribuir el cambio observado a esta opción.
 
 ```bash
-git clone --no-template https://example.test/equipo/biblioteca.git
+git clone --no-template https://example.com/equipo/biblioteca.git
 printf 'exit=%s\n' "$?"
 ```
 
@@ -788,7 +788,7 @@ Desactiva para esta invocación el comportamiento que habilita `--bare`. Mantén
 En `git clone`, desactivar repositorio bare modifica la forma en que se ejecuta crear un repositorio local a partir de otro repositorio. Mantén iguales los demás argumentos para atribuir el cambio observado a esta opción.
 
 ```bash
-git clone --no-bare https://example.test/equipo/biblioteca.git
+git clone --no-bare https://example.com/equipo/biblioteca.git
 printf 'exit=%s\n' "$?"
 ```
 
@@ -801,7 +801,7 @@ Desactiva para esta invocación el comportamiento que habilita `--mirror`. Mant�
 En `git clone`, desactivar espejo modifica la forma en que se ejecuta crear un repositorio local a partir de otro repositorio. Mantén iguales los demás argumentos para atribuir el cambio observado a esta opción.
 
 ```bash
-git clone --no-mirror https://example.test/equipo/biblioteca.git
+git clone --no-mirror https://example.com/equipo/biblioteca.git
 printf 'exit=%s\n' "$?"
 ```
 
@@ -814,7 +814,7 @@ Desactiva para esta invocación el comportamiento que habilita `--reference`. Ma
 En `git clone`, desactivar reference modifica la forma en que se ejecuta crear un repositorio local a partir de otro repositorio. Mantén iguales los demás argumentos para atribuir el cambio observado a esta opción.
 
 ```bash
-git clone --no-reference https://example.test/equipo/biblioteca.git
+git clone --no-reference https://example.com/equipo/biblioteca.git
 printf 'exit=%s\n' "$?"
 ```
 
@@ -827,7 +827,7 @@ Desactiva para esta invocación el comportamiento que habilita `--dissociate`. M
 En `git clone`, desactivar dissociate modifica la forma en que se ejecuta crear un repositorio local a partir de otro repositorio. Mantén iguales los demás argumentos para atribuir el cambio observado a esta opción.
 
 ```bash
-git clone --no-dissociate https://example.test/equipo/biblioteca.git
+git clone --no-dissociate https://example.com/equipo/biblioteca.git
 printf 'exit=%s\n' "$?"
 ```
 
@@ -840,7 +840,7 @@ Desactiva para esta invocación el comportamiento que habilita `--separate-git-d
 En `git clone`, desactivar separate git dir modifica la forma en que se ejecuta crear un repositorio local a partir de otro repositorio. Mantén iguales los demás argumentos para atribuir el cambio observado a esta opción.
 
 ```bash
-git clone --no-separate-git-dir https://example.test/equipo/biblioteca.git
+git clone --no-separate-git-dir https://example.com/equipo/biblioteca.git
 printf 'exit=%s\n' "$?"
 ```
 
@@ -853,7 +853,7 @@ Desactiva para esta invocación el comportamiento que habilita `--verbose`. Mant
 La opción cambia la representación o el canal del resultado. Úsala cuando una persona o un script necesite campos, separadores o cantidad de mensajes definidos. El contenido mostrado puede cambiar aunque el repositorio permanezca igual.
 
 ```bash
-git clone --no-verbose https://example.test/equipo/biblioteca.git
+git clone --no-verbose https://example.com/equipo/biblioteca.git
 printf 'exit=%s\n' "$?"
 ```
 
@@ -866,7 +866,7 @@ Desactiva para esta invocación el comportamiento que habilita `--quiet`. Manté
 La opción cambia la representación o el canal del resultado. Úsala cuando una persona o un script necesite campos, separadores o cantidad de mensajes definidos. El contenido mostrado puede cambiar aunque el repositorio permanezca igual.
 
 ```bash
-git clone --no-quiet https://example.test/equipo/biblioteca.git
+git clone --no-quiet https://example.com/equipo/biblioteca.git
 printf 'exit=%s\n' "$?"
 ```
 
@@ -879,7 +879,7 @@ Desactiva para esta invocación el comportamiento que habilita `--progress`. Man
 La opción controla desactivar progreso. Registra el estado de las referencias y conserva los cambios sin commit antes de usarla, porque crear un repositorio local a partir de otro repositorio puede retirar o reemplazar datos dentro del alcance seleccionado.
 
 ```bash
-git clone --no-progress https://example.test/equipo/biblioteca.git
+git clone --no-progress https://example.com/equipo/biblioteca.git
 printf 'exit=%s\n' "$?"
 ```
 
@@ -892,7 +892,7 @@ Desactiva para esta invocación el comportamiento que habilita `--reject-shallow
 La opción limita o amplía el conjunto sobre el que se ejecuta crear un repositorio local a partir de otro repositorio. Comprueba la selección con una forma de lectura antes de combinarla con una opción que escriba estado.
 
 ```bash
-git clone --no-reject-shallow https://example.test/equipo/biblioteca.git
+git clone --no-reject-shallow https://example.com/equipo/biblioteca.git
 printf 'exit=%s\n' "$?"
 ```
 
@@ -905,7 +905,7 @@ Desactiva para esta invocación el comportamiento que habilita `--local`. Manté
 En `git clone`, desactivar alcance local modifica la forma en que se ejecuta crear un repositorio local a partir de otro repositorio. Mantén iguales los demás argumentos para atribuir el cambio observado a esta opción.
 
 ```bash
-git clone --no-local https://example.test/equipo/biblioteca.git
+git clone --no-local https://example.com/equipo/biblioteca.git
 printf 'exit=%s\n' "$?"
 ```
 
@@ -918,7 +918,7 @@ Desactiva para esta invocación el comportamiento que habilita `--shared`. Mant�
 En `git clone`, desactivar shared modifica la forma en que se ejecuta crear un repositorio local a partir de otro repositorio. Mantén iguales los demás argumentos para atribuir el cambio observado a esta opción.
 
 ```bash
-git clone --no-shared https://example.test/equipo/biblioteca.git
+git clone --no-shared https://example.com/equipo/biblioteca.git
 printf 'exit=%s\n' "$?"
 ```
 
@@ -931,7 +931,7 @@ Desactiva para esta invocación el comportamiento que habilita `--recurse-submod
 En `git clone`, desactivar recorrer submódulos modifica la forma en que se ejecuta crear un repositorio local a partir de otro repositorio. Mantén iguales los demás argumentos para atribuir el cambio observado a esta opción.
 
 ```bash
-git clone --no-recurse-submodules https://example.test/equipo/biblioteca.git
+git clone --no-recurse-submodules https://example.com/equipo/biblioteca.git
 printf 'exit=%s\n' "$?"
 ```
 
@@ -944,7 +944,7 @@ Desactiva para esta invocación el comportamiento que habilita `--recursive`. Ma
 En `git clone`, desactivar recursión modifica la forma en que se ejecuta crear un repositorio local a partir de otro repositorio. Mantén iguales los demás argumentos para atribuir el cambio observado a esta opción.
 
 ```bash
-git clone --no-recursive https://example.test/equipo/biblioteca.git
+git clone --no-recursive https://example.com/equipo/biblioteca.git
 printf 'exit=%s\n' "$?"
 ```
 
@@ -957,7 +957,7 @@ Desactiva para esta invocación el comportamiento que habilita `--jobs`. Mantén
 La opción limita o amplía el conjunto sobre el que se ejecuta crear un repositorio local a partir de otro repositorio. Comprueba la selección con una forma de lectura antes de combinarla con una opción que escriba estado.
 
 ```bash
-git clone --no-jobs https://example.test/equipo/biblioteca.git
+git clone --no-jobs https://example.com/equipo/biblioteca.git
 printf 'exit=%s\n' "$?"
 ```
 
@@ -970,7 +970,7 @@ Desactiva para esta invocación el comportamiento que habilita `--reference-if-a
 En `git clone`, desactivar reference if able modifica la forma en que se ejecuta crear un repositorio local a partir de otro repositorio. Mantén iguales los demás argumentos para atribuir el cambio observado a esta opción.
 
 ```bash
-git clone --no-reference-if-able https://example.test/equipo/biblioteca.git
+git clone --no-reference-if-able https://example.com/equipo/biblioteca.git
 printf 'exit=%s\n' "$?"
 ```
 
@@ -983,7 +983,7 @@ Desactiva para esta invocación el comportamiento que habilita `--origin`. Mant�
 En `git clone`, desactivar origin modifica la forma en que se ejecuta crear un repositorio local a partir de otro repositorio. Mantén iguales los demás argumentos para atribuir el cambio observado a esta opción.
 
 ```bash
-git clone --no-origin https://example.test/equipo/biblioteca.git
+git clone --no-origin https://example.com/equipo/biblioteca.git
 printf 'exit=%s\n' "$?"
 ```
 
@@ -996,7 +996,7 @@ Desactiva para esta invocación el comportamiento que habilita `--branch`. Mant�
 La opción limita o amplía el conjunto sobre el que se ejecuta crear un repositorio local a partir de otro repositorio. Comprueba la selección con una forma de lectura antes de combinarla con una opción que escriba estado.
 
 ```bash
-git clone --no-branch https://example.test/equipo/biblioteca.git
+git clone --no-branch https://example.com/equipo/biblioteca.git
 printf 'exit=%s\n' "$?"
 ```
 
@@ -1009,7 +1009,7 @@ Desactiva para esta invocación el comportamiento que habilita `--revision`. Man
 La opción añade, retira o consulta una comprobación previa. Ejecuta primero la forma que no escribe cuando exista y conserva el código de terminación como parte del resultado.
 
 ```bash
-git clone --no-revision https://example.test/equipo/biblioteca.git
+git clone --no-revision https://example.com/equipo/biblioteca.git
 printf 'exit=%s\n' "$?"
 ```
 
@@ -1022,7 +1022,7 @@ Desactiva para esta invocación el comportamiento que habilita `--upload-pack`. 
 En `git clone`, desactivar upload pack modifica la forma en que se ejecuta crear un repositorio local a partir de otro repositorio. Mantén iguales los demás argumentos para atribuir el cambio observado a esta opción.
 
 ```bash
-git clone --no-upload-pack https://example.test/equipo/biblioteca.git
+git clone --no-upload-pack https://example.com/equipo/biblioteca.git
 printf 'exit=%s\n' "$?"
 ```
 
@@ -1035,7 +1035,7 @@ Desactiva para esta invocación el comportamiento que habilita `--depth`. Manté
 La opción limita o amplía el conjunto sobre el que se ejecuta crear un repositorio local a partir de otro repositorio. Comprueba la selección con una forma de lectura antes de combinarla con una opción que escriba estado.
 
 ```bash
-git clone --no-depth https://example.test/equipo/biblioteca.git
+git clone --no-depth https://example.com/equipo/biblioteca.git
 printf 'exit=%s\n' "$?"
 ```
 
@@ -1048,7 +1048,7 @@ Desactiva para esta invocación el comportamiento que habilita `--shallow-since`
 La opción limita o amplía el conjunto sobre el que se ejecuta crear un repositorio local a partir de otro repositorio. Comprueba la selección con una forma de lectura antes de combinarla con una opción que escriba estado.
 
 ```bash
-git clone --no-shallow-since https://example.test/equipo/biblioteca.git
+git clone --no-shallow-since https://example.com/equipo/biblioteca.git
 printf 'exit=%s\n' "$?"
 ```
 
@@ -1061,7 +1061,7 @@ Desactiva para esta invocación el comportamiento que habilita `--shallow-exclud
 La opción limita o amplía el conjunto sobre el que se ejecuta crear un repositorio local a partir de otro repositorio. Comprueba la selección con una forma de lectura antes de combinarla con una opción que escriba estado.
 
 ```bash
-git clone --no-shallow-exclude https://example.test/equipo/biblioteca.git
+git clone --no-shallow-exclude https://example.com/equipo/biblioteca.git
 printf 'exit=%s\n' "$?"
 ```
 
@@ -1074,7 +1074,7 @@ Desactiva para esta invocación el comportamiento que habilita `--single-branch`
 La opción limita o amplía el conjunto sobre el que se ejecuta crear un repositorio local a partir de otro repositorio. Comprueba la selección con una forma de lectura antes de combinarla con una opción que escriba estado.
 
 ```bash
-git clone --no-single-branch https://example.test/equipo/biblioteca.git
+git clone --no-single-branch https://example.com/equipo/biblioteca.git
 printf 'exit=%s\n' "$?"
 ```
 
@@ -1087,7 +1087,7 @@ Desactiva para esta invocación el comportamiento que habilita `--tags`. Mantén
 La opción limita o amplía el conjunto sobre el que se ejecuta crear un repositorio local a partir de otro repositorio. Comprueba la selección con una forma de lectura antes de combinarla con una opción que escriba estado.
 
 ```bash
-git clone --no-tags https://example.test/equipo/biblioteca.git
+git clone --no-tags https://example.com/equipo/biblioteca.git
 printf 'exit=%s\n' "$?"
 ```
 
@@ -1100,7 +1100,7 @@ Desactiva para esta invocación el comportamiento que habilita `--shallow-submod
 La opción limita o amplía el conjunto sobre el que se ejecuta crear un repositorio local a partir de otro repositorio. Comprueba la selección con una forma de lectura antes de combinarla con una opción que escriba estado.
 
 ```bash
-git clone --no-shallow-submodules https://example.test/equipo/biblioteca.git
+git clone --no-shallow-submodules https://example.com/equipo/biblioteca.git
 printf 'exit=%s\n' "$?"
 ```
 
@@ -1113,7 +1113,7 @@ Desactiva para esta invocación el comportamiento que habilita `--ref-format`. M
 La opción cambia la representación o el canal del resultado. Úsala cuando una persona o un script necesite campos, separadores o cantidad de mensajes definidos. El contenido mostrado puede cambiar aunque el repositorio permanezca igual.
 
 ```bash
-git clone --no-ref-format https://example.test/equipo/biblioteca.git
+git clone --no-ref-format https://example.com/equipo/biblioteca.git
 printf 'exit=%s\n' "$?"
 ```
 
@@ -1126,7 +1126,7 @@ Desactiva para esta invocación el comportamiento que habilita `--config`. Mant�
 En `git clone`, desactivar config modifica la forma en que se ejecuta crear un repositorio local a partir de otro repositorio. Mantén iguales los demás argumentos para atribuir el cambio observado a esta opción.
 
 ```bash
-git clone --no-config https://example.test/equipo/biblioteca.git
+git clone --no-config https://example.com/equipo/biblioteca.git
 printf 'exit=%s\n' "$?"
 ```
 
@@ -1139,7 +1139,7 @@ Desactiva para esta invocación el comportamiento que habilita `--server-option`
 En `git clone`, desactivar server option modifica la forma en que se ejecuta crear un repositorio local a partir de otro repositorio. Mantén iguales los demás argumentos para atribuir el cambio observado a esta opción.
 
 ```bash
-git clone --no-server-option https://example.test/equipo/biblioteca.git
+git clone --no-server-option https://example.com/equipo/biblioteca.git
 printf 'exit=%s\n' "$?"
 ```
 
@@ -1152,7 +1152,7 @@ Desactiva para esta invocación el comportamiento que habilita `--filter`. Mant�
 La opción limita o amplía el conjunto sobre el que se ejecuta crear un repositorio local a partir de otro repositorio. Comprueba la selección con una forma de lectura antes de combinarla con una opción que escriba estado.
 
 ```bash
-git clone --no-filter https://example.test/equipo/biblioteca.git
+git clone --no-filter https://example.com/equipo/biblioteca.git
 printf 'exit=%s\n' "$?"
 ```
 
@@ -1165,7 +1165,7 @@ Desactiva para esta invocación el comportamiento que habilita `--also-filter-su
 La opción limita o amplía el conjunto sobre el que se ejecuta crear un repositorio local a partir de otro repositorio. Comprueba la selección con una forma de lectura antes de combinarla con una opción que escriba estado.
 
 ```bash
-git clone --no-also-filter-submodules https://example.test/equipo/biblioteca.git
+git clone --no-also-filter-submodules https://example.com/equipo/biblioteca.git
 printf 'exit=%s\n' "$?"
 ```
 
@@ -1178,7 +1178,7 @@ Desactiva para esta invocación el comportamiento que habilita `--remote-submodu
 La opción limita o amplía el conjunto sobre el que se ejecuta crear un repositorio local a partir de otro repositorio. Comprueba la selección con una forma de lectura antes de combinarla con una opción que escriba estado.
 
 ```bash
-git clone --no-remote-submodules https://example.test/equipo/biblioteca.git
+git clone --no-remote-submodules https://example.com/equipo/biblioteca.git
 printf 'exit=%s\n' "$?"
 ```
 
@@ -1191,7 +1191,7 @@ Desactiva para esta invocación el comportamiento que habilita `--sparse`. Mant�
 La opción limita o amplía el conjunto sobre el que se ejecuta crear un repositorio local a partir de otro repositorio. Comprueba la selección con una forma de lectura antes de combinarla con una opción que escriba estado.
 
 ```bash
-git clone --no-sparse https://example.test/equipo/biblioteca.git
+git clone --no-sparse https://example.com/equipo/biblioteca.git
 printf 'exit=%s\n' "$?"
 ```
 
@@ -1204,7 +1204,7 @@ Desactiva para esta invocación el comportamiento que habilita `--bundle-uri`. M
 En `git clone`, desactivar bundle uri modifica la forma en que se ejecuta crear un repositorio local a partir de otro repositorio. Mantén iguales los demás argumentos para atribuir el cambio observado a esta opción.
 
 ```bash
-git clone --no-bundle-uri https://example.test/equipo/biblioteca.git
+git clone --no-bundle-uri https://example.com/equipo/biblioteca.git
 printf 'exit=%s\n' "$?"
 ```
 

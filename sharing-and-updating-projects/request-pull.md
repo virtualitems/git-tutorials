@@ -28,10 +28,10 @@ Distingue las referencias de seguimiento remoto de la rama actual. Descargar una
 ## Ejemplo mínimo
 
 ```bash
-git request-pull v1.0 https://example.test/equipo/biblioteca.git main
+git request-pull v1.0 https://example.com/equipo/biblioteca.git main
 ```
 
-La invocación `git request-pull v1.0 https://example.test/equipo/biblioteca.git main` ejecuta esta operación: generar un resumen para solicitar que otra persona integre cambios. Después, las referencias locales y remotas permiten separar descarga, integración y publicación. Conserva stdout, stderr y el código de terminación cuando el ejemplo forme parte de un script.
+La invocación `git request-pull v1.0 https://example.com/equipo/biblioteca.git main` ejecuta esta operación: generar un resumen para solicitar que otra persona integre cambios. Después, las referencias locales y remotas permiten separar descarga, integración y publicación. Conserva stdout, stderr y el código de terminación cuando el ejemplo forme parte de un script.
 
 ## Sintaxis y formas de invocación
 
@@ -72,7 +72,7 @@ Incluye p en la salida o cambia cómo `git request-pull` la representa. En Git 2
 La opción cambia la representación o el canal del resultado. Úsala cuando una persona o un script necesite campos, separadores o cantidad de mensajes definidos. El contenido mostrado puede cambiar aunque el repositorio permanezca igual.
 
 ```bash
-git request-pull -p v1.0 https://example.test/equipo/biblioteca.git main
+git request-pull -p v1.0 https://example.com/equipo/biblioteca.git main
 git branch -vv
 ```
 

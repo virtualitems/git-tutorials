@@ -28,10 +28,10 @@ Separa negociación de objetos, transferencia y actualización de referencias. L
 ## Ejemplo mínimo
 
 ```bash
-git http-fetch HEAD https://example.test/equipo/biblioteca.git
+git http-fetch HEAD https://example.com/equipo/biblioteca.git
 ```
 
-La invocación `git http-fetch HEAD https://example.test/equipo/biblioteca.git` ejecuta esta operación: descargar objetos mediante el transporte HTTP heredado. Después, los registros y referencias confirman qué objetos se transfirieron y qué actualizaciones se aceptaron. Conserva stdout, stderr y el código de terminación cuando el ejemplo forme parte de un script.
+La invocación `git http-fetch HEAD https://example.com/equipo/biblioteca.git` ejecuta esta operación: descargar objetos mediante el transporte HTTP heredado. Después, los registros y referencias confirman qué objetos se transfirieron y qué actualizaciones se aceptaron. Conserva stdout, stderr y el código de terminación cuando el ejemplo forme parte de un script.
 
 ## Sintaxis y formas de invocación
 
@@ -72,7 +72,7 @@ Aplica una clave de configuración solo a esta invocación.
 En `git http-fetch`, c modifica la forma en que se ejecuta descargar objetos mediante el transporte HTTP heredado. Mantén iguales los demás argumentos para atribuir el cambio observado a esta opción.
 
 ```bash
-git http-fetch -c HEAD https://example.test/equipo/biblioteca.git
+git http-fetch -c HEAD https://example.com/equipo/biblioteca.git
 git show-ref
 ```
 
@@ -85,7 +85,7 @@ Activa t durante descargar objetos mediante el transporte HTTP heredado. La opci
 En `git http-fetch`, t modifica la forma en que se ejecuta descargar objetos mediante el transporte HTTP heredado. Mantén iguales los demás argumentos para atribuir el cambio observado a esta opción.
 
 ```bash
-git http-fetch -t HEAD https://example.test/equipo/biblioteca.git
+git http-fetch -t HEAD https://example.com/equipo/biblioteca.git
 git show-ref
 ```
 
@@ -98,7 +98,7 @@ Activa a durante descargar objetos mediante el transporte HTTP heredado. La opci
 En `git http-fetch`, a modifica la forma en que se ejecuta descargar objetos mediante el transporte HTTP heredado. Mantén iguales los demás argumentos para atribuir el cambio observado a esta opción.
 
 ```bash
-git http-fetch -a HEAD https://example.test/equipo/biblioteca.git
+git http-fetch -a HEAD https://example.com/equipo/biblioteca.git
 git show-ref
 ```
 
@@ -111,7 +111,7 @@ Activa d durante descargar objetos mediante el transporte HTTP heredado. La opci
 En `git http-fetch`, d modifica la forma en que se ejecuta descargar objetos mediante el transporte HTTP heredado. Mantén iguales los demás argumentos para atribuir el cambio observado a esta opción.
 
 ```bash
-git http-fetch -d HEAD https://example.test/equipo/biblioteca.git
+git http-fetch -d HEAD https://example.com/equipo/biblioteca.git
 git show-ref
 ```
 
@@ -124,7 +124,7 @@ Activa v durante descargar objetos mediante el transporte HTTP heredado. La opci
 La opción limita o amplía el conjunto sobre el que se ejecuta descargar objetos mediante el transporte HTTP heredado. Comprueba la selección con una forma de lectura antes de combinarla con una opción que escriba estado.
 
 ```bash
-git http-fetch -v HEAD https://example.test/equipo/biblioteca.git
+git http-fetch -v HEAD https://example.com/equipo/biblioteca.git
 git show-ref
 ```
 
@@ -137,7 +137,7 @@ Activa w durante descargar objetos mediante el transporte HTTP heredado. La opci
 En `git http-fetch`, w modifica la forma en que se ejecuta descargar objetos mediante el transporte HTTP heredado. Mantén iguales los demás argumentos para atribuir el cambio observado a esta opción.
 
 ```bash
-git http-fetch -w HEAD https://example.test/equipo/biblioteca.git
+git http-fetch -w HEAD https://example.com/equipo/biblioteca.git
 git show-ref
 ```
 
@@ -150,7 +150,7 @@ Activa recover durante descargar objetos mediante el transporte HTTP heredado. L
 En `git http-fetch`, recover modifica la forma en que se ejecuta descargar objetos mediante el transporte HTTP heredado. Mantén iguales los demás argumentos para atribuir el cambio observado a esta opción.
 
 ```bash
-git http-fetch --recover HEAD https://example.test/equipo/biblioteca.git
+git http-fetch --recover HEAD https://example.com/equipo/biblioteca.git
 git show-ref
 ```
 
@@ -163,7 +163,7 @@ Lee registros o nombres desde la entrada estándar.
 La opción cambia cómo `git http-fetch` recibe datos. Define el separador, la codificación y la ruta de entrada antes de ejecutarla. Los nombres con espacios o saltos de línea requieren una interfaz terminada en NUL cuando el comando la ofrece.
 
 ```bash
-git http-fetch --stdin HEAD https://example.test/equipo/biblioteca.git
+git http-fetch --stdin HEAD https://example.com/equipo/biblioteca.git
 git show-ref
 ```
 
@@ -176,7 +176,7 @@ Activa packfile durante descargar objetos mediante el transporte HTTP heredado. 
 La opción cambia cómo `git http-fetch` recibe datos. Define el separador, la codificación y la ruta de entrada antes de ejecutarla. Los nombres con espacios o saltos de línea requieren una interfaz terminada en NUL cuando el comando la ofrece.
 
 ```bash
-git http-fetch --packfile HEAD https://example.test/equipo/biblioteca.git
+git http-fetch --packfile HEAD https://example.com/equipo/biblioteca.git
 git show-ref
 ```
 

@@ -30,7 +30,7 @@ Cambia un solo elemento del caso y vuelve a observar el repositorio. La diferenc
 ## Ejemplo mínimo
 
 ```bash
-Ana Torres <ana@example.test> <ana@correo-antiguo.test>
+Ana Torres <user@example.com> <user-old@example.com>
 ```
 
 La invocación `gitmailmap` ejecuta esta operación: unificar nombres y correos que representan a una misma persona. Después, los comandos de inspección permiten relacionar el resultado con objetos, referencias, rutas o configuración. Conserva stdout, stderr y el código de terminación cuando el ejemplo forme parte de un script.
@@ -38,7 +38,7 @@ La invocación `gitmailmap` ejecuta esta operación: unificar nombres y correos 
 ## Sintaxis y formas de invocación
 
 ```text
-Ana Torres <ana@example.test> <ana@correo-antiguo.test>
+Ana Torres <user@example.com> <user-old@example.com>
 ```
 
 Los corchetes indican elementos opcionales; `<valor>` exige sustitución; los puntos suspensivos permiten repetición; `|` separa formas excluyentes. Usa la fuente oficial enlazada para consultar la sintaxis que corresponde a la instalación donde ejecutarás la orden.

@@ -28,11 +28,11 @@ Distingue las referencias de seguimiento remoto de la rama actual. Descargar una
 ## Ejemplo mínimo
 
 ```bash
-git submodule add https://example.test/equipo/tema.git temas/base
+git submodule add https://example.com/equipo/tema.git temas/base
 git submodule update --init --recursive
 ```
 
-La invocación `git submodule add https://example.test/equipo/tema.git temas/base` ejecuta esta operación: administrar repositorios incluidos dentro de otro repositorio. Después, las referencias locales y remotas permiten separar descarga, integración y publicación. Conserva stdout, stderr y el código de terminación cuando el ejemplo forme parte de un script.
+La invocación `git submodule add https://example.com/equipo/tema.git temas/base` ejecuta esta operación: administrar repositorios incluidos dentro de otro repositorio. Después, las referencias locales y remotas permiten separar descarga, integración y publicación. Conserva stdout, stderr y el código de terminación cuando el ejemplo forme parte de un script.
 
 ## Sintaxis y formas de invocación
 
@@ -87,7 +87,7 @@ Reduce mensajes que no representan errores.
 La opción cambia la representación o el canal del resultado. Úsala cuando una persona o un script necesite campos, separadores o cantidad de mensajes definidos. El contenido mostrado puede cambiar aunque el repositorio permanezca igual.
 
 ```bash
-git submodule --quiet add https://example.test/equipo/tema.git temas/base
+git submodule --quiet add https://example.com/equipo/tema.git temas/base
 git branch -vv
 ```
 
@@ -100,7 +100,7 @@ Usa el índice como origen o destino, sin tratar el área de trabajo de la misma
 En `git submodule`, índice modifica la forma en que se ejecuta administrar repositorios incluidos dentro de otro repositorio. Mantén iguales los demás argumentos para atribuir el cambio observado a esta opción.
 
 ```bash
-git submodule --cached add https://example.test/equipo/tema.git temas/base
+git submodule --cached add https://example.com/equipo/tema.git temas/base
 git branch -vv
 ```
 
@@ -113,7 +113,7 @@ Extiende la operación de forma recursiva al ámbito documentado.
 En `git submodule`, recursión modifica la forma en que se ejecuta administrar repositorios incluidos dentro de otro repositorio. Mantén iguales los demás argumentos para atribuir el cambio observado a esta opción.
 
 ```bash
-git submodule --recursive add https://example.test/equipo/tema.git temas/base
+git submodule --recursive add https://example.com/equipo/tema.git temas/base
 git branch -vv
 ```
 
@@ -126,7 +126,7 @@ Activa b durante administrar repositorios incluidos dentro de otro repositorio. 
 En `git submodule`, b modifica la forma en que se ejecuta administrar repositorios incluidos dentro de otro repositorio. Mantén iguales los demás argumentos para atribuir el cambio observado a esta opción.
 
 ```bash
-git submodule -b add https://example.test/equipo/tema.git temas/base
+git submodule -b add https://example.com/equipo/tema.git temas/base
 git branch -vv
 ```
 
@@ -139,7 +139,7 @@ Activa f durante administrar repositorios incluidos dentro de otro repositorio. 
 En `git submodule`, f modifica la forma en que se ejecuta administrar repositorios incluidos dentro de otro repositorio. Mantén iguales los demás argumentos para atribuir el cambio observado a esta opción.
 
 ```bash
-git submodule -f add https://example.test/equipo/tema.git temas/base
+git submodule -f add https://example.com/equipo/tema.git temas/base
 git branch -vv
 ```
 
@@ -152,7 +152,7 @@ Omite una protección concreta; úsala solo después de verificar el estado obje
 La opción controla omitir la protección. Registra el estado de las referencias y conserva los cambios sin commit antes de usarla, porque administrar repositorios incluidos dentro de otro repositorio puede retirar o reemplazar datos dentro del alcance seleccionado.
 
 ```bash
-git submodule --force add https://example.test/equipo/tema.git temas/base
+git submodule --force add https://example.com/equipo/tema.git temas/base
 git branch -vv
 ```
 
@@ -165,7 +165,7 @@ Activa nombre durante administrar repositorios incluidos dentro de otro reposito
 En `git submodule`, nombre modifica la forma en que se ejecuta administrar repositorios incluidos dentro de otro repositorio. Mantén iguales los demás argumentos para atribuir el cambio observado a esta opción.
 
 ```bash
-git submodule --name add https://example.test/equipo/tema.git temas/base
+git submodule --name add https://example.com/equipo/tema.git temas/base
 git branch -vv
 ```
 
@@ -178,7 +178,7 @@ Activa reference durante administrar repositorios incluidos dentro de otro repos
 En `git submodule`, reference modifica la forma en que se ejecuta administrar repositorios incluidos dentro de otro repositorio. Mantén iguales los demás argumentos para atribuir el cambio observado a esta opción.
 
 ```bash
-git submodule --reference add https://example.test/equipo/tema.git temas/base
+git submodule --reference add https://example.com/equipo/tema.git temas/base
 git branch -vv
 ```
 
@@ -191,7 +191,7 @@ Amplía la selección a todos los elementos del alcance definido.
 La opción limita o amplía el conjunto sobre el que se ejecuta administrar repositorios incluidos dentro de otro repositorio. Comprueba la selección con una forma de lectura antes de combinarla con una opción que escriba estado.
 
 ```bash
-git submodule --all add https://example.test/equipo/tema.git temas/base
+git submodule --all add https://example.com/equipo/tema.git temas/base
 git branch -vv
 ```
 
@@ -204,7 +204,7 @@ Activa init durante administrar repositorios incluidos dentro de otro repositori
 En `git submodule`, init modifica la forma en que se ejecuta administrar repositorios incluidos dentro de otro repositorio. Mantén iguales los demás argumentos para atribuir el cambio observado a esta opción.
 
 ```bash
-git submodule --init add https://example.test/equipo/tema.git temas/base
+git submodule --init add https://example.com/equipo/tema.git temas/base
 git branch -vv
 ```
 
@@ -217,7 +217,7 @@ Limita los objetos transferidos mediante una especificación de filtro de clon p
 La opción limita o amplía el conjunto sobre el que se ejecuta administrar repositorios incluidos dentro de otro repositorio. Comprueba la selección con una forma de lectura antes de combinarla con una opción que escriba estado.
 
 ```bash
-git submodule --filter add https://example.test/equipo/tema.git temas/base
+git submodule --filter add https://example.com/equipo/tema.git temas/base
 git branch -vv
 ```
 
@@ -230,7 +230,7 @@ Activa remote durante administrar repositorios incluidos dentro de otro reposito
 En `git submodule`, remote modifica la forma en que se ejecuta administrar repositorios incluidos dentro de otro repositorio. Mantén iguales los demás argumentos para atribuir el cambio observado a esta opción.
 
 ```bash
-git submodule --remote add https://example.test/equipo/tema.git temas/base
+git submodule --remote add https://example.com/equipo/tema.git temas/base
 git branch -vv
 ```
 
@@ -243,7 +243,7 @@ Activa N durante administrar repositorios incluidos dentro de otro repositorio. 
 En `git submodule`, N modifica la forma en que se ejecuta administrar repositorios incluidos dentro de otro repositorio. Mantén iguales los demás argumentos para atribuir el cambio observado a esta opción.
 
 ```bash
-git submodule -N add https://example.test/equipo/tema.git temas/base
+git submodule -N add https://example.com/equipo/tema.git temas/base
 git branch -vv
 ```
 
@@ -256,7 +256,7 @@ Desactiva el comportamiento `fetch` para esta invocación.
 En `git submodule`, desactivar fetch modifica la forma en que se ejecuta administrar repositorios incluidos dentro de otro repositorio. Mantén iguales los demás argumentos para atribuir el cambio observado a esta opción.
 
 ```bash
-git submodule --no-fetch add https://example.test/equipo/tema.git temas/base
+git submodule --no-fetch add https://example.com/equipo/tema.git temas/base
 git branch -vv
 ```
 
@@ -269,7 +269,7 @@ Activa checkout durante administrar repositorios incluidos dentro de otro reposi
 La opción añade, retira o consulta una comprobación previa. Ejecuta primero la forma que no escribe cuando exista y conserva el código de terminación como parte del resultado.
 
 ```bash
-git submodule --checkout add https://example.test/equipo/tema.git temas/base
+git submodule --checkout add https://example.com/equipo/tema.git temas/base
 git branch -vv
 ```
 
@@ -282,7 +282,7 @@ Activa merge durante administrar repositorios incluidos dentro de otro repositor
 En `git submodule`, merge modifica la forma en que se ejecuta administrar repositorios incluidos dentro de otro repositorio. Mantén iguales los demás argumentos para atribuir el cambio observado a esta opción.
 
 ```bash
-git submodule --merge add https://example.test/equipo/tema.git temas/base
+git submodule --merge add https://example.com/equipo/tema.git temas/base
 git branch -vv
 ```
 
@@ -295,7 +295,7 @@ Activa rebase durante administrar repositorios incluidos dentro de otro reposito
 En `git submodule`, rebase modifica la forma en que se ejecuta administrar repositorios incluidos dentro de otro repositorio. Mantén iguales los demás argumentos para atribuir el cambio observado a esta opción.
 
 ```bash
-git submodule --rebase add https://example.test/equipo/tema.git temas/base
+git submodule --rebase add https://example.com/equipo/tema.git temas/base
 git branch -vv
 ```
 
@@ -308,7 +308,7 @@ Activa recommend historial shallow durante administrar repositorios incluidos de
 La opción limita o amplía el conjunto sobre el que se ejecuta administrar repositorios incluidos dentro de otro repositorio. Comprueba la selección con una forma de lectura antes de combinarla con una opción que escriba estado.
 
 ```bash
-git submodule --recommend-shallow add https://example.test/equipo/tema.git temas/base
+git submodule --recommend-shallow add https://example.com/equipo/tema.git temas/base
 git branch -vv
 ```
 
@@ -321,7 +321,7 @@ Selecciona o modifica referencias dentro del alcance de la orden.
 La opción limita o amplía el conjunto sobre el que se ejecuta administrar repositorios incluidos dentro de otro repositorio. Comprueba la selección con una forma de lectura antes de combinarla con una opción que escriba estado.
 
 ```bash
-git submodule --single-branch add https://example.test/equipo/tema.git temas/base
+git submodule --single-branch add https://example.com/equipo/tema.git temas/base
 git branch -vv
 ```
 
@@ -334,7 +334,7 @@ Activa default durante administrar repositorios incluidos dentro de otro reposit
 En `git submodule`, default modifica la forma en que se ejecuta administrar repositorios incluidos dentro de otro repositorio. Mantén iguales los demás argumentos para atribuir el cambio observado a esta opción.
 
 ```bash
-git submodule --default add https://example.test/equipo/tema.git temas/base
+git submodule --default add https://example.com/equipo/tema.git temas/base
 git branch -vv
 ```
 
@@ -347,7 +347,7 @@ Selecciona o modifica referencias dentro del alcance de la orden.
 La opción limita o amplía el conjunto sobre el que se ejecuta administrar repositorios incluidos dentro de otro repositorio. Comprueba la selección con una forma de lectura antes de combinarla con una opción que escriba estado.
 
 ```bash
-git submodule --branch add https://example.test/equipo/tema.git temas/base
+git submodule --branch add https://example.com/equipo/tema.git temas/base
 git branch -vv
 ```
 
@@ -360,7 +360,7 @@ Activa files durante administrar repositorios incluidos dentro de otro repositor
 La opción cambia cómo `git submodule` recibe datos. Define el separador, la codificación y la ruta de entrada antes de ejecutarla. Los nombres con espacios o saltos de línea requieren una interfaz terminada en NUL cuando el comando la ofrece.
 
 ```bash
-git submodule --files add https://example.test/equipo/tema.git temas/base
+git submodule --files add https://example.com/equipo/tema.git temas/base
 git branch -vv
 ```
 
@@ -373,7 +373,7 @@ Establece un límite numérico para la selección o el recorrido.
 En `git submodule`, summary limit modifica la forma en que se ejecuta administrar repositorios incluidos dentro de otro repositorio. Mantén iguales los demás argumentos para atribuir el cambio observado a esta opción.
 
 ```bash
-git submodule --summary-limit add https://example.test/equipo/tema.git temas/base
+git submodule --summary-limit add https://example.com/equipo/tema.git temas/base
 git branch -vv
 ```
 
@@ -386,7 +386,7 @@ Desactiva para esta invocación el comportamiento que habilita `--recommend-shal
 La opción limita o amplía el conjunto sobre el que se ejecuta administrar repositorios incluidos dentro de otro repositorio. Comprueba la selección con una forma de lectura antes de combinarla con una opción que escriba estado.
 
 ```bash
-git submodule --no-recommend-shallow add https://example.test/equipo/tema.git temas/base
+git submodule --no-recommend-shallow add https://example.com/equipo/tema.git temas/base
 git branch -vv
 ```
 
@@ -399,7 +399,7 @@ Desactiva para esta invocación el comportamiento que habilita `--single-branch`
 La opción limita o amplía el conjunto sobre el que se ejecuta administrar repositorios incluidos dentro de otro repositorio. Comprueba la selección con una forma de lectura antes de combinarla con una opción que escriba estado.
 
 ```bash
-git submodule --no-single-branch add https://example.test/equipo/tema.git temas/base
+git submodule --no-single-branch add https://example.com/equipo/tema.git temas/base
 git branch -vv
 ```
 

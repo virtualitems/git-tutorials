@@ -29,7 +29,7 @@ Separa el valor solicitado del ámbito donde Git lo busca. Una misma clave puede
 
 ```bash
 git config --global user.name "Ana Torres"
-git config --global user.email ana@example.test
+git config --global user.email user@example.com
 git config --get user.name
 ```
 

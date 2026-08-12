@@ -28,10 +28,10 @@ Separa negociación de objetos, transferencia y actualización de referencias. L
 ## Ejemplo mínimo
 
 ```bash
-git fetch-pack https://example.test/equipo/biblioteca.git refs/heads/main
+git fetch-pack https://example.com/equipo/biblioteca.git refs/heads/main
 ```
 
-La invocación `git fetch-pack https://example.test/equipo/biblioteca.git refs/heads/main` ejecuta esta operación: solicitar a otro repositorio los objetos que faltan. Después, los registros y referencias confirman qué objetos se transfirieron y qué actualizaciones se aceptaron. Conserva stdout, stderr y el código de terminación cuando el ejemplo forme parte de un script.
+La invocación `git fetch-pack https://example.com/equipo/biblioteca.git refs/heads/main` ejecuta esta operación: solicitar a otro repositorio los objetos que faltan. Después, los registros y referencias confirman qué objetos se transfirieron y qué actualizaciones se aceptaron. Conserva stdout, stderr y el código de terminación cuando el ejemplo forme parte de un script.
 
 ## Sintaxis y formas de invocación
 
@@ -75,7 +75,7 @@ Amplía la selección a todos los elementos del alcance definido.
 La opción limita o amplía el conjunto sobre el que se ejecuta solicitar a otro repositorio los objetos que faltan. Comprueba la selección con una forma de lectura antes de combinarla con una opción que escriba estado.
 
 ```bash
-git fetch-pack --all https://example.test/equipo/biblioteca.git refs/heads/main
+git fetch-pack --all https://example.com/equipo/biblioteca.git refs/heads/main
 git show-ref
 ```
 
@@ -88,7 +88,7 @@ Reduce mensajes que no representan errores.
 La opción cambia la representación o el canal del resultado. Úsala cuando una persona o un script necesite campos, separadores o cantidad de mensajes definidos. El contenido mostrado puede cambiar aunque el repositorio permanezca igual.
 
 ```bash
-git fetch-pack --quiet https://example.test/equipo/biblioteca.git refs/heads/main
+git fetch-pack --quiet https://example.com/equipo/biblioteca.git refs/heads/main
 git show-ref
 ```
 
@@ -101,7 +101,7 @@ Activa q durante solicitar a otro repositorio los objetos que faltan. La opción
 En `git fetch-pack`, q modifica la forma en que se ejecuta solicitar a otro repositorio los objetos que faltan. Mantén iguales los demás argumentos para atribuir el cambio observado a esta opción.
 
 ```bash
-git fetch-pack -q https://example.test/equipo/biblioteca.git refs/heads/main
+git fetch-pack -q https://example.com/equipo/biblioteca.git refs/heads/main
 git show-ref
 ```
 
@@ -114,7 +114,7 @@ Conserva el asunto del mensaje recibido según la forma que define el comando.
 En `git fetch-pack`, conservar modifica la forma en que se ejecuta solicitar a otro repositorio los objetos que faltan. Mantén iguales los demás argumentos para atribuir el cambio observado a esta opción.
 
 ```bash
-git fetch-pack --keep https://example.test/equipo/biblioteca.git refs/heads/main
+git fetch-pack --keep https://example.com/equipo/biblioteca.git refs/heads/main
 git show-ref
 ```
 
@@ -127,7 +127,7 @@ Activa k durante solicitar a otro repositorio los objetos que faltan. La opción
 En `git fetch-pack`, k modifica la forma en que se ejecuta solicitar a otro repositorio los objetos que faltan. Mantén iguales los demás argumentos para atribuir el cambio observado a esta opción.
 
 ```bash
-git fetch-pack -k https://example.test/equipo/biblioteca.git refs/heads/main
+git fetch-pack -k https://example.com/equipo/biblioteca.git refs/heads/main
 git show-ref
 ```
 
@@ -140,7 +140,7 @@ Activa thin durante solicitar a otro repositorio los objetos que faltan. La opci
 En `git fetch-pack`, thin modifica la forma en que se ejecuta solicitar a otro repositorio los objetos que faltan. Mantén iguales los demás argumentos para atribuir el cambio observado a esta opción.
 
 ```bash
-git fetch-pack --thin https://example.test/equipo/biblioteca.git refs/heads/main
+git fetch-pack --thin https://example.com/equipo/biblioteca.git refs/heads/main
 git show-ref
 ```
 
@@ -153,7 +153,7 @@ Selecciona o modifica referencias dentro del alcance de la orden.
 La opción limita o amplía el conjunto sobre el que se ejecuta solicitar a otro repositorio los objetos que faltan. Comprueba la selección con una forma de lectura antes de combinarla con una opción que escriba estado.
 
 ```bash
-git fetch-pack --include-tag https://example.test/equipo/biblioteca.git refs/heads/main
+git fetch-pack --include-tag https://example.com/equipo/biblioteca.git refs/heads/main
 git show-ref
 ```
 
@@ -166,7 +166,7 @@ Activa upload pack durante solicitar a otro repositorio los objetos que faltan. 
 En `git fetch-pack`, upload pack modifica la forma en que se ejecuta solicitar a otro repositorio los objetos que faltan. Mantén iguales los demás argumentos para atribuir el cambio observado a esta opción.
 
 ```bash
-git fetch-pack --upload-pack https://example.test/equipo/biblioteca.git refs/heads/main
+git fetch-pack --upload-pack https://example.com/equipo/biblioteca.git refs/heads/main
 git show-ref
 ```
 
@@ -179,7 +179,7 @@ Establece un límite numérico para la selección o el recorrido.
 En `git fetch-pack`, profundidad modifica la forma en que se ejecuta solicitar a otro repositorio los objetos que faltan. Mantén iguales los demás argumentos para atribuir el cambio observado a esta opción.
 
 ```bash
-git fetch-pack --depth https://example.test/equipo/biblioteca.git refs/heads/main
+git fetch-pack --depth https://example.com/equipo/biblioteca.git refs/heads/main
 git show-ref
 ```
 
@@ -192,7 +192,7 @@ Desactiva la presentación de progreso.
 En `git fetch-pack`, desactivar progreso modifica la forma en que se ejecuta solicitar a otro repositorio los objetos que faltan. Mantén iguales los demás argumentos para atribuir el cambio observado a esta opción.
 
 ```bash
-git fetch-pack --no-progress https://example.test/equipo/biblioteca.git refs/heads/main
+git fetch-pack --no-progress https://example.com/equipo/biblioteca.git refs/heads/main
 git show-ref
 ```
 
@@ -205,7 +205,7 @@ Activa v durante solicitar a otro repositorio los objetos que faltan. La opción
 La opción limita o amplía el conjunto sobre el que se ejecuta solicitar a otro repositorio los objetos que faltan. Comprueba la selección con una forma de lectura antes de combinarla con una opción que escriba estado.
 
 ```bash
-git fetch-pack -v https://example.test/equipo/biblioteca.git refs/heads/main
+git fetch-pack -v https://example.com/equipo/biblioteca.git refs/heads/main
 git show-ref
 ```
 
@@ -218,7 +218,7 @@ Lee registros o nombres desde la entrada estándar.
 La opción cambia cómo `git fetch-pack` recibe datos. Define el separador, la codificación y la ruta de entrada antes de ejecutarla. Los nombres con espacios o saltos de línea requieren una interfaz terminada en NUL cuando el comando la ofrece.
 
 ```bash
-git fetch-pack --stdin https://example.test/equipo/biblioteca.git refs/heads/main
+git fetch-pack --stdin https://example.com/equipo/biblioteca.git refs/heads/main
 git show-ref
 ```
 
@@ -231,7 +231,7 @@ Activa diag url durante solicitar a otro repositorio los objetos que faltan. La 
 En `git fetch-pack`, diag url modifica la forma en que se ejecuta solicitar a otro repositorio los objetos que faltan. Mantén iguales los demás argumentos para atribuir el cambio observado a esta opción.
 
 ```bash
-git fetch-pack --diag-url https://example.test/equipo/biblioteca.git refs/heads/main
+git fetch-pack --diag-url https://example.com/equipo/biblioteca.git refs/heads/main
 git show-ref
 ```
 

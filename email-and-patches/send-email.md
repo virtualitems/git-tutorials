@@ -28,10 +28,10 @@ Conserva el orden de la serie y separa autor de quien aplica el parche. Los conf
 ## Ejemplo mínimo
 
 ```bash
-git send-email --to=lista@example.test parches/*.patch
+git send-email --to=user@example.com parches/*.patch
 ```
 
-La invocación `git send-email --to=lista@example.test parches/*.patch` ejecuta esta operación: enviar parches por correo electrónico. Después, el receptor obtiene parches o commits con el orden, autoría y mensaje esperados. Conserva stdout, stderr y el código de terminación cuando el ejemplo forme parte de un script.
+La invocación `git send-email --to=user@example.com parches/*.patch` ejecuta esta operación: enviar parches por correo electrónico. Después, el receptor obtiene parches o commits con el orden, autoría y mensaje esperados. Conserva stdout, stderr y el código de terminación cuando el ejemplo forme parte de un script.
 
 ## Sintaxis y formas de invocación
 
@@ -73,7 +73,7 @@ Activa dump aliases durante enviar parches por correo electrónico. La opción a
 En `git send-email`, dump aliases modifica la forma en que se ejecuta enviar parches por correo electrónico. Mantén iguales los demás argumentos para atribuir el cambio observado a esta opción.
 
 ```bash
-git send-email --dump-aliases --to=lista@example.test parches/*.patch
+git send-email --dump-aliases --to=user@example.com parches/*.patch
 printf 'exit=%s\n' "$?"
 ```
 
@@ -86,7 +86,7 @@ Lee translate aliases como parte de la entrada de `git send-email`. En Git 2.51.
 La opción cambia cómo `git send-email` recibe datos. Define el separador, la codificación y la ruta de entrada antes de ejecutarla. Los nombres con espacios o saltos de línea requieren una interfaz terminada en NUL cuando el comando la ofrece.
 
 ```bash
-git send-email --translate-aliases --to=lista@example.test parches/*.patch
+git send-email --translate-aliases --to=user@example.com parches/*.patch
 printf 'exit=%s\n' "$?"
 ```
 
@@ -99,7 +99,7 @@ Activa from durante enviar parches por correo electrónico. La opción afecta es
 En `git send-email`, from modifica la forma en que se ejecuta enviar parches por correo electrónico. Mantén iguales los demás argumentos para atribuir el cambio observado a esta opción.
 
 ```bash
-git send-email --from --to=lista@example.test parches/*.patch
+git send-email --from --to=user@example.com parches/*.patch
 printf 'exit=%s\n' "$?"
 ```
 
@@ -112,7 +112,7 @@ Activa to durante enviar parches por correo electrónico. La opción afecta esta
 En `git send-email`, to modifica la forma en que se ejecuta enviar parches por correo electrónico. Mantén iguales los demás argumentos para atribuir el cambio observado a esta opción.
 
 ```bash
-git send-email --to --to=lista@example.test parches/*.patch
+git send-email --to --to=user@example.com parches/*.patch
 printf 'exit=%s\n' "$?"
 ```
 
@@ -125,7 +125,7 @@ Activa cc durante enviar parches por correo electrónico. La opción afecta esta
 En `git send-email`, cc modifica la forma en que se ejecuta enviar parches por correo electrónico. Mantén iguales los demás argumentos para atribuir el cambio observado a esta opción.
 
 ```bash
-git send-email --cc --to=lista@example.test parches/*.patch
+git send-email --cc --to=user@example.com parches/*.patch
 printf 'exit=%s\n' "$?"
 ```
 
@@ -138,7 +138,7 @@ Activa bcc durante enviar parches por correo electrónico. La opción afecta est
 En `git send-email`, bcc modifica la forma en que se ejecuta enviar parches por correo electrónico. Mantén iguales los demás argumentos para atribuir el cambio observado a esta opción.
 
 ```bash
-git send-email --bcc --to=lista@example.test parches/*.patch
+git send-email --bcc --to=user@example.com parches/*.patch
 printf 'exit=%s\n' "$?"
 ```
 
@@ -151,7 +151,7 @@ Activa subject durante enviar parches por correo electrónico. La opción afecta
 En `git send-email`, subject modifica la forma en que se ejecuta enviar parches por correo electrónico. Mantén iguales los demás argumentos para atribuir el cambio observado a esta opción.
 
 ```bash
-git send-email --subject --to=lista@example.test parches/*.patch
+git send-email --subject --to=user@example.com parches/*.patch
 printf 'exit=%s\n' "$?"
 ```
 
@@ -164,7 +164,7 @@ Activa reply to durante enviar parches por correo electrónico. La opción afect
 En `git send-email`, reply to modifica la forma en que se ejecuta enviar parches por correo electrónico. Mantén iguales los demás argumentos para atribuir el cambio observado a esta opción.
 
 ```bash
-git send-email --reply-to --to=lista@example.test parches/*.patch
+git send-email --reply-to --to=user@example.com parches/*.patch
 printf 'exit=%s\n' "$?"
 ```
 
@@ -177,7 +177,7 @@ Activa in reply to durante enviar parches por correo electrónico. La opción af
 En `git send-email`, in reply to modifica la forma en que se ejecuta enviar parches por correo electrónico. Mantén iguales los demás argumentos para atribuir el cambio observado a esta opción.
 
 ```bash
-git send-email --in-reply-to --to=lista@example.test parches/*.patch
+git send-email --in-reply-to --to=user@example.com parches/*.patch
 printf 'exit=%s\n' "$?"
 ```
 
@@ -190,7 +190,7 @@ Obtiene outlook id fix desde el origen indicado para esta invocación. En Git 2.
 En `git send-email`, outlook id fix modifica la forma en que se ejecuta enviar parches por correo electrónico. Mantén iguales los demás argumentos para atribuir el cambio observado a esta opción.
 
 ```bash
-git send-email --outlook-id-fix --to=lista@example.test parches/*.patch
+git send-email --outlook-id-fix --to=user@example.com parches/*.patch
 printf 'exit=%s\n' "$?"
 ```
 
@@ -203,7 +203,7 @@ Incluye xmailer en la entrada, el resultado o el registro que construye `git sen
 En `git send-email`, xmailer modifica la forma en que se ejecuta enviar parches por correo electrónico. Mantén iguales los demás argumentos para atribuir el cambio observado a esta opción.
 
 ```bash
-git send-email --xmailer --to=lista@example.test parches/*.patch
+git send-email --xmailer --to=user@example.com parches/*.patch
 printf 'exit=%s\n' "$?"
 ```
 
@@ -216,7 +216,7 @@ Activa annotate durante enviar parches por correo electrónico. La opción afect
 En `git send-email`, annotate modifica la forma en que se ejecuta enviar parches por correo electrónico. Mantén iguales los demás argumentos para atribuir el cambio observado a esta opción.
 
 ```bash
-git send-email --annotate --to=lista@example.test parches/*.patch
+git send-email --annotate --to=user@example.com parches/*.patch
 printf 'exit=%s\n' "$?"
 ```
 
@@ -229,7 +229,7 @@ Activa compose durante enviar parches por correo electrónico. La opción afecta
 En `git send-email`, compose modifica la forma en que se ejecuta enviar parches por correo electrónico. Mantén iguales los demás argumentos para atribuir el cambio observado a esta opción.
 
 ```bash
-git send-email --compose --to=lista@example.test parches/*.patch
+git send-email --compose --to=user@example.com parches/*.patch
 printf 'exit=%s\n' "$?"
 ```
 
@@ -242,7 +242,7 @@ Activa compose encoding durante enviar parches por correo electrónico. La opci�
 En `git send-email`, compose encoding modifica la forma en que se ejecuta enviar parches por correo electrónico. Mantén iguales los demás argumentos para atribuir el cambio observado a esta opción.
 
 ```bash
-git send-email --compose-encoding --to=lista@example.test parches/*.patch
+git send-email --compose-encoding --to=user@example.com parches/*.patch
 printf 'exit=%s\n' "$?"
 ```
 
@@ -255,7 +255,7 @@ Activa 8bit encoding durante enviar parches por correo electrónico. La opción 
 En `git send-email`, 8bit encoding modifica la forma en que se ejecuta enviar parches por correo electrónico. Mantén iguales los demás argumentos para atribuir el cambio observado a esta opción.
 
 ```bash
-git send-email --8bit-encoding --to=lista@example.test parches/*.patch
+git send-email --8bit-encoding --to=user@example.com parches/*.patch
 printf 'exit=%s\n' "$?"
 ```
 
@@ -268,7 +268,7 @@ Define transfer encoding para esta ejecución de `git send-email`. En Git 2.51.1
 La opción cambia la representación o el canal del resultado. Úsala cuando una persona o un script necesite campos, separadores o cantidad de mensajes definidos. El contenido mostrado puede cambiar aunque el repositorio permanezca igual.
 
 ```bash
-git send-email --transfer-encoding --to=lista@example.test parches/*.patch
+git send-email --transfer-encoding --to=user@example.com parches/*.patch
 printf 'exit=%s\n' "$?"
 ```
 
@@ -281,7 +281,7 @@ Define mailmap para esta ejecución de `git send-email`. En Git 2.51.1, la ayuda
 La opción limita o amplía el conjunto sobre el que se ejecuta enviar parches por correo electrónico. Comprueba la selección con una forma de lectura antes de combinarla con una opción que escriba estado.
 
 ```bash
-git send-email --mailmap --to=lista@example.test parches/*.patch
+git send-email --mailmap --to=user@example.com parches/*.patch
 printf 'exit=%s\n' "$?"
 ```
 
@@ -294,7 +294,7 @@ Activa envelope sender durante enviar parches por correo electrónico. La opció
 En `git send-email`, envelope sender modifica la forma en que se ejecuta enviar parches por correo electrónico. Mantén iguales los demás argumentos para atribuir el cambio observado a esta opción.
 
 ```bash
-git send-email --envelope-sender --to=lista@example.test parches/*.patch
+git send-email --envelope-sender --to=user@example.com parches/*.patch
 printf 'exit=%s\n' "$?"
 ```
 
@@ -307,7 +307,7 @@ Ejecuta sendmail cmd durante enviar parches por correo electrónico. En Git 2.51
 En `git send-email`, sendmail cmd modifica la forma en que se ejecuta enviar parches por correo electrónico. Mantén iguales los demás argumentos para atribuir el cambio observado a esta opción.
 
 ```bash
-git send-email --sendmail-cmd --to=lista@example.test parches/*.patch
+git send-email --sendmail-cmd --to=user@example.com parches/*.patch
 printf 'exit=%s\n' "$?"
 ```
 
@@ -320,7 +320,7 @@ Define smtp server para esta ejecución de `git send-email`. En Git 2.51.1, la a
 En `git send-email`, smtp server modifica la forma en que se ejecuta enviar parches por correo electrónico. Mantén iguales los demás argumentos para atribuir el cambio observado a esta opción.
 
 ```bash
-git send-email --smtp-server --to=lista@example.test parches/*.patch
+git send-email --smtp-server --to=user@example.com parches/*.patch
 printf 'exit=%s\n' "$?"
 ```
 
@@ -333,7 +333,7 @@ Define smtp server option para esta ejecución de `git send-email`. En Git 2.51.
 En `git send-email`, smtp server option modifica la forma en que se ejecuta enviar parches por correo electrónico. Mantén iguales los demás argumentos para atribuir el cambio observado a esta opción.
 
 ```bash
-git send-email --smtp-server-option --to=lista@example.test parches/*.patch
+git send-email --smtp-server-option --to=user@example.com parches/*.patch
 printf 'exit=%s\n' "$?"
 ```
 
@@ -346,7 +346,7 @@ Activa smtp server port durante enviar parches por correo electrónico. La opci�
 En `git send-email`, smtp server port modifica la forma en que se ejecuta enviar parches por correo electrónico. Mantén iguales los demás argumentos para atribuir el cambio observado a esta opción.
 
 ```bash
-git send-email --smtp-server-port --to=lista@example.test parches/*.patch
+git send-email --smtp-server-port --to=user@example.com parches/*.patch
 printf 'exit=%s\n' "$?"
 ```
 
@@ -359,7 +359,7 @@ Activa smtp user durante enviar parches por correo electrónico. La opción afec
 En `git send-email`, smtp user modifica la forma en que se ejecuta enviar parches por correo electrónico. Mantén iguales los demás argumentos para atribuir el cambio observado a esta opción.
 
 ```bash
-git send-email --smtp-user --to=lista@example.test parches/*.patch
+git send-email --smtp-user --to=user@example.com parches/*.patch
 printf 'exit=%s\n' "$?"
 ```
 
@@ -372,7 +372,7 @@ Activa smtp pass durante enviar parches por correo electrónico. La opción afec
 En `git send-email`, smtp pass modifica la forma en que se ejecuta enviar parches por correo electrónico. Mantén iguales los demás argumentos para atribuir el cambio observado a esta opción.
 
 ```bash
-git send-email --smtp-pass --to=lista@example.test parches/*.patch
+git send-email --smtp-pass --to=user@example.com parches/*.patch
 printf 'exit=%s\n' "$?"
 ```
 
@@ -385,7 +385,7 @@ Activa smtp encryption durante enviar parches por correo electrónico. La opció
 En `git send-email`, smtp encryption modifica la forma en que se ejecuta enviar parches por correo electrónico. Mantén iguales los demás argumentos para atribuir el cambio observado a esta opción.
 
 ```bash
-git send-email --smtp-encryption --to=lista@example.test parches/*.patch
+git send-email --smtp-encryption --to=user@example.com parches/*.patch
 printf 'exit=%s\n' "$?"
 ```
 
@@ -398,7 +398,7 @@ Define smtp ssl para esta ejecución de `git send-email`. En Git 2.51.1, la ayud
 En `git send-email`, smtp ssl modifica la forma en que se ejecuta enviar parches por correo electrónico. Mantén iguales los demás argumentos para atribuir el cambio observado a esta opción.
 
 ```bash
-git send-email --smtp-ssl --to=lista@example.test parches/*.patch
+git send-email --smtp-ssl --to=user@example.com parches/*.patch
 printf 'exit=%s\n' "$?"
 ```
 
@@ -411,7 +411,7 @@ Define smtp ssl cert ruta con el valor que recibe la opción. En Git 2.51.1, la 
 La opción cambia cómo `git send-email` recibe datos. Define el separador, la codificación y la ruta de entrada antes de ejecutarla. Los nombres con espacios o saltos de línea requieren una interfaz terminada en NUL cuando el comando la ofrece.
 
 ```bash
-git send-email --smtp-ssl-cert-path --to=lista@example.test parches/*.patch
+git send-email --smtp-ssl-cert-path --to=user@example.com parches/*.patch
 printf 'exit=%s\n' "$?"
 ```
 
@@ -424,7 +424,7 @@ Activa smtp domain durante enviar parches por correo electrónico. La opción af
 En `git send-email`, smtp domain modifica la forma en que se ejecuta enviar parches por correo electrónico. Mantén iguales los demás argumentos para atribuir el cambio observado a esta opción.
 
 ```bash
-git send-email --smtp-domain --to=lista@example.test parches/*.patch
+git send-email --smtp-domain --to=user@example.com parches/*.patch
 printf 'exit=%s\n' "$?"
 ```
 
@@ -437,7 +437,7 @@ Impide smtp auth durante esta invocación de `git send-email`. En Git 2.51.1, la
 La opción limita o amplía el conjunto sobre el que se ejecuta enviar parches por correo electrónico. Comprueba la selección con una forma de lectura antes de combinarla con una opción que escriba estado.
 
 ```bash
-git send-email --smtp-auth --to=lista@example.test parches/*.patch
+git send-email --smtp-auth --to=user@example.com parches/*.patch
 printf 'exit=%s\n' "$?"
 ```
 
@@ -450,7 +450,7 @@ Desactiva el comportamiento `smtp-auth` para esta invocación.
 La opción limita o amplía el conjunto sobre el que se ejecuta enviar parches por correo electrónico. Comprueba la selección con una forma de lectura antes de combinarla con una opción que escriba estado.
 
 ```bash
-git send-email --no-smtp-auth --to=lista@example.test parches/*.patch
+git send-email --no-smtp-auth --to=user@example.com parches/*.patch
 printf 'exit=%s\n' "$?"
 ```
 
@@ -463,7 +463,7 @@ Impide smtp debug durante esta invocación de `git send-email`. En Git 2.51.1, l
 En `git send-email`, smtp debug modifica la forma en que se ejecuta enviar parches por correo electrónico. Mantén iguales los demás argumentos para atribuir el cambio observado a esta opción.
 
 ```bash
-git send-email --smtp-debug --to=lista@example.test parches/*.patch
+git send-email --smtp-debug --to=user@example.com parches/*.patch
 printf 'exit=%s\n' "$?"
 ```
 
@@ -476,7 +476,7 @@ Activa batch size durante enviar parches por correo electrónico. La opción afe
 La opción cambia cómo `git send-email` recibe datos. Define el separador, la codificación y la ruta de entrada antes de ejecutarla. Los nombres con espacios o saltos de línea requieren una interfaz terminada en NUL cuando el comando la ofrece.
 
 ```bash
-git send-email --batch-size --to=lista@example.test parches/*.patch
+git send-email --batch-size --to=user@example.com parches/*.patch
 printf 'exit=%s\n' "$?"
 ```
 
@@ -489,7 +489,7 @@ Limita enviar parches por correo electrónico al alcance identificado por relogi
 La opción cambia cómo `git send-email` recibe datos. Define el separador, la codificación y la ruta de entrada antes de ejecutarla. Los nombres con espacios o saltos de línea requieren una interfaz terminada en NUL cuando el comando la ofrece.
 
 ```bash
-git send-email --relogin-delay --to=lista@example.test parches/*.patch
+git send-email --relogin-delay --to=user@example.com parches/*.patch
 printf 'exit=%s\n' "$?"
 ```
 
@@ -502,7 +502,7 @@ Define identity para esta ejecución de `git send-email`. En Git 2.51.1, la ayud
 En `git send-email`, identity modifica la forma en que se ejecuta enviar parches por correo electrónico. Mantén iguales los demás argumentos para atribuir el cambio observado a esta opción.
 
 ```bash
-git send-email --identity --to=lista@example.test parches/*.patch
+git send-email --identity --to=user@example.com parches/*.patch
 printf 'exit=%s\n' "$?"
 ```
 
@@ -515,7 +515,7 @@ Activa to cmd durante enviar parches por correo electrónico. La opción afecta 
 En `git send-email`, to cmd modifica la forma en que se ejecuta enviar parches por correo electrónico. Mantén iguales los demás argumentos para atribuir el cambio observado a esta opción.
 
 ```bash
-git send-email --to-cmd --to=lista@example.test parches/*.patch
+git send-email --to-cmd --to=user@example.com parches/*.patch
 printf 'exit=%s\n' "$?"
 ```
 
@@ -528,7 +528,7 @@ Activa cc cmd durante enviar parches por correo electrónico. La opción afecta 
 En `git send-email`, cc cmd modifica la forma en que se ejecuta enviar parches por correo electrónico. Mantén iguales los demás argumentos para atribuir el cambio observado a esta opción.
 
 ```bash
-git send-email --cc-cmd --to=lista@example.test parches/*.patch
+git send-email --cc-cmd --to=user@example.com parches/*.patch
 printf 'exit=%s\n' "$?"
 ```
 
@@ -541,7 +541,7 @@ Incluye header cmd en la entrada, el resultado o el registro que construye `git 
 En `git send-email`, header cmd modifica la forma en que se ejecuta enviar parches por correo electrónico. Mantén iguales los demás argumentos para atribuir el cambio observado a esta opción.
 
 ```bash
-git send-email --header-cmd --to=lista@example.test parches/*.patch
+git send-email --header-cmd --to=user@example.com parches/*.patch
 printf 'exit=%s\n' "$?"
 ```
 
@@ -554,7 +554,7 @@ Desactiva el comportamiento `header-cmd` para esta invocación.
 En `git send-email`, desactivar header cmd modifica la forma en que se ejecuta enviar parches por correo electrónico. Mantén iguales los demás argumentos para atribuir el cambio observado a esta opción.
 
 ```bash
-git send-email --no-header-cmd --to=lista@example.test parches/*.patch
+git send-email --no-header-cmd --to=user@example.com parches/*.patch
 printf 'exit=%s\n' "$?"
 ```
 
@@ -567,7 +567,7 @@ Suprime suppress cc en la salida de esta invocación de `git send-email`. En Git
 La opción limita o amplía el conjunto sobre el que se ejecuta enviar parches por correo electrónico. Comprueba la selección con una forma de lectura antes de combinarla con una opción que escriba estado.
 
 ```bash
-git send-email --suppress-cc --to=lista@example.test parches/*.patch
+git send-email --suppress-cc --to=user@example.com parches/*.patch
 printf 'exit=%s\n' "$?"
 ```
 
@@ -580,7 +580,7 @@ Activa cc cover durante enviar parches por correo electrónico. La opción afect
 En `git send-email`, cc cover modifica la forma en que se ejecuta enviar parches por correo electrónico. Mantén iguales los demás argumentos para atribuir el cambio observado a esta opción.
 
 ```bash
-git send-email --cc-cover --to=lista@example.test parches/*.patch
+git send-email --cc-cover --to=user@example.com parches/*.patch
 printf 'exit=%s\n' "$?"
 ```
 
@@ -593,7 +593,7 @@ Activa to cover durante enviar parches por correo electrónico. La opción afect
 En `git send-email`, to cover modifica la forma en que se ejecuta enviar parches por correo electrónico. Mantén iguales los demás argumentos para atribuir el cambio observado a esta opción.
 
 ```bash
-git send-email --to-cover --to=lista@example.test parches/*.patch
+git send-email --to-cover --to=user@example.com parches/*.patch
 printf 'exit=%s\n' "$?"
 ```
 
@@ -606,7 +606,7 @@ Activa firmado off by cc durante enviar parches por correo electrónico. La opci
 En `git send-email`, firmado off by cc modifica la forma en que se ejecuta enviar parches por correo electrónico. Mantén iguales los demás argumentos para atribuir el cambio observado a esta opción.
 
 ```bash
-git send-email --signed-off-by-cc --to=lista@example.test parches/*.patch
+git send-email --signed-off-by-cc --to=user@example.com parches/*.patch
 printf 'exit=%s\n' "$?"
 ```
 
@@ -619,7 +619,7 @@ Suprime suppress from en la salida de esta invocación de `git send-email`. En G
 En `git send-email`, suppress from modifica la forma en que se ejecuta enviar parches por correo electrónico. Mantén iguales los demás argumentos para atribuir el cambio observado a esta opción.
 
 ```bash
-git send-email --suppress-from --to=lista@example.test parches/*.patch
+git send-email --suppress-from --to=user@example.com parches/*.patch
 printf 'exit=%s\n' "$?"
 ```
 
@@ -632,7 +632,7 @@ Activa chain reply to durante enviar parches por correo electrónico. La opción
 En `git send-email`, chain reply to modifica la forma en que se ejecuta enviar parches por correo electrónico. Mantén iguales los demás argumentos para atribuir el cambio observado a esta opción.
 
 ```bash
-git send-email --chain-reply-to --to=lista@example.test parches/*.patch
+git send-email --chain-reply-to --to=user@example.com parches/*.patch
 printf 'exit=%s\n' "$?"
 ```
 
@@ -645,7 +645,7 @@ Define thread para esta ejecución de `git send-email`. En Git 2.51.1, la ayuda 
 En `git send-email`, thread modifica la forma en que se ejecuta enviar parches por correo electrónico. Mantén iguales los demás argumentos para atribuir el cambio observado a esta opción.
 
 ```bash
-git send-email --thread --to=lista@example.test parches/*.patch
+git send-email --thread --to=user@example.com parches/*.patch
 printf 'exit=%s\n' "$?"
 ```
 
@@ -658,7 +658,7 @@ Activa confirm durante enviar parches por correo electrónico. La opción afecta
 En `git send-email`, confirm modifica la forma en que se ejecuta enviar parches por correo electrónico. Mantén iguales los demás argumentos para atribuir el cambio observado a esta opción.
 
 ```bash
-git send-email --confirm --to=lista@example.test parches/*.patch
+git send-email --confirm --to=user@example.com parches/*.patch
 printf 'exit=%s\n' "$?"
 ```
 
@@ -671,7 +671,7 @@ Reduce mensajes que no representan errores.
 La opción cambia la representación o el canal del resultado. Úsala cuando una persona o un script necesite campos, separadores o cantidad de mensajes definidos. El contenido mostrado puede cambiar aunque el repositorio permanezca igual.
 
 ```bash
-git send-email --quiet --to=lista@example.test parches/*.patch
+git send-email --quiet --to=user@example.com parches/*.patch
 printf 'exit=%s\n' "$?"
 ```
 
@@ -684,7 +684,7 @@ Calcula el alcance y muestra lo que ocurriría sin aplicar el cambio.
 La opción limita o amplía el conjunto sobre el que se ejecuta enviar parches por correo electrónico. Comprueba la selección con una forma de lectura antes de combinarla con una opción que escriba estado.
 
 ```bash
-git send-email --dry-run --to=lista@example.test parches/*.patch
+git send-email --dry-run --to=user@example.com parches/*.patch
 printf 'exit=%s\n' "$?"
 ```
 
@@ -697,7 +697,7 @@ Valida el dato o estado antes de producir el resultado.
 La opción añade, retira o consulta una comprobación previa. Ejecuta primero la forma que no escribe cuando exista y conserva el código de terminación como parte del resultado.
 
 ```bash
-git send-email --validate --to=lista@example.test parches/*.patch
+git send-email --validate --to=user@example.com parches/*.patch
 printf 'exit=%s\n' "$?"
 ```
 
@@ -710,7 +710,7 @@ Activa formato parche durante enviar parches por correo electrónico. La opción
 La opción cambia la representación o el canal del resultado. Úsala cuando una persona o un script necesite campos, separadores o cantidad de mensajes definidos. El contenido mostrado puede cambiar aunque el repositorio permanezca igual.
 
 ```bash
-git send-email --format-patch --to=lista@example.test parches/*.patch
+git send-email --format-patch --to=user@example.com parches/*.patch
 printf 'exit=%s\n' "$?"
 ```
 
@@ -723,7 +723,7 @@ Omite una protección concreta; úsala solo después de verificar el estado obje
 La opción controla omitir la protección. Registra el estado de las referencias y conserva los cambios sin commit antes de usarla, porque enviar parches por correo electrónico puede retirar o reemplazar datos dentro del alcance seleccionado.
 
 ```bash
-git send-email --force --to=lista@example.test parches/*.patch
+git send-email --force --to=user@example.com parches/*.patch
 printf 'exit=%s\n' "$?"
 ```
 
@@ -736,7 +736,7 @@ Desactiva para esta invocación el comportamiento que habilita `--to`. Mantén i
 En `git send-email`, desactivar to modifica la forma en que se ejecuta enviar parches por correo electrónico. Mantén iguales los demás argumentos para atribuir el cambio observado a esta opción.
 
 ```bash
-git send-email --no-to --to=lista@example.test parches/*.patch
+git send-email --no-to --to=user@example.com parches/*.patch
 printf 'exit=%s\n' "$?"
 ```
 
@@ -749,7 +749,7 @@ Desactiva para esta invocación el comportamiento que habilita `--cc`. Mantén i
 En `git send-email`, desactivar cc modifica la forma en que se ejecuta enviar parches por correo electrónico. Mantén iguales los demás argumentos para atribuir el cambio observado a esta opción.
 
 ```bash
-git send-email --no-cc --to=lista@example.test parches/*.patch
+git send-email --no-cc --to=user@example.com parches/*.patch
 printf 'exit=%s\n' "$?"
 ```
 
@@ -762,7 +762,7 @@ Desactiva para esta invocación el comportamiento que habilita `--bcc`. Mantén 
 En `git send-email`, desactivar bcc modifica la forma en que se ejecuta enviar parches por correo electrónico. Mantén iguales los demás argumentos para atribuir el cambio observado a esta opción.
 
 ```bash
-git send-email --no-bcc --to=lista@example.test parches/*.patch
+git send-email --no-bcc --to=user@example.com parches/*.patch
 printf 'exit=%s\n' "$?"
 ```
 
@@ -775,7 +775,7 @@ Desactiva para esta invocación el comportamiento que habilita `--outlook-id-fix
 En `git send-email`, desactivar outlook id fix modifica la forma en que se ejecuta enviar parches por correo electrónico. Mantén iguales los demás argumentos para atribuir el cambio observado a esta opción.
 
 ```bash
-git send-email --no-outlook-id-fix --to=lista@example.test parches/*.patch
+git send-email --no-outlook-id-fix --to=user@example.com parches/*.patch
 printf 'exit=%s\n' "$?"
 ```
 
@@ -788,7 +788,7 @@ Desactiva para esta invocación el comportamiento que habilita `--xmailer`. Mant
 En `git send-email`, desactivar xmailer modifica la forma en que se ejecuta enviar parches por correo electrónico. Mantén iguales los demás argumentos para atribuir el cambio observado a esta opción.
 
 ```bash
-git send-email --no-xmailer --to=lista@example.test parches/*.patch
+git send-email --no-xmailer --to=user@example.com parches/*.patch
 printf 'exit=%s\n' "$?"
 ```
 
@@ -801,7 +801,7 @@ Desactiva para esta invocación el comportamiento que habilita `--annotate`. Man
 En `git send-email`, desactivar annotate modifica la forma en que se ejecuta enviar parches por correo electrónico. Mantén iguales los demás argumentos para atribuir el cambio observado a esta opción.
 
 ```bash
-git send-email --no-annotate --to=lista@example.test parches/*.patch
+git send-email --no-annotate --to=user@example.com parches/*.patch
 printf 'exit=%s\n' "$?"
 ```
 
@@ -814,7 +814,7 @@ Desactiva para esta invocación el comportamiento que habilita `--mailmap`. Mant
 La opción limita o amplía el conjunto sobre el que se ejecuta enviar parches por correo electrónico. Comprueba la selección con una forma de lectura antes de combinarla con una opción que escriba estado.
 
 ```bash
-git send-email --no-mailmap --to=lista@example.test parches/*.patch
+git send-email --no-mailmap --to=user@example.com parches/*.patch
 printf 'exit=%s\n' "$?"
 ```
 
@@ -827,7 +827,7 @@ Desactiva para esta invocación el comportamiento que habilita `--cc-cover`. Man
 En `git send-email`, desactivar cc cover modifica la forma en que se ejecuta enviar parches por correo electrónico. Mantén iguales los demás argumentos para atribuir el cambio observado a esta opción.
 
 ```bash
-git send-email --no-cc-cover --to=lista@example.test parches/*.patch
+git send-email --no-cc-cover --to=user@example.com parches/*.patch
 printf 'exit=%s\n' "$?"
 ```
 
@@ -840,7 +840,7 @@ Desactiva para esta invocación el comportamiento que habilita `--to-cover`. Man
 En `git send-email`, desactivar to cover modifica la forma en que se ejecuta enviar parches por correo electrónico. Mantén iguales los demás argumentos para atribuir el cambio observado a esta opción.
 
 ```bash
-git send-email --no-to-cover --to=lista@example.test parches/*.patch
+git send-email --no-to-cover --to=user@example.com parches/*.patch
 printf 'exit=%s\n' "$?"
 ```
 
@@ -853,7 +853,7 @@ Desactiva para esta invocación el comportamiento que habilita `--signed-off-by-
 En `git send-email`, desactivar firmado off by cc modifica la forma en que se ejecuta enviar parches por correo electrónico. Mantén iguales los demás argumentos para atribuir el cambio observado a esta opción.
 
 ```bash
-git send-email --no-signed-off-by-cc --to=lista@example.test parches/*.patch
+git send-email --no-signed-off-by-cc --to=user@example.com parches/*.patch
 printf 'exit=%s\n' "$?"
 ```
 
@@ -866,7 +866,7 @@ Desactiva para esta invocación el comportamiento que habilita `--suppress-from`
 En `git send-email`, desactivar suppress from modifica la forma en que se ejecuta enviar parches por correo electrónico. Mantén iguales los demás argumentos para atribuir el cambio observado a esta opción.
 
 ```bash
-git send-email --no-suppress-from --to=lista@example.test parches/*.patch
+git send-email --no-suppress-from --to=user@example.com parches/*.patch
 printf 'exit=%s\n' "$?"
 ```
 
@@ -879,7 +879,7 @@ Desactiva para esta invocación el comportamiento que habilita `--chain-reply-to
 En `git send-email`, desactivar chain reply to modifica la forma en que se ejecuta enviar parches por correo electrónico. Mantén iguales los demás argumentos para atribuir el cambio observado a esta opción.
 
 ```bash
-git send-email --no-chain-reply-to --to=lista@example.test parches/*.patch
+git send-email --no-chain-reply-to --to=user@example.com parches/*.patch
 printf 'exit=%s\n' "$?"
 ```
 
@@ -892,7 +892,7 @@ Desactiva para esta invocación el comportamiento que habilita `--thread`. Mant�
 En `git send-email`, desactivar thread modifica la forma en que se ejecuta enviar parches por correo electrónico. Mantén iguales los demás argumentos para atribuir el cambio observado a esta opción.
 
 ```bash
-git send-email --no-thread --to=lista@example.test parches/*.patch
+git send-email --no-thread --to=user@example.com parches/*.patch
 printf 'exit=%s\n' "$?"
 ```
 
@@ -905,7 +905,7 @@ Desactiva para esta invocación el comportamiento que habilita `--validate`. Man
 La opción añade, retira o consulta una comprobación previa. Ejecuta primero la forma que no escribe cuando exista y conserva el código de terminación como parte del resultado.
 
 ```bash
-git send-email --no-validate --to=lista@example.test parches/*.patch
+git send-email --no-validate --to=user@example.com parches/*.patch
 printf 'exit=%s\n' "$?"
 ```
 
@@ -918,7 +918,7 @@ Desactiva para esta invocación el comportamiento que habilita `--format-patch`.
 La opción cambia la representación o el canal del resultado. Úsala cuando una persona o un script necesite campos, separadores o cantidad de mensajes definidos. El contenido mostrado puede cambiar aunque el repositorio permanezca igual.
 
 ```bash
-git send-email --no-format-patch --to=lista@example.test parches/*.patch
+git send-email --no-format-patch --to=user@example.com parches/*.patch
 printf 'exit=%s\n' "$?"
 ```
 

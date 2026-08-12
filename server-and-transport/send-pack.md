@@ -28,10 +28,10 @@ Separa negociación de objetos, transferencia y actualización de referencias. L
 ## Ejemplo mínimo
 
 ```bash
-git send-pack https://example.test/equipo/biblioteca.git refs/heads/main
+git send-pack https://example.com/equipo/biblioteca.git refs/heads/main
 ```
 
-La invocación `git send-pack https://example.test/equipo/biblioteca.git refs/heads/main` ejecuta esta operación: enviar objetos y actualizaciones de referencias al receptor. Después, los registros y referencias confirman qué objetos se transfirieron y qué actualizaciones se aceptaron. Conserva stdout, stderr y el código de terminación cuando el ejemplo forme parte de un script.
+La invocación `git send-pack https://example.com/equipo/biblioteca.git refs/heads/main` ejecuta esta operación: enviar objetos y actualizaciones de referencias al receptor. Después, los registros y referencias confirman qué objetos se transfirieron y qué actualizaciones se aceptaron. Conserva stdout, stderr y el código de terminación cuando el ejemplo forme parte de un script.
 
 ## Sintaxis y formas de invocación
 
@@ -83,7 +83,7 @@ Activa espejo durante enviar objetos y actualizaciones de referencias al recepto
 La opción limita o amplía el conjunto sobre el que se ejecuta enviar objetos y actualizaciones de referencias al receptor. Comprueba la selección con una forma de lectura antes de combinarla con una opción que escriba estado.
 
 ```bash
-git send-pack --mirror https://example.test/equipo/biblioteca.git refs/heads/main
+git send-pack --mirror https://example.com/equipo/biblioteca.git refs/heads/main
 git show-ref
 ```
 
@@ -100,7 +100,7 @@ La opción añade, retira o consulta una comprobación previa. Ejecuta primero l
 #### Ejemplo con `--dry-run`
 
 ```bash
-git send-pack --dry-run https://example.test/equipo/biblioteca.git refs/heads/main
+git send-pack --dry-run https://example.com/equipo/biblioteca.git refs/heads/main
 git show-ref
 ```
 
@@ -109,7 +109,7 @@ Esta forma no recibe un valor separado; los argumentos posteriores pertenecen a 
 #### Ejemplo con `-n`
 
 ```bash
-git send-pack -n https://example.test/equipo/biblioteca.git refs/heads/main
+git send-pack -n https://example.com/equipo/biblioteca.git refs/heads/main
 git show-ref
 ```
 
@@ -128,7 +128,7 @@ La opción controla omitir la protección. Registra el estado de las referencias
 #### Ejemplo con `--force`
 
 ```bash
-git send-pack --force https://example.test/equipo/biblioteca.git refs/heads/main
+git send-pack --force https://example.com/equipo/biblioteca.git refs/heads/main
 git show-ref
 ```
 
@@ -137,7 +137,7 @@ Esta forma no recibe un valor separado; los argumentos posteriores pertenecen a 
 #### Ejemplo con `-f`
 
 ```bash
-git send-pack -f https://example.test/equipo/biblioteca.git refs/heads/main
+git send-pack -f https://example.com/equipo/biblioteca.git refs/heads/main
 git show-ref
 ```
 
@@ -152,7 +152,7 @@ Activa receive pack durante enviar objetos y actualizaciones de referencias al r
 En `git send-pack`, receive pack modifica la forma en que se ejecuta enviar objetos y actualizaciones de referencias al receptor. Mantén iguales los demás argumentos para atribuir el cambio observado a esta opción.
 
 ```bash
-git send-pack --receive-pack=valor https://example.test/equipo/biblioteca.git refs/heads/main
+git send-pack --receive-pack=valor https://example.com/equipo/biblioteca.git refs/heads/main
 git show-ref
 ```
 
@@ -169,7 +169,7 @@ La opción cambia la representación o el canal del resultado. Úsala cuando una
 #### Ejemplo con `--verbose`
 
 ```bash
-git send-pack --verbose https://example.test/equipo/biblioteca.git refs/heads/main
+git send-pack --verbose https://example.com/equipo/biblioteca.git refs/heads/main
 git show-ref
 ```
 
@@ -178,7 +178,7 @@ Esta forma no recibe un valor separado; los argumentos posteriores pertenecen a 
 #### Ejemplo con `-v`
 
 ```bash
-git send-pack -v https://example.test/equipo/biblioteca.git refs/heads/main
+git send-pack -v https://example.com/equipo/biblioteca.git refs/heads/main
 git show-ref
 ```
 
@@ -193,7 +193,7 @@ Define thin para esta ejecución de `git send-pack`. En Git 2.51.1, la ayuda cor
 En `git send-pack`, thin modifica la forma en que se ejecuta enviar objetos y actualizaciones de referencias al receptor. Mantén iguales los demás argumentos para atribuir el cambio observado a esta opción.
 
 ```bash
-git send-pack --thin https://example.test/equipo/biblioteca.git refs/heads/main
+git send-pack --thin https://example.com/equipo/biblioteca.git refs/heads/main
 git show-ref
 ```
 
@@ -206,7 +206,7 @@ Exige que el conjunto se aplique completo o no se aplique.
 La opción añade, retira o consulta una comprobación previa. Ejecuta primero la forma que no escribe cuando exista y conserva el código de terminación como parte del resultado.
 
 ```bash
-git send-pack --atomic https://example.test/equipo/biblioteca.git refs/heads/main
+git send-pack --atomic https://example.com/equipo/biblioteca.git refs/heads/main
 git show-ref
 ```
 
@@ -219,7 +219,7 @@ Activa firmado durante enviar objetos y actualizaciones de referencias al recept
 En `git send-pack`, firmado modifica la forma en que se ejecuta enviar objetos y actualizaciones de referencias al receptor. Mantén iguales los demás argumentos para atribuir el cambio observado a esta opción.
 
 ```bash
-git send-pack --signed=valor https://example.test/equipo/biblioteca.git refs/heads/main
+git send-pack --signed=valor https://example.com/equipo/biblioteca.git refs/heads/main
 git show-ref
 ```
 
@@ -232,7 +232,7 @@ Amplía la selección a todos los elementos del alcance definido.
 La opción limita o amplía el conjunto sobre el que se ejecuta enviar objetos y actualizaciones de referencias al receptor. Comprueba la selección con una forma de lectura antes de combinarla con una opción que escriba estado.
 
 ```bash
-git send-pack --all https://example.test/equipo/biblioteca.git refs/heads/main
+git send-pack --all https://example.com/equipo/biblioteca.git refs/heads/main
 git show-ref
 ```
 
@@ -249,7 +249,7 @@ La opción cambia la representación o el canal del resultado. Úsala cuando una
 #### Ejemplo con `-q`
 
 ```bash
-git send-pack -q https://example.test/equipo/biblioteca.git refs/heads/main
+git send-pack -q https://example.com/equipo/biblioteca.git refs/heads/main
 git show-ref
 ```
 
@@ -258,7 +258,7 @@ Esta forma no recibe un valor separado; los argumentos posteriores pertenecen a 
 #### Ejemplo con `--quiet`
 
 ```bash
-git send-pack --quiet https://example.test/equipo/biblioteca.git refs/heads/main
+git send-pack --quiet https://example.com/equipo/biblioteca.git refs/heads/main
 git show-ref
 ```
 
@@ -273,7 +273,7 @@ Activa exec durante enviar objetos y actualizaciones de referencias al receptor.
 En `git send-pack`, exec modifica la forma en que se ejecuta enviar objetos y actualizaciones de referencias al receptor. Mantén iguales los demás argumentos para atribuir el cambio observado a esta opción.
 
 ```bash
-git send-pack --exec=valor https://example.test/equipo/biblioteca.git refs/heads/main
+git send-pack --exec=valor https://example.com/equipo/biblioteca.git refs/heads/main
 git show-ref
 ```
 
@@ -286,7 +286,7 @@ Activa remote durante enviar objetos y actualizaciones de referencias al recepto
 En `git send-pack`, remote modifica la forma en que se ejecuta enviar objetos y actualizaciones de referencias al receptor. Mantén iguales los demás argumentos para atribuir el cambio observado a esta opción.
 
 ```bash
-git send-pack --remote=origin https://example.test/equipo/biblioteca.git refs/heads/main
+git send-pack --remote=origin https://example.com/equipo/biblioteca.git refs/heads/main
 git show-ref
 ```
 
@@ -299,7 +299,7 @@ Activa push option durante enviar objetos y actualizaciones de referencias al re
 En `git send-pack`, push option modifica la forma en que se ejecuta enviar objetos y actualizaciones de referencias al receptor. Mantén iguales los demás argumentos para atribuir el cambio observado a esta opción.
 
 ```bash
-git send-pack --push-option=valor https://example.test/equipo/biblioteca.git refs/heads/main
+git send-pack --push-option=valor https://example.com/equipo/biblioteca.git refs/heads/main
 git show-ref
 ```
 
@@ -312,7 +312,7 @@ Muestra progreso aunque la salida no sea un terminal.
 La opción controla progreso. Registra el estado de las referencias y conserva los cambios sin commit antes de usarla, porque enviar objetos y actualizaciones de referencias al receptor puede retirar o reemplazar datos dentro del alcance seleccionado.
 
 ```bash
-git send-pack --progress https://example.test/equipo/biblioteca.git refs/heads/main
+git send-pack --progress https://example.com/equipo/biblioteca.git refs/heads/main
 git show-ref
 ```
 
@@ -325,7 +325,7 @@ Define stateless rpc para esta ejecución de `git send-pack`. En Git 2.51.1, la 
 La opción cambia la representación o el canal del resultado. Úsala cuando una persona o un script necesite campos, separadores o cantidad de mensajes definidos. El contenido mostrado puede cambiar aunque el repositorio permanezca igual.
 
 ```bash
-git send-pack --stateless-rpc https://example.test/equipo/biblioteca.git refs/heads/main
+git send-pack --stateless-rpc https://example.com/equipo/biblioteca.git refs/heads/main
 git show-ref
 ```
 
@@ -338,7 +338,7 @@ Lee registros o nombres desde la entrada estándar.
 La opción cambia cómo `git send-pack` recibe datos. Define el separador, la codificación y la ruta de entrada antes de ejecutarla. Los nombres con espacios o saltos de línea requieren una interfaz terminada en NUL cuando el comando la ofrece.
 
 ```bash
-git send-pack --stdin https://example.test/equipo/biblioteca.git refs/heads/main
+git send-pack --stdin https://example.com/equipo/biblioteca.git refs/heads/main
 git show-ref
 ```
 
@@ -351,7 +351,7 @@ Incluye helper estado en la salida o cambia cómo `git send-pack` la representa.
 La opción cambia la representación o el canal del resultado. Úsala cuando una persona o un script necesite campos, separadores o cantidad de mensajes definidos. El contenido mostrado puede cambiar aunque el repositorio permanezca igual.
 
 ```bash
-git send-pack --helper-status https://example.test/equipo/biblioteca.git refs/heads/main
+git send-pack --helper-status https://example.com/equipo/biblioteca.git refs/heads/main
 git show-ref
 ```
 
@@ -364,7 +364,7 @@ Omite una protección concreta de la orden; requiere verificar origen y destino.
 La opción controla omitir la protección with lease. Registra el estado de las referencias y conserva los cambios sin commit antes de usarla, porque enviar objetos y actualizaciones de referencias al receptor puede retirar o reemplazar datos dentro del alcance seleccionado.
 
 ```bash
-git send-pack --force-with-lease=main https://example.test/equipo/biblioteca.git refs/heads/main
+git send-pack --force-with-lease=main https://example.com/equipo/biblioteca.git refs/heads/main
 git show-ref
 ```
 
@@ -377,7 +377,7 @@ Omite una protección concreta de la orden; requiere verificar origen y destino.
 La opción controla omitir la protección if includes. Registra el estado de las referencias y conserva los cambios sin commit antes de usarla, porque enviar objetos y actualizaciones de referencias al receptor puede retirar o reemplazar datos dentro del alcance seleccionado.
 
 ```bash
-git send-pack --force-if-includes https://example.test/equipo/biblioteca.git refs/heads/main
+git send-pack --force-if-includes https://example.com/equipo/biblioteca.git refs/heads/main
 git show-ref
 ```
 
@@ -390,7 +390,7 @@ Desactiva para esta invocación el comportamiento que habilita `--mirror`. Mant�
 La opción limita o amplía el conjunto sobre el que se ejecuta enviar objetos y actualizaciones de referencias al receptor. Comprueba la selección con una forma de lectura antes de combinarla con una opción que escriba estado.
 
 ```bash
-git send-pack --no-mirror https://example.test/equipo/biblioteca.git refs/heads/main
+git send-pack --no-mirror https://example.com/equipo/biblioteca.git refs/heads/main
 git show-ref
 ```
 
@@ -403,7 +403,7 @@ Desactiva para esta invocación el comportamiento que habilita `--dry-run`. Mant
 La opción añade, retira o consulta una comprobación previa. Ejecuta primero la forma que no escribe cuando exista y conserva el código de terminación como parte del resultado.
 
 ```bash
-git send-pack --no-dry-run https://example.test/equipo/biblioteca.git refs/heads/main
+git send-pack --no-dry-run https://example.com/equipo/biblioteca.git refs/heads/main
 git show-ref
 ```
 
@@ -416,7 +416,7 @@ Desactiva para esta invocación el comportamiento que habilita `--force`. Manté
 La opción controla desactivar omitir la protección. Registra el estado de las referencias y conserva los cambios sin commit antes de usarla, porque enviar objetos y actualizaciones de referencias al receptor puede retirar o reemplazar datos dentro del alcance seleccionado.
 
 ```bash
-git send-pack --no-force https://example.test/equipo/biblioteca.git refs/heads/main
+git send-pack --no-force https://example.com/equipo/biblioteca.git refs/heads/main
 git show-ref
 ```
 
@@ -429,7 +429,7 @@ Desactiva para esta invocación el comportamiento que habilita `--receive-pack`.
 En `git send-pack`, desactivar receive pack modifica la forma en que se ejecuta enviar objetos y actualizaciones de referencias al receptor. Mantén iguales los demás argumentos para atribuir el cambio observado a esta opción.
 
 ```bash
-git send-pack --no-receive-pack https://example.test/equipo/biblioteca.git refs/heads/main
+git send-pack --no-receive-pack https://example.com/equipo/biblioteca.git refs/heads/main
 git show-ref
 ```
 
@@ -442,7 +442,7 @@ Desactiva para esta invocación el comportamiento que habilita `--verbose`. Mant
 La opción cambia la representación o el canal del resultado. Úsala cuando una persona o un script necesite campos, separadores o cantidad de mensajes definidos. El contenido mostrado puede cambiar aunque el repositorio permanezca igual.
 
 ```bash
-git send-pack --no-verbose https://example.test/equipo/biblioteca.git refs/heads/main
+git send-pack --no-verbose https://example.com/equipo/biblioteca.git refs/heads/main
 git show-ref
 ```
 
@@ -455,7 +455,7 @@ Desactiva para esta invocación el comportamiento que habilita `--thin`. Mantén
 En `git send-pack`, desactivar thin modifica la forma en que se ejecuta enviar objetos y actualizaciones de referencias al receptor. Mantén iguales los demás argumentos para atribuir el cambio observado a esta opción.
 
 ```bash
-git send-pack --no-thin https://example.test/equipo/biblioteca.git refs/heads/main
+git send-pack --no-thin https://example.com/equipo/biblioteca.git refs/heads/main
 git show-ref
 ```
 
@@ -468,7 +468,7 @@ Desactiva para esta invocación el comportamiento que habilita `--atomic`. Mant�
 La opción añade, retira o consulta una comprobación previa. Ejecuta primero la forma que no escribe cuando exista y conserva el código de terminación como parte del resultado.
 
 ```bash
-git send-pack --no-atomic https://example.test/equipo/biblioteca.git refs/heads/main
+git send-pack --no-atomic https://example.com/equipo/biblioteca.git refs/heads/main
 git show-ref
 ```
 
@@ -481,7 +481,7 @@ Desactiva para esta invocación el comportamiento que habilita `--signed`. Mant�
 En `git send-pack`, desactivar firmado modifica la forma en que se ejecuta enviar objetos y actualizaciones de referencias al receptor. Mantén iguales los demás argumentos para atribuir el cambio observado a esta opción.
 
 ```bash
-git send-pack --no-signed https://example.test/equipo/biblioteca.git refs/heads/main
+git send-pack --no-signed https://example.com/equipo/biblioteca.git refs/heads/main
 git show-ref
 ```
 
@@ -494,7 +494,7 @@ Desactiva para esta invocación el comportamiento que habilita `--all`. Mantén 
 La opción limita o amplía el conjunto sobre el que se ejecuta enviar objetos y actualizaciones de referencias al receptor. Comprueba la selección con una forma de lectura antes de combinarla con una opción que escriba estado.
 
 ```bash
-git send-pack --no-all https://example.test/equipo/biblioteca.git refs/heads/main
+git send-pack --no-all https://example.com/equipo/biblioteca.git refs/heads/main
 git show-ref
 ```
 
@@ -507,7 +507,7 @@ Desactiva para esta invocación el comportamiento que habilita `--quiet`. Manté
 La opción cambia la representación o el canal del resultado. Úsala cuando una persona o un script necesite campos, separadores o cantidad de mensajes definidos. El contenido mostrado puede cambiar aunque el repositorio permanezca igual.
 
 ```bash
-git send-pack --no-quiet https://example.test/equipo/biblioteca.git refs/heads/main
+git send-pack --no-quiet https://example.com/equipo/biblioteca.git refs/heads/main
 git show-ref
 ```
 
@@ -520,7 +520,7 @@ Desactiva para esta invocación el comportamiento que habilita `--exec`. Mantén
 En `git send-pack`, desactivar exec modifica la forma en que se ejecuta enviar objetos y actualizaciones de referencias al receptor. Mantén iguales los demás argumentos para atribuir el cambio observado a esta opción.
 
 ```bash
-git send-pack --no-exec https://example.test/equipo/biblioteca.git refs/heads/main
+git send-pack --no-exec https://example.com/equipo/biblioteca.git refs/heads/main
 git show-ref
 ```
 
@@ -533,7 +533,7 @@ Desactiva para esta invocación el comportamiento que habilita `--remote`. Mant�
 En `git send-pack`, desactivar remote modifica la forma en que se ejecuta enviar objetos y actualizaciones de referencias al receptor. Mantén iguales los demás argumentos para atribuir el cambio observado a esta opción.
 
 ```bash
-git send-pack --no-remote https://example.test/equipo/biblioteca.git refs/heads/main
+git send-pack --no-remote https://example.com/equipo/biblioteca.git refs/heads/main
 git show-ref
 ```
 
@@ -546,7 +546,7 @@ Desactiva para esta invocación el comportamiento que habilita `--push-option`. 
 En `git send-pack`, desactivar push option modifica la forma en que se ejecuta enviar objetos y actualizaciones de referencias al receptor. Mantén iguales los demás argumentos para atribuir el cambio observado a esta opción.
 
 ```bash
-git send-pack --no-push-option https://example.test/equipo/biblioteca.git refs/heads/main
+git send-pack --no-push-option https://example.com/equipo/biblioteca.git refs/heads/main
 git show-ref
 ```
 
@@ -559,7 +559,7 @@ Desactiva para esta invocación el comportamiento que habilita `--progress`. Man
 La opción controla desactivar progreso. Registra el estado de las referencias y conserva los cambios sin commit antes de usarla, porque enviar objetos y actualizaciones de referencias al receptor puede retirar o reemplazar datos dentro del alcance seleccionado.
 
 ```bash
-git send-pack --no-progress https://example.test/equipo/biblioteca.git refs/heads/main
+git send-pack --no-progress https://example.com/equipo/biblioteca.git refs/heads/main
 git show-ref
 ```
 
@@ -572,7 +572,7 @@ Desactiva para esta invocación el comportamiento que habilita `--stateless-rpc`
 La opción cambia la representación o el canal del resultado. Úsala cuando una persona o un script necesite campos, separadores o cantidad de mensajes definidos. El contenido mostrado puede cambiar aunque el repositorio permanezca igual.
 
 ```bash
-git send-pack --no-stateless-rpc https://example.test/equipo/biblioteca.git refs/heads/main
+git send-pack --no-stateless-rpc https://example.com/equipo/biblioteca.git refs/heads/main
 git show-ref
 ```
 
@@ -585,7 +585,7 @@ Desactiva para esta invocación el comportamiento que habilita `--stdin`. Manté
 La opción cambia cómo `git send-pack` recibe datos. Define el separador, la codificación y la ruta de entrada antes de ejecutarla. Los nombres con espacios o saltos de línea requieren una interfaz terminada en NUL cuando el comando la ofrece.
 
 ```bash
-git send-pack --no-stdin https://example.test/equipo/biblioteca.git refs/heads/main
+git send-pack --no-stdin https://example.com/equipo/biblioteca.git refs/heads/main
 git show-ref
 ```
 
@@ -598,7 +598,7 @@ Desactiva para esta invocación el comportamiento que habilita `--helper-status`
 La opción cambia la representación o el canal del resultado. Úsala cuando una persona o un script necesite campos, separadores o cantidad de mensajes definidos. El contenido mostrado puede cambiar aunque el repositorio permanezca igual.
 
 ```bash
-git send-pack --no-helper-status https://example.test/equipo/biblioteca.git refs/heads/main
+git send-pack --no-helper-status https://example.com/equipo/biblioteca.git refs/heads/main
 git show-ref
 ```
 
@@ -611,7 +611,7 @@ Desactiva para esta invocación el comportamiento que habilita `--force-with-lea
 La opción controla desactivar omitir la protección with lease. Registra el estado de las referencias y conserva los cambios sin commit antes de usarla, porque enviar objetos y actualizaciones de referencias al receptor puede retirar o reemplazar datos dentro del alcance seleccionado.
 
 ```bash
-git send-pack --no-force-with-lease https://example.test/equipo/biblioteca.git refs/heads/main
+git send-pack --no-force-with-lease https://example.com/equipo/biblioteca.git refs/heads/main
 git show-ref
 ```
 
@@ -624,7 +624,7 @@ Desactiva para esta invocación el comportamiento que habilita `--force-if-inclu
 La opción controla desactivar omitir la protección if includes. Registra el estado de las referencias y conserva los cambios sin commit antes de usarla, porque enviar objetos y actualizaciones de referencias al receptor puede retirar o reemplazar datos dentro del alcance seleccionado.
 
 ```bash
-git send-pack --no-force-if-includes https://example.test/equipo/biblioteca.git refs/heads/main
+git send-pack --no-force-if-includes https://example.com/equipo/biblioteca.git refs/heads/main
 git show-ref
 ```
 

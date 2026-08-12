@@ -28,10 +28,10 @@ Separa negociación de objetos, transferencia y actualización de referencias. L
 ## Ejemplo mínimo
 
 ```bash
-git http-push --dry-run https://example.test/equipo/biblioteca.git refs/heads/main
+git http-push --dry-run https://example.com/equipo/biblioteca.git refs/heads/main
 ```
 
-La invocación `git http-push --dry-run https://example.test/equipo/biblioteca.git refs/heads/main` ejecuta esta operación: enviar objetos mediante HTTP con WebDAV. Después, los registros y referencias confirman qué objetos se transfirieron y qué actualizaciones se aceptaron. Conserva stdout, stderr y el código de terminación cuando el ejemplo forme parte de un script.
+La invocación `git http-push --dry-run https://example.com/equipo/biblioteca.git refs/heads/main` ejecuta esta operación: enviar objetos mediante HTTP con WebDAV. Después, los registros y referencias confirman qué objetos se transfirieron y qué actualizaciones se aceptaron. Conserva stdout, stderr y el código de terminación cuando el ejemplo forme parte de un script.
 
 ## Sintaxis y formas de invocación
 
@@ -76,7 +76,7 @@ Amplía la selección a todos los elementos del alcance definido.
 La opción limita o amplía el conjunto sobre el que se ejecuta enviar objetos mediante HTTP con WebDAV. Comprueba la selección con una forma de lectura antes de combinarla con una opción que escriba estado.
 
 ```bash
-git http-push --all --dry-run https://example.test/equipo/biblioteca.git refs/heads/main
+git http-push --all --dry-run https://example.com/equipo/biblioteca.git refs/heads/main
 git show-ref
 ```
 
@@ -89,7 +89,7 @@ Calcula el alcance y muestra lo que ocurriría sin aplicar el cambio.
 La opción añade, retira o consulta una comprobación previa. Ejecuta primero la forma que no escribe cuando exista y conserva el código de terminación como parte del resultado.
 
 ```bash
-git http-push --dry-run https://example.test/equipo/biblioteca.git refs/heads/main
+git http-push --dry-run https://example.com/equipo/biblioteca.git refs/heads/main
 git show-ref
 ```
 
@@ -102,7 +102,7 @@ Omite una protección concreta; úsala solo después de verificar el estado obje
 La opción controla omitir la protección. Registra el estado de las referencias y conserva los cambios sin commit antes de usarla, porque enviar objetos mediante HTTP con WebDAV puede retirar o reemplazar datos dentro del alcance seleccionado.
 
 ```bash
-git http-push --force --dry-run https://example.test/equipo/biblioteca.git refs/heads/main
+git http-push --force --dry-run https://example.com/equipo/biblioteca.git refs/heads/main
 git show-ref
 ```
 
@@ -115,7 +115,7 @@ Aumenta el detalle enviado a la salida.
 La opción cambia la representación o el canal del resultado. Úsala cuando una persona o un script necesite campos, separadores o cantidad de mensajes definidos. El contenido mostrado puede cambiar aunque el repositorio permanezca igual.
 
 ```bash
-git http-push --verbose --dry-run https://example.test/equipo/biblioteca.git refs/heads/main
+git http-push --verbose --dry-run https://example.com/equipo/biblioteca.git refs/heads/main
 git show-ref
 ```
 

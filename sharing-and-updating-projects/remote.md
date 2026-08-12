@@ -24,7 +24,7 @@ Los ejemplos que necesitan un repositorio parten del [laboratorio base de `git i
 Un remoto asigna un nombre, como `origin`, a una o más URL y a reglas de descarga. La URL elige transporte y ubicación. Un refspec asigna una referencia de origen a una referencia de destino.
 
 ```bash
-git remote add origin https://example.test/proyecto.git
+git remote add origin https://example.com/proyecto.git
 git remote -v
 git config --get-all remote.origin.fetch
 ```
@@ -40,11 +40,11 @@ Distingue las referencias de seguimiento remoto de la rama actual. Descargar una
 ## Ejemplo mínimo
 
 ```bash
-git remote add origin https://example.test/equipo/biblioteca.git
+git remote add origin https://example.com/equipo/biblioteca.git
 git remote -v
 ```
 
-La invocación `git remote add origin https://example.test/equipo/biblioteca.git` ejecuta esta operación: crear y administrar nombres para repositorios remotos. Después, las referencias locales y remotas permiten separar descarga, integración y publicación. Conserva stdout, stderr y el código de terminación cuando el ejemplo forme parte de un script.
+La invocación `git remote add origin https://example.com/equipo/biblioteca.git` ejecuta esta operación: crear y administrar nombres para repositorios remotos. Después, las referencias locales y remotas permiten separar descarga, integración y publicación. Conserva stdout, stderr y el código de terminación cuando el ejemplo forme parte de un script.
 
 ## Sintaxis y formas de invocación
 
@@ -108,7 +108,7 @@ La opción cambia la representación o el canal del resultado. Úsala cuando una
 #### Ejemplo con `-v`
 
 ```bash
-git remote -v add origin https://example.test/equipo/biblioteca.git
+git remote -v add origin https://example.com/equipo/biblioteca.git
 git branch -vv
 ```
 
@@ -117,7 +117,7 @@ Esta forma no recibe un valor separado; los argumentos posteriores pertenecen a 
 #### Ejemplo con `--verbose`
 
 ```bash
-git remote --verbose add origin https://example.test/equipo/biblioteca.git
+git remote --verbose add origin https://example.com/equipo/biblioteca.git
 git branch -vv
 ```
 
@@ -132,7 +132,7 @@ Activa t durante crear y administrar nombres para repositorios remotos. La opci�
 En `git remote`, t modifica la forma en que se ejecuta crear y administrar nombres para repositorios remotos. Mantén iguales los demás argumentos para atribuir el cambio observado a esta opción.
 
 ```bash
-git remote -t add origin https://example.test/equipo/biblioteca.git
+git remote -t add origin https://example.com/equipo/biblioteca.git
 git branch -vv
 ```
 
@@ -145,7 +145,7 @@ Activa m durante crear y administrar nombres para repositorios remotos. La opci�
 En `git remote`, m modifica la forma en que se ejecuta crear y administrar nombres para repositorios remotos. Mantén iguales los demás argumentos para atribuir el cambio observado a esta opción.
 
 ```bash
-git remote -m add origin https://example.test/equipo/biblioteca.git
+git remote -m add origin https://example.com/equipo/biblioteca.git
 git branch -vv
 ```
 
@@ -158,7 +158,7 @@ Activa f durante crear y administrar nombres para repositorios remotos. La opci�
 En `git remote`, f modifica la forma en que se ejecuta crear y administrar nombres para repositorios remotos. Mantén iguales los demás argumentos para atribuir el cambio observado a esta opción.
 
 ```bash
-git remote -f add origin https://example.test/equipo/biblioteca.git
+git remote -f add origin https://example.com/equipo/biblioteca.git
 git branch -vv
 ```
 
@@ -171,7 +171,7 @@ Incluye o selecciona etiquetas según la operación.
 La opción limita o amplía el conjunto sobre el que se ejecuta crear y administrar nombres para repositorios remotos. Comprueba la selección con una forma de lectura antes de combinarla con una opción que escriba estado.
 
 ```bash
-git remote --tags add origin https://example.test/equipo/biblioteca.git
+git remote --tags add origin https://example.com/equipo/biblioteca.git
 git branch -vv
 ```
 
@@ -184,7 +184,7 @@ Activa espejo durante crear y administrar nombres para repositorios remotos. La 
 En `git remote`, espejo modifica la forma en que se ejecuta crear y administrar nombres para repositorios remotos. Mantén iguales los demás argumentos para atribuir el cambio observado a esta opción.
 
 ```bash
-git remote --mirror add origin https://example.test/equipo/biblioteca.git
+git remote --mirror add origin https://example.com/equipo/biblioteca.git
 git branch -vv
 ```
 
@@ -197,7 +197,7 @@ Muestra progreso aunque la salida no sea un terminal.
 En `git remote`, progreso modifica la forma en que se ejecuta crear y administrar nombres para repositorios remotos. Mantén iguales los demás argumentos para atribuir el cambio observado a esta opción.
 
 ```bash
-git remote --progress add origin https://example.test/equipo/biblioteca.git
+git remote --progress add origin https://example.com/equipo/biblioteca.git
 git branch -vv
 ```
 
@@ -210,7 +210,7 @@ Desactiva el comportamiento `tags` para esta invocación.
 La opción limita o amplía el conjunto sobre el que se ejecuta crear y administrar nombres para repositorios remotos. Comprueba la selección con una forma de lectura antes de combinarla con una opción que escriba estado.
 
 ```bash
-git remote --no-tags add origin https://example.test/equipo/biblioteca.git
+git remote --no-tags add origin https://example.com/equipo/biblioteca.git
 git branch -vv
 ```
 
@@ -223,7 +223,7 @@ Activa a durante crear y administrar nombres para repositorios remotos. La opci�
 En `git remote`, a modifica la forma en que se ejecuta crear y administrar nombres para repositorios remotos. Mantén iguales los demás argumentos para atribuir el cambio observado a esta opción.
 
 ```bash
-git remote -a add origin https://example.test/equipo/biblioteca.git
+git remote -a add origin https://example.com/equipo/biblioteca.git
 git branch -vv
 ```
 
@@ -236,7 +236,7 @@ Activa auto durante crear y administrar nombres para repositorios remotos. La op
 En `git remote`, auto modifica la forma en que se ejecuta crear y administrar nombres para repositorios remotos. Mantén iguales los demás argumentos para atribuir el cambio observado a esta opción.
 
 ```bash
-git remote --auto add origin https://example.test/equipo/biblioteca.git
+git remote --auto add origin https://example.com/equipo/biblioteca.git
 git branch -vv
 ```
 
@@ -249,7 +249,7 @@ Activa d durante crear y administrar nombres para repositorios remotos. La opci�
 En `git remote`, d modifica la forma en que se ejecuta crear y administrar nombres para repositorios remotos. Mantén iguales los demás argumentos para atribuir el cambio observado a esta opción.
 
 ```bash
-git remote -d add origin https://example.test/equipo/biblioteca.git
+git remote -d add origin https://example.com/equipo/biblioteca.git
 git branch -vv
 ```
 
@@ -262,7 +262,7 @@ Elimina el elemento seleccionado.
 La opción controla eliminar. Registra el estado de las referencias y conserva los cambios sin commit antes de usarla, porque crear y administrar nombres para repositorios remotos puede retirar o reemplazar datos dentro del alcance seleccionado.
 
 ```bash
-git remote --delete add origin https://example.test/equipo/biblioteca.git
+git remote --delete add origin https://example.com/equipo/biblioteca.git
 git branch -vv
 ```
 
@@ -275,7 +275,7 @@ Activa n durante crear y administrar nombres para repositorios remotos. La opci�
 En `git remote`, n modifica la forma en que se ejecuta crear y administrar nombres para repositorios remotos. Mantén iguales los demás argumentos para atribuir el cambio observado a esta opción.
 
 ```bash
-git remote -n add origin https://example.test/equipo/biblioteca.git
+git remote -n add origin https://example.com/equipo/biblioteca.git
 git branch -vv
 ```
 
@@ -288,7 +288,7 @@ Calcula el alcance y muestra lo que ocurriría sin aplicar el cambio.
 La opción añade, retira o consulta una comprobación previa. Ejecuta primero la forma que no escribe cuando exista y conserva el código de terminación como parte del resultado.
 
 ```bash
-git remote --dry-run add origin https://example.test/equipo/biblioteca.git
+git remote --dry-run add origin https://example.com/equipo/biblioteca.git
 git branch -vv
 ```
 
@@ -301,7 +301,7 @@ Activa p durante crear y administrar nombres para repositorios remotos. La opci�
 En `git remote`, p modifica la forma en que se ejecuta crear y administrar nombres para repositorios remotos. Mantén iguales los demás argumentos para atribuir el cambio observado a esta opción.
 
 ```bash
-git remote -p add origin https://example.test/equipo/biblioteca.git
+git remote -p add origin https://example.com/equipo/biblioteca.git
 git branch -vv
 ```
 
@@ -314,7 +314,7 @@ Retira entradas que ya no cumplen la condición documentada.
 La opción controla podar. Registra el estado de las referencias y conserva los cambios sin commit antes de usarla, porque crear y administrar nombres para repositorios remotos puede retirar o reemplazar datos dentro del alcance seleccionado.
 
 ```bash
-git remote --prune add origin https://example.test/equipo/biblioteca.git
+git remote --prune add origin https://example.com/equipo/biblioteca.git
 git branch -vv
 ```
 
@@ -327,7 +327,7 @@ Permite crear o escribir el elemento seleccionado.
 En `git remote`, add modifica la forma en que se ejecuta crear y administrar nombres para repositorios remotos. Mantén iguales los demás argumentos para atribuir el cambio observado a esta opción.
 
 ```bash
-git remote --add add origin https://example.test/equipo/biblioteca.git
+git remote --add add origin https://example.com/equipo/biblioteca.git
 git branch -vv
 ```
 
@@ -340,7 +340,7 @@ Activa push durante crear y administrar nombres para repositorios remotos. La op
 En `git remote`, push modifica la forma en que se ejecuta crear y administrar nombres para repositorios remotos. Mantén iguales los demás argumentos para atribuir el cambio observado a esta opción.
 
 ```bash
-git remote --push add origin https://example.test/equipo/biblioteca.git
+git remote --push add origin https://example.com/equipo/biblioteca.git
 git branch -vv
 ```
 
@@ -353,7 +353,7 @@ Amplía la selección a todos los elementos del alcance definido.
 La opción limita o amplía el conjunto sobre el que se ejecuta crear y administrar nombres para repositorios remotos. Comprueba la selección con una forma de lectura antes de combinarla con una opción que escriba estado.
 
 ```bash
-git remote --all add origin https://example.test/equipo/biblioteca.git
+git remote --all add origin https://example.com/equipo/biblioteca.git
 git branch -vv
 ```
 
@@ -366,7 +366,7 @@ Desactiva para esta invocación el comportamiento que habilita `--verbose`. Mant
 La opción cambia la representación o el canal del resultado. Úsala cuando una persona o un script necesite campos, separadores o cantidad de mensajes definidos. El contenido mostrado puede cambiar aunque el repositorio permanezca igual.
 
 ```bash
-git remote --no-verbose add origin https://example.test/equipo/biblioteca.git
+git remote --no-verbose add origin https://example.com/equipo/biblioteca.git
 git branch -vv
 ```
 
@@ -379,7 +379,7 @@ Desactiva para esta invocación el comportamiento que habilita `--progress`. Man
 En `git remote`, desactivar progreso modifica la forma en que se ejecuta crear y administrar nombres para repositorios remotos. Mantén iguales los demás argumentos para atribuir el cambio observado a esta opción.
 
 ```bash
-git remote --no-progress add origin https://example.test/equipo/biblioteca.git
+git remote --no-progress add origin https://example.com/equipo/biblioteca.git
 git branch -vv
 ```
 

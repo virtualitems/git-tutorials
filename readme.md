@@ -39,7 +39,7 @@ La correspondencia completa está en [`coverage-report.tsv`](coverage-report.tsv
 
 1. Los ejemplos que escriben estado usan un repositorio creado bajo `mktemp -d`.
 2. Los commits de prueba definen nombre y correo solo en el repositorio.
-3. `example.test` representa un dominio sin servicio de producción.
+3. `example.com` representa un dominio sin servicio de producción.
 4. Las rutas, revisiones y URL se sustituyen después de identificar su tipo.
 5. Las operaciones sobre referencias u objetos se prueban sobre datos sin valor antes de usarse en otro repositorio.
 

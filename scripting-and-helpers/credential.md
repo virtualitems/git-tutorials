@@ -28,7 +28,7 @@ Define entrada, salida y código de retorno como contrato del proceso. No depend
 ## Ejemplo mínimo
 
 ```bash
-printf 'protocol=https\nhost=example.test\n\n' | git credential fill
+printf 'protocol=https\nhost=example.com\n\n' | git credential fill
 ```
 
 La invocación `git credential` ejecuta esta operación: intercambiar credenciales con los ayudantes configurados. Después, la salida y el código de retorno distinguen el caso aceptado del rechazado. Conserva stdout, stderr y el código de terminación cuando el ejemplo forme parte de un script.

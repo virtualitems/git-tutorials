@@ -28,10 +28,10 @@ Define entrada, salida y código de retorno como contrato del proceso. No depend
 ## Ejemplo mínimo
 
 ```bash
-git url-parse -c host https://example.test/equipo/biblioteca.git
+git url-parse -c host https://example.com/equipo/biblioteca.git
 ```
 
-La invocación `git url-parse -c host https://example.test/equipo/biblioteca.git` ejecuta esta operación: extraer componentes de una URL aceptada por Git. Después, la salida y el código de retorno distinguen el caso aceptado del rechazado. Conserva stdout, stderr y el código de terminación cuando el ejemplo forme parte de un script.
+La invocación `git url-parse -c host https://example.com/equipo/biblioteca.git` ejecuta esta operación: extraer componentes de una URL aceptada por Git. Después, la salida y el código de retorno distinguen el caso aceptado del rechazado. Conserva stdout, stderr y el código de terminación cuando el ejemplo forme parte de un script.
 
 ## Sintaxis y formas de invocación
 
@@ -66,7 +66,7 @@ Aplica una clave de configuración solo a esta invocación.
 En `git url-parse`, c modifica la forma en que se ejecuta extraer componentes de una URL aceptada por Git. Mantén iguales los demás argumentos para atribuir el cambio observado a esta opción.
 
 ```bash
-git url-parse -c host https://example.test/equipo/biblioteca.git
+git url-parse -c host https://example.com/equipo/biblioteca.git
 printf 'exit=%s\n' "$?"
 ```
 
