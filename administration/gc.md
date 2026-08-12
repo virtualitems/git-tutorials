@@ -2,51 +2,28 @@
 title: "git gc"
 source: "https://git-scm.com/docs/git-gc"
 section: "administration"
-status: "expanded"
+status: "option-expanded"
 ---
 
 # `git gc`
 
 Este caso usa `git gc` para compactar el almacenamiento y retirar datos que ya pueden podarse. Los nombres de archivo, revisiones, ramas y direcciones del ejemplo representan valores que debes sustituir por los de tu repositorio.
 
-## Alcance y responsabilidad
+## Responsabilidad y efecto
 
 git gc comprueba integridad, administra reflogs y reorganiza o elimina datos del almacén. Recibe como entrada los objetos, referencias o archivos de almacenamiento que se van a inspeccionar. La operación consiste en compactar el almacenamiento y retirar datos que ya pueden podarse.
 
-La página distingue lectura, escritura y resultado:
+Puede persistir el estado implicado por esta operación: compactar el almacenamiento y retirar datos que ya pueden podarse. Las opciones pueden limitar o ampliar ese efecto.
 
-| Elemento | Relación con la función | Comprobación |
-| --- | --- | --- |
-| Entrada | los objetos, referencias o archivos de almacenamiento que se van a inspeccionar. | Registra los argumentos y resuelve revisiones antes de ejecutar. |
-| Efecto principal | compactar el almacenamiento y retirar datos que ya pueden podarse. | Comprueba el resultado con una orden de lectura. |
-| Persistencia | Puede persistir el estado implicado por esta operación: compactar el almacenamiento y retirar datos que ya pueden podarse. Las opciones pueden limitar o ampliar ese efecto. | Compara el estado antes y después. |
-| Resultado | La orden comunica datos por stdout y diagnósticos por stderr. | Captura también el código de terminación. |
-| Fuente de verdad | El repositorio y la configuración efectiva determinan el resultado. | Usa `git fsck`, `git count-objects -vH` y una lista de referencias antes y después. |
+## Preparación
 
-## Requisitos y laboratorio
+Los ejemplos que necesitan un repositorio parten del [laboratorio base de `git init`](../getting-and-creating-projects/init.md#laboratorio-base). La posición de opciones, revisiones y rutas sigue las [convenciones de la interfaz de Git](../guides/gitcli.md#convenciones-de-la-cli). Antes de ejecutar una forma que escriba datos, registra `git status --short` y las referencias que puedan cambiar.
 
-Clona o copia un repositorio de prueba. Registra referencias y tamaño antes de una operación que elimine datos.
-
-```bash
-lab_dir="$(mktemp -d)"
-git init "$lab_dir/proyecto"
-git -C "$lab_dir/proyecto" config user.name "Persona de prueba"
-git -C "$lab_dir/proyecto" config user.email "prueba@example.test"
-printf 'línea base\n' > "$lab_dir/proyecto/archivo.txt"
-git -C "$lab_dir/proyecto" add archivo.txt
-git -C "$lab_dir/proyecto" commit -m "base"
-cd "$lab_dir/proyecto"
-```
-
-Antes de ejecutar el ejemplo, confirma la raíz con `git rev-parse --show-toplevel` cuando exista un repositorio. Registra `git status --short` y las referencias que puedan cambiar.
-
-## Modelo de funcionamiento
+## Cómo funciona
 
 Git almacena objetos sueltos, packs, referencias y reflogs. Las tareas de administración reorganizan o eliminan datos según su alcanzabilidad y antigüedad.
 
 Relaciona cada archivo con su alcanzabilidad y retención. La compactación cambia la representación; la poda puede cambiar qué datos se pueden recuperar.
-
-Para comprobar el resultado: los modos de simulación y las consultas de tamaño muestran el efecto antes y después. La verificación debe observar un estado distinto del canal que produjo el cambio.
 
 ## Ejemplo mínimo
 
@@ -56,16 +33,9 @@ git gc
 git count-objects -v
 ```
 
-Ejecuta el bloque en orden. Conserva los nombres del laboratorio hasta confirmar el resultado. Sustituye rutas, revisiones o URL solo después de identificar su tipo y alcance.
+La invocación `git gc` ejecuta esta operación: compactar el almacenamiento y retirar datos que ya pueden podarse. Después, los modos de simulación y las consultas de tamaño muestran el efecto antes y después. Conserva stdout, stderr y el código de terminación cuando el ejemplo forme parte de un script.
 
-### Resultado esperado
-
-- La entrada queda limitada a: los objetos, referencias o archivos de almacenamiento que se van a inspeccionar.
-- La operación observable es: compactar el almacenamiento y retirar datos que ya pueden podarse.
-- La comprobación se realiza mediante: los modos de simulación y las consultas de tamaño muestran el efecto antes y después.
-- stdout contiene datos o confirmaciones; stderr contiene diagnósticos. Captura ambos canales cuando automatices.
-
-## Sintaxis
+## Sintaxis y formas de invocación
 
 ```text
 git gc [--aggressive] [--auto] [--[no-]detach] [--quiet] [--prune=<date> | --no-prune] [--force] [--keep-largest-pack]
@@ -79,70 +49,303 @@ git gc [<options>]
 
 Los corchetes indican elementos opcionales; `<valor>` exige sustitución; los puntos suspensivos permiten repetición; `|` separa formas excluyentes. Usa `git gc -h` para consultar la sintaxis que corresponde a la instalación donde ejecutarás la orden.
 
-## Casos de uso
+## Flujos de uso
 
-| Caso | Objetivo | Criterio de verificación |
-| --- | --- | --- |
-| Caso base | compactar el almacenamiento y retirar datos que ya pueden podarse | Ejecuta el ejemplo mínimo y registra el estado antes y después. |
-| Alcance explícito | Aplicar git gc a una referencia, rango o ruta identificada. | Resuelve cada argumento antes de ejecutar y usa `--` para rutas. |
-| Validación | Comprobar el resultado de git gc con una orden de lectura independiente. | No uses la misma salida como única prueba del cambio. |
+### Caso base
 
+compactar el almacenamiento y retirar datos que ya pueden podarse. Usa el [ejemplo mínimo](#ejemplo-mínimo) como punto de partida. Ejecuta el ejemplo mínimo y registra el estado antes y después.
 
-## Opciones y variaciones
+### Alcance explícito
 
-La tabla agrupa las opciones visibles en la sintaxis y en la ayuda corta. Una opción puede tener un significado propio cuando la página lo define; ejecuta la ayuda de tu versión antes de usarla en automatización.
+Aplicar git gc a una referencia, rango o ruta identificada. Usa el [ejemplo mínimo](#ejemplo-mínimo) como punto de partida. Resuelve cada argumento antes de ejecutar y usa `--` para rutas.
 
-| Opción | Efecto que debes controlar |
-| --- | --- |
-| `--aggressive` | Activa el modo `--aggressive`; los argumentos y restricciones aparecen en la sintaxis y en la fuente oficial. |
-| `--auto` | Activa el modo `--auto`; los argumentos y restricciones aparecen en la sintaxis y en la fuente oficial. |
-| `--detach` | Hace que `HEAD` apunte directamente a un commit. |
-| `--quiet` | Reduce mensajes que no representan errores. |
-| `--prune` | Retira entradas que ya no cumplen la condición documentada. |
-| `--no-prune` | Desactiva el comportamiento `prune` para esta invocación. |
-| `--force` | Omite una protección concreta; úsala solo después de verificar el estado objetivo. |
-| `--keep-largest-pack` | Activa el modo `--keep-largest-pack`; los argumentos y restricciones aparecen en la sintaxis y en la fuente oficial. |
-| `-q` | Activa la forma corta del modo sin mensajes. |
-| `--cruft` | Activa el modo `--cruft`; los argumentos y restricciones aparecen en la sintaxis y en la fuente oficial. |
-| `--max-cruft-size` | Establece un límite numérico para la selección o el recorrido. |
-| `--expire-to` | Aplica una fecha, duración o política de vencimiento. |
+### Validación
 
-## Selección de entradas
+Comprobar el resultado de git gc con una orden de lectura independiente. Usa el [ejemplo mínimo](#ejemplo-mínimo) como punto de partida. No uses la misma salida como única prueba del cambio.
 
-Distingue identificadores de objeto, referencias y rutas. Resuelve revisiones con `git rev-parse --verify`; inspecciona tipo y tamaño con `git cat-file`; usa actualización condicional al escribir referencias.
+## Opciones
 
-Comprueba cada entrada con una orden de lectura antes de una escritura. Para listas de rutas generadas por otro proceso, prefiere una interfaz terminada en NUL cuando esté disponible.
+Cada apartado usa una opción en una invocación concreta. Las opciones equivalentes comparten la explicación, pero cada alias tiene su propio ejemplo. Ejecuta una opción por vez antes de combinarlas.
 
-## Salida y códigos de terminación
+### `--aggressive`
 
-Un código 0 indica que la operación terminó bajo el contrato solicitado. Trata cualquier código distinto de cero según la función; no deduzcas el estado solo a partir de que stdout esté vacío.
+Activa aggressive durante compactar el almacenamiento y retirar datos que ya pueden podarse. La opción afecta esta invocación y no cambia la configuración de otras órdenes salvo que la propia función escriba esa configuración. En Git 2.51.1, la ayuda corta expresa el contrato como `be more thorough (increased runtime)`. Conserva esa formulación al comparar el efecto entre versiones de Git.
 
-No analices mensajes destinados a personas si existe un formato de máquina. Declara los campos, desactiva color y conserva stderr para diagnóstico.
+En `git gc`, aggressive modifica la forma en que se ejecuta compactar el almacenamiento y retirar datos que ya pueden podarse. Mantén iguales los demás argumentos para atribuir el cambio observado a esta opción.
+
+```bash
+git gc --aggressive
+git count-objects -vH
+```
+
+La opción no recibe un valor separado en la forma mostrada por la ayuda corta. Los argumentos que aparecen después pertenecen a `git gc` o a otra opción. La salida permite comprobar objetos sueltos, packs y espacio registrado. Ejecuta la comprobación inmediatamente después para que ningún comando intermedio cambie el estado que estás observando.
+
+### `--auto`
+
+Activa auto durante compactar el almacenamiento y retirar datos que ya pueden podarse. La opción afecta esta invocación y no cambia la configuración de otras órdenes salvo que la propia función escriba esa configuración. En Git 2.51.1, la ayuda corta expresa el contrato como `enable auto-gc mode`. Conserva esa formulación al comparar el efecto entre versiones de Git.
+
+En `git gc`, auto modifica la forma en que se ejecuta compactar el almacenamiento y retirar datos que ya pueden podarse. Mantén iguales los demás argumentos para atribuir el cambio observado a esta opción.
+
+```bash
+git gc --auto
+git count-objects -vH
+```
+
+La opción no recibe un valor separado en la forma mostrada por la ayuda corta. Los argumentos que aparecen después pertenecen a `git gc` o a otra opción. La salida permite comprobar objetos sueltos, packs y espacio registrado. Ejecuta la comprobación inmediatamente después para que ningún comando intermedio cambie el estado que estás observando.
+
+### `--detach`
+
+Hace que `HEAD` apunte directamente a un commit.
+
+En `git gc`, HEAD separado modifica la forma en que se ejecuta compactar el almacenamiento y retirar datos que ya pueden podarse. Mantén iguales los demás argumentos para atribuir el cambio observado a esta opción.
+
+```bash
+git gc --detach
+git count-objects -vH
+```
+
+La opción no recibe un valor separado en la forma mostrada por la ayuda corta. Los argumentos que aparecen después pertenecen a `git gc` o a otra opción. La salida permite comprobar objetos sueltos, packs y espacio registrado. Ejecuta la comprobación inmediatamente después para que ningún comando intermedio cambie el estado que estás observando.
+
+### `--quiet` y `-q`
+
+Reduce mensajes que no representan errores.  La misma línea de ayuda también acepta `-q`. Esas formas seleccionan el mismo comportamiento; cambia la escritura del argumento, no el efecto.
+
+Estas escrituras son alias: seleccionan el mismo comportamiento. Se documentan juntas para no duplicar la regla, pero cada una conserva su propia invocación reproducible.
+
+La opción cambia la representación o el canal del resultado. Úsala cuando una persona o un script necesite campos, separadores o cantidad de mensajes definidos. El contenido mostrado puede cambiar aunque el repositorio permanezca igual.
+
+#### Ejemplo con `--quiet`
+
+```bash
+git gc --quiet
+git count-objects -vH
+```
+
+Esta forma no recibe un valor separado; los argumentos posteriores pertenecen a `git gc` o a otra opción. La salida permite comprobar objetos sueltos, packs y espacio registrado.
+
+#### Ejemplo con `-q`
+
+```bash
+git gc -q
+git count-objects -vH
+```
+
+Esta forma no recibe un valor separado; los argumentos posteriores pertenecen a `git gc` o a otra opción. La salida permite comprobar objetos sueltos, packs y espacio registrado.
+
+Ejecuta una sola alternativa cada vez. Si ejecutas varias consecutivamente, el primer comando puede cambiar el estado que observa el siguiente.
+
+### `--prune`
+
+Retira entradas que ya no cumplen la condición documentada.
+
+La opción controla podar. Registra el estado de las referencias y conserva los cambios sin commit antes de usarla, porque compactar el almacenamiento y retirar datos que ya pueden podarse puede retirar o reemplazar datos dentro del alcance seleccionado.
+
+```bash
+git gc --prune=2026-01-15
+git count-objects -vH
+```
+
+El ejemplo usa `2026-01-15` como valor. Sustitúyelo por un valor del tipo que muestra la sintaxis de tu versión. Un valor numérico conserva su unidad y un nombre de referencia debe resolver antes de ejecutar la orden. La salida permite comprobar objetos sueltos, packs y espacio registrado. Ejecuta la comprobación inmediatamente después para que ningún comando intermedio cambie el estado que estás observando.
+
+### `--no-prune`
+
+Desactiva el comportamiento `prune` para esta invocación.
+
+La opción controla desactivar podar. Registra el estado de las referencias y conserva los cambios sin commit antes de usarla, porque compactar el almacenamiento y retirar datos que ya pueden podarse puede retirar o reemplazar datos dentro del alcance seleccionado.
+
+```bash
+git gc --no-prune
+git count-objects -vH
+```
+
+La opción no recibe un valor separado en la forma mostrada por la ayuda corta. Los argumentos que aparecen después pertenecen a `git gc` o a otra opción. La salida permite comprobar objetos sueltos, packs y espacio registrado. Ejecuta la comprobación inmediatamente después para que ningún comando intermedio cambie el estado que estás observando.
+
+### `--force`
+
+Omite una protección concreta; úsala solo después de verificar el estado objetivo.
+
+La opción controla omitir la protección. Registra el estado de las referencias y conserva los cambios sin commit antes de usarla, porque compactar el almacenamiento y retirar datos que ya pueden podarse puede retirar o reemplazar datos dentro del alcance seleccionado.
+
+```bash
+git gc --force
+git count-objects -vH
+```
+
+La opción no recibe un valor separado en la forma mostrada por la ayuda corta. Los argumentos que aparecen después pertenecen a `git gc` o a otra opción. La salida permite comprobar objetos sueltos, packs y espacio registrado. Ejecuta la comprobación inmediatamente después para que ningún comando intermedio cambie el estado que estás observando.
+
+### `--keep-largest-pack`
+
+Activa conservar largest pack durante compactar el almacenamiento y retirar datos que ya pueden podarse. La opción afecta esta invocación y no cambia la configuración de otras órdenes salvo que la propia función escriba esa configuración. En Git 2.51.1, la ayuda corta expresa el contrato como `repack all other packs except the largest pack`. Conserva esa formulación al comparar el efecto entre versiones de Git.
+
+La opción limita o amplía el conjunto sobre el que se ejecuta compactar el almacenamiento y retirar datos que ya pueden podarse. Comprueba la selección con una forma de lectura antes de combinarla con una opción que escriba estado.
+
+```bash
+git gc --keep-largest-pack
+git count-objects -vH
+```
+
+La opción no recibe un valor separado en la forma mostrada por la ayuda corta. Los argumentos que aparecen después pertenecen a `git gc` o a otra opción. La salida permite comprobar objetos sueltos, packs y espacio registrado. Ejecuta la comprobación inmediatamente después para que ningún comando intermedio cambie el estado que estás observando.
+
+### `--cruft`
+
+Activa cruft durante compactar el almacenamiento y retirar datos que ya pueden podarse. La opción afecta esta invocación y no cambia la configuración de otras órdenes salvo que la propia función escriba esa configuración. En Git 2.51.1, la ayuda corta expresa el contrato como `pack unreferenced objects separately`. Conserva esa formulación al comparar el efecto entre versiones de Git.
+
+En `git gc`, cruft modifica la forma en que se ejecuta compactar el almacenamiento y retirar datos que ya pueden podarse. Mantén iguales los demás argumentos para atribuir el cambio observado a esta opción.
+
+```bash
+git gc --cruft
+git count-objects -vH
+```
+
+La opción no recibe un valor separado en la forma mostrada por la ayuda corta. Los argumentos que aparecen después pertenecen a `git gc` o a otra opción. La salida permite comprobar objetos sueltos, packs y espacio registrado. Ejecuta la comprobación inmediatamente después para que ningún comando intermedio cambie el estado que estás observando.
+
+### `--max-cruft-size`
+
+Establece un límite numérico para la selección o el recorrido.
+
+En `git gc`, máximo cruft size modifica la forma en que se ejecuta compactar el almacenamiento y retirar datos que ya pueden podarse. Mantén iguales los demás argumentos para atribuir el cambio observado a esta opción.
+
+```bash
+git gc --max-cruft-size=5
+git count-objects -vH
+```
+
+El ejemplo usa `5` como valor. Sustitúyelo por un valor del tipo que muestra la sintaxis de tu versión. Un valor numérico conserva su unidad y un nombre de referencia debe resolver antes de ejecutar la orden. La salida permite comprobar objetos sueltos, packs y espacio registrado. Ejecuta la comprobación inmediatamente después para que ningún comando intermedio cambie el estado que estás observando.
+
+### `--expire-to`
+
+Aplica una fecha, duración o política de vencimiento.
+
+La opción controla expire to. Registra el estado de las referencias y conserva los cambios sin commit antes de usarla, porque compactar el almacenamiento y retirar datos que ya pueden podarse puede retirar o reemplazar datos dentro del alcance seleccionado.
+
+```bash
+git gc --expire-to=docs
+git count-objects -vH
+```
+
+El ejemplo usa `docs` como valor. Sustitúyelo por un valor del tipo que muestra la sintaxis de tu versión. Un valor numérico conserva su unidad y un nombre de referencia debe resolver antes de ejecutar la orden. La salida permite comprobar objetos sueltos, packs y espacio registrado. Ejecuta la comprobación inmediatamente después para que ningún comando intermedio cambie el estado que estás observando.
+
+### `--no-aggressive`
+
+Desactiva para esta invocación el comportamiento que habilita `--aggressive`. Mantén iguales los demás argumentos y compara el resultado con la forma positiva para comprobar la diferencia.
+
+En `git gc`, desactivar aggressive modifica la forma en que se ejecuta compactar el almacenamiento y retirar datos que ya pueden podarse. Mantén iguales los demás argumentos para atribuir el cambio observado a esta opción.
+
+```bash
+git gc --no-aggressive
+git count-objects -vH
+```
+
+La opción no recibe un valor separado en la forma mostrada por la ayuda corta. Los argumentos que aparecen después pertenecen a `git gc` o a otra opción. La salida permite comprobar objetos sueltos, packs y espacio registrado. Ejecuta la comprobación inmediatamente después para que ningún comando intermedio cambie el estado que estás observando.
+
+### `--no-auto`
+
+Desactiva para esta invocación el comportamiento que habilita `--auto`. Mantén iguales los demás argumentos y compara el resultado con la forma positiva para comprobar la diferencia.
+
+En `git gc`, desactivar auto modifica la forma en que se ejecuta compactar el almacenamiento y retirar datos que ya pueden podarse. Mantén iguales los demás argumentos para atribuir el cambio observado a esta opción.
+
+```bash
+git gc --no-auto
+git count-objects -vH
+```
+
+La opción no recibe un valor separado en la forma mostrada por la ayuda corta. Los argumentos que aparecen después pertenecen a `git gc` o a otra opción. La salida permite comprobar objetos sueltos, packs y espacio registrado. Ejecuta la comprobación inmediatamente después para que ningún comando intermedio cambie el estado que estás observando.
+
+### `--no-detach`
+
+Desactiva para esta invocación el comportamiento que habilita `--detach`. Mantén iguales los demás argumentos y compara el resultado con la forma positiva para comprobar la diferencia.
+
+En `git gc`, desactivar HEAD separado modifica la forma en que se ejecuta compactar el almacenamiento y retirar datos que ya pueden podarse. Mantén iguales los demás argumentos para atribuir el cambio observado a esta opción.
+
+```bash
+git gc --no-detach
+git count-objects -vH
+```
+
+La opción no recibe un valor separado en la forma mostrada por la ayuda corta. Los argumentos que aparecen después pertenecen a `git gc` o a otra opción. La salida permite comprobar objetos sueltos, packs y espacio registrado. Ejecuta la comprobación inmediatamente después para que ningún comando intermedio cambie el estado que estás observando.
+
+### `--no-quiet`
+
+Desactiva para esta invocación el comportamiento que habilita `--quiet`. Mantén iguales los demás argumentos y compara el resultado con la forma positiva para comprobar la diferencia.
+
+La opción cambia la representación o el canal del resultado. Úsala cuando una persona o un script necesite campos, separadores o cantidad de mensajes definidos. El contenido mostrado puede cambiar aunque el repositorio permanezca igual.
+
+```bash
+git gc --no-quiet
+git count-objects -vH
+```
+
+La opción no recibe un valor separado en la forma mostrada por la ayuda corta. Los argumentos que aparecen después pertenecen a `git gc` o a otra opción. La salida permite comprobar objetos sueltos, packs y espacio registrado. Ejecuta la comprobación inmediatamente después para que ningún comando intermedio cambie el estado que estás observando.
+
+### `--no-force`
+
+Desactiva para esta invocación el comportamiento que habilita `--force`. Mantén iguales los demás argumentos y compara el resultado con la forma positiva para comprobar la diferencia.
+
+La opción controla desactivar omitir la protección. Registra el estado de las referencias y conserva los cambios sin commit antes de usarla, porque compactar el almacenamiento y retirar datos que ya pueden podarse puede retirar o reemplazar datos dentro del alcance seleccionado.
+
+```bash
+git gc --no-force
+git count-objects -vH
+```
+
+La opción no recibe un valor separado en la forma mostrada por la ayuda corta. Los argumentos que aparecen después pertenecen a `git gc` o a otra opción. La salida permite comprobar objetos sueltos, packs y espacio registrado. Ejecuta la comprobación inmediatamente después para que ningún comando intermedio cambie el estado que estás observando.
+
+### `--no-keep-largest-pack`
+
+Desactiva para esta invocación el comportamiento que habilita `--keep-largest-pack`. Mantén iguales los demás argumentos y compara el resultado con la forma positiva para comprobar la diferencia.
+
+La opción limita o amplía el conjunto sobre el que se ejecuta compactar el almacenamiento y retirar datos que ya pueden podarse. Comprueba la selección con una forma de lectura antes de combinarla con una opción que escriba estado.
+
+```bash
+git gc --no-keep-largest-pack
+git count-objects -vH
+```
+
+La opción no recibe un valor separado en la forma mostrada por la ayuda corta. Los argumentos que aparecen después pertenecen a `git gc` o a otra opción. La salida permite comprobar objetos sueltos, packs y espacio registrado. Ejecuta la comprobación inmediatamente después para que ningún comando intermedio cambie el estado que estás observando.
+
+### `--no-cruft`
+
+Desactiva para esta invocación el comportamiento que habilita `--cruft`. Mantén iguales los demás argumentos y compara el resultado con la forma positiva para comprobar la diferencia.
+
+En `git gc`, desactivar cruft modifica la forma en que se ejecuta compactar el almacenamiento y retirar datos que ya pueden podarse. Mantén iguales los demás argumentos para atribuir el cambio observado a esta opción.
+
+```bash
+git gc --no-cruft
+git count-objects -vH
+```
+
+La opción no recibe un valor separado en la forma mostrada por la ayuda corta. Los argumentos que aparecen después pertenecen a `git gc` o a otra opción. La salida permite comprobar objetos sueltos, packs y espacio registrado. Ejecuta la comprobación inmediatamente después para que ningún comando intermedio cambie el estado que estás observando.
+
+### `--no-expire-to`
+
+Desactiva para esta invocación el comportamiento que habilita `--expire-to`. Mantén iguales los demás argumentos y compara el resultado con la forma positiva para comprobar la diferencia.
+
+La opción controla desactivar expire to. Registra el estado de las referencias y conserva los cambios sin commit antes de usarla, porque compactar el almacenamiento y retirar datos que ya pueden podarse puede retirar o reemplazar datos dentro del alcance seleccionado.
+
+```bash
+git gc --no-expire-to
+git count-objects -vH
+```
+
+La opción no recibe un valor separado en la forma mostrada por la ayuda corta. Los argumentos que aparecen después pertenecen a `git gc` o a otra opción. La salida permite comprobar objetos sueltos, packs y espacio registrado. Ejecuta la comprobación inmediatamente después para que ningún comando intermedio cambie el estado que estás observando.
 
 ## Errores y diagnóstico
 
-| Señal | Causa que debes comprobar | Acción |
-| --- | --- | --- |
-| Un objeto aparece como inalcanzable | Ninguna referencia o reflog lo conserva | Determina si debe recuperarse antes de podar. |
-| El tamaño no disminuye | Los objetos siguen alcanzables o aún están protegidos por reflogs | Inspecciona alcanzabilidad y vencimientos. |
-| La operación se interrumpe | Otro proceso mantiene un lock | Comprueba procesos activos antes de retirar un lock obsoleto. |
+### Un objeto aparece como inalcanzable
 
-Si una operación deja archivos de estado dentro de `.git`, usa `git status` y la acción de continuar, omitir o abortar definida por esa operación. No borres esos archivos para simular una cancelación.
+Comprueba esta causa: Ninguna referencia o reflog lo conserva. Determina si debe recuperarse antes de podar.
 
-## Automatización
+### El tamaño no disminuye
 
-1. Declara la versión mínima de Git que necesita el script.
-2. Resuelve la raíz del repositorio y evita depender del directorio actual.
-3. Separa opciones y rutas con `--`.
-4. Captura stdout, stderr y el código de terminación.
-5. Usa formatos de máquina o terminación NUL para nombres de archivo.
-6. Ejecuta primero sobre el laboratorio y añade un caso sin coincidencias.
+Comprueba esta causa: Los objetos siguen alcanzables o aún están protegidos por reflogs. Inspecciona alcanzabilidad y vencimientos.
 
-## Seguridad y recuperación
+### La operación se interrumpe
+
+Comprueba esta causa: Otro proceso mantiene un lock. Comprueba procesos activos antes de retirar un lock obsoleto.
+
+## Automatización y recuperación
 
 Persistencia: Puede persistir el estado implicado por esta operación: compactar el almacenamiento y retirar datos que ya pueden podarse. Las opciones pueden limitar o ampliar ese efecto. Antes de una operación que mueva o elimine referencias, registra sus hashes con `git show-ref`. Antes de cambiar archivos, conserva `git diff` y `git diff --cached`. Para objetos y commits que dejaron de estar referenciados, consulta el reflog antes de ejecutar mantenimiento que pueda eliminarlos.
-
-## Práctica guiada
 
 Haz la prueba en una copia. Ejecuta primero el modo de inspección o simulación disponible y registra referencias, reflogs y tamaño antes de modificar datos.
 

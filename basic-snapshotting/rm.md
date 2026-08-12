@@ -2,51 +2,28 @@
 title: "git rm"
 source: "https://git-scm.com/docs/git-rm"
 section: "basic-snapshotting"
-status: "expanded"
+status: "option-expanded"
 ---
 
 # `git rm`
 
 Este caso usa `git rm` para retirar rutas del índice y, por defecto, del área de trabajo. Los nombres de archivo, revisiones, ramas y direcciones del ejemplo representan valores que debes sustituir por los de tu repositorio.
 
-## Alcance y responsabilidad
+## Responsabilidad y efecto
 
 git rm mueve contenido entre el área de trabajo, el índice y el commit señalado por `HEAD`. Recibe como entrada las rutas y el estado de origen seleccionados por los argumentos. La operación consiste en retirar rutas del índice y, por defecto, del área de trabajo.
 
-La página distingue lectura, escritura y resultado:
+Puede persistir el estado implicado por esta operación: retirar rutas del índice y, por defecto, del área de trabajo. Las opciones pueden limitar o ampliar ese efecto.
 
-| Elemento | Relación con la función | Comprobación |
-| --- | --- | --- |
-| Entrada | las rutas y el estado de origen seleccionados por los argumentos. | Registra los argumentos y resuelve revisiones antes de ejecutar. |
-| Efecto principal | retirar rutas del índice y, por defecto, del área de trabajo. | Comprueba el resultado con una orden de lectura. |
-| Persistencia | Puede persistir el estado implicado por esta operación: retirar rutas del índice y, por defecto, del área de trabajo. Las opciones pueden limitar o ampliar ese efecto. | Compara el estado antes y después. |
-| Resultado | La orden comunica datos por stdout y diagnósticos por stderr. | Captura también el código de terminación. |
-| Fuente de verdad | El repositorio y la configuración efectiva determinan el resultado. | Usa `git status --short`, `git diff` y `git diff --cached`. |
+## Preparación
 
-## Requisitos y laboratorio
+Los ejemplos que necesitan un repositorio parten del [laboratorio base de `git init`](../getting-and-creating-projects/init.md#laboratorio-base). La posición de opciones, revisiones y rutas sigue las [convenciones de la interfaz de Git](../guides/gitcli.md#convenciones-de-la-cli). La selección de rutas se explica en [pathspecs y separación con `--`](../guides/gitcli.md#pathspecs). Antes de ejecutar una forma que escriba datos, registra `git status --short` y las referencias que puedan cambiar.
 
-Crea un repositorio con un commit base. Observa `HEAD`, el índice y el archivo antes y después de cada orden.
-
-```bash
-lab_dir="$(mktemp -d)"
-git init "$lab_dir/proyecto"
-git -C "$lab_dir/proyecto" config user.name "Persona de prueba"
-git -C "$lab_dir/proyecto" config user.email "prueba@example.test"
-printf 'línea base\n' > "$lab_dir/proyecto/archivo.txt"
-git -C "$lab_dir/proyecto" add archivo.txt
-git -C "$lab_dir/proyecto" commit -m "base"
-cd "$lab_dir/proyecto"
-```
-
-Antes de ejecutar el ejemplo, confirma la raíz con `git rev-parse --show-toplevel` cuando exista un repositorio. Registra `git status --short` y las referencias que puedan cambiar.
-
-## Modelo de funcionamiento
+## Cómo funciona
 
 El área de trabajo contiene los archivos editables. El índice describe el próximo snapshot. Un commit registra un árbol derivado del índice y enlaza con commits anteriores.
 
 Identifica el origen y el destino de cada cambio. Una orden puede leer HEAD y escribir el índice sin modificar el archivo del área de trabajo.
-
-Para comprobar el resultado: `git status` permite distinguir cambios en el área de trabajo, el índice y HEAD. La verificación debe observar un estado distinto del canal que produjo el cambio.
 
 ## Ejemplo mínimo
 
@@ -55,16 +32,9 @@ git rm notas-temporales.txt
 git commit -m "Retira notas temporales"
 ```
 
-Ejecuta el bloque en orden. Conserva los nombres del laboratorio hasta confirmar el resultado. Sustituye rutas, revisiones o URL solo después de identificar su tipo y alcance.
+La invocación `git rm notas-temporales.txt` ejecuta esta operación: retirar rutas del índice y, por defecto, del área de trabajo. Después, `git status` permite distinguir cambios en el área de trabajo, el índice y HEAD. Conserva stdout, stderr y el código de terminación cuando el ejemplo forme parte de un script.
 
-### Resultado esperado
-
-- La entrada queda limitada a: las rutas y el estado de origen seleccionados por los argumentos.
-- La operación observable es: retirar rutas del índice y, por defecto, del área de trabajo.
-- La comprobación se realiza mediante: `git status` permite distinguir cambios en el área de trabajo, el índice y HEAD.
-- stdout contiene datos o confirmaciones; stderr contiene diagnósticos. Captura ambos canales cuando automatices.
-
-## Sintaxis
+## Sintaxis y formas de invocación
 
 ```text
 git rm [-f | --force] [-n] [-r] [--cached] [--ignore-unmatch]
@@ -82,71 +52,311 @@ git rm [-f | --force] [-n] [-r] [--cached] [--ignore-unmatch]
 
 Los corchetes indican elementos opcionales; `<valor>` exige sustitución; los puntos suspensivos permiten repetición; `|` separa formas excluyentes. Usa `git rm -h` para consultar la sintaxis que corresponde a la instalación donde ejecutarás la orden.
 
-## Casos de uso
+## Flujos de uso
 
-| Caso | Objetivo | Criterio de verificación |
-| --- | --- | --- |
-| Caso base | retirar rutas del índice y, por defecto, del área de trabajo | Ejecuta el ejemplo mínimo y registra el estado antes y después. |
-| Alcance explícito | Aplicar git rm a una referencia, rango o ruta identificada. | Resuelve cada argumento antes de ejecutar y usa `--` para rutas. |
-| Simulación | Calcular el efecto sin escribir el estado principal. | Compara la simulación con la selección prevista. |
-| Validación | Comprobar el resultado de git rm con una orden de lectura independiente. | No uses la misma salida como única prueba del cambio. |
+### Caso base
 
+retirar rutas del índice y, por defecto, del área de trabajo. Usa el [ejemplo mínimo](#ejemplo-mínimo) como punto de partida. Ejecuta el ejemplo mínimo y registra el estado antes y después.
 
-## Opciones y variaciones
+### Alcance explícito
 
-La tabla agrupa las opciones visibles en la sintaxis y en la ayuda corta. Una opción puede tener un significado propio cuando la página lo define; ejecuta la ayuda de tu versión antes de usarla en automatización.
+Aplicar git rm a una referencia, rango o ruta identificada. Usa el [ejemplo mínimo](#ejemplo-mínimo) como punto de partida. Resuelve cada argumento antes de ejecutar y usa `--` para rutas.
 
-| Opción | Efecto que debes controlar |
-| --- | --- |
-| `-f` | Activa la forma corta de la operación forzada. |
-| `--force` | Omite una protección concreta; úsala solo después de verificar el estado objetivo. |
-| `-n` | Activa la forma corta documentada por la sintaxis; en muchas órdenes corresponde a simulación o límite numérico. |
-| `-r` | Activa el modo `-r`; los argumentos y restricciones aparecen en la sintaxis y en la fuente oficial. |
-| `--cached` | Usa el índice como origen o destino, sin tratar el área de trabajo de la misma forma. |
-| `--ignore-unmatch` | Excluye elementos que cumplan la condición indicada. |
-| `--quiet` | Reduce mensajes que no representan errores. |
-| `--pathspec-from-file` | Lee pathspecs desde un archivo o desde stdin. |
-| `--pathspec-file-nul` | Interpreta los pathspecs de archivo como registros terminados en NUL. |
-| `--dry-run` | Calcula el alcance y muestra lo que ocurriría sin aplicar el cambio. |
-| `-q` | Activa la forma corta del modo sin mensajes. |
-| `--sparse` | Permite operar sobre entradas que quedan fuera de la selección sparse activa. |
+### Simulación
 
-## Selección de entradas
+Calcular el efecto sin escribir el estado principal. Usa el [ejemplo mínimo](#ejemplo-mínimo) como punto de partida. Compara la simulación con la selección prevista.
 
-Las revisiones se resuelven antes que los pathspecs cuando la sintaxis las espera. Usa `--` para separar opciones y rutas. Cita los globos para decidir si los expande el shell o Git.
+### Validación
 
-Comprueba cada entrada con una orden de lectura antes de una escritura. Para listas de rutas generadas por otro proceso, prefiere una interfaz terminada en NUL cuando esté disponible.
+Comprobar el resultado de git rm con una orden de lectura independiente. Usa el [ejemplo mínimo](#ejemplo-mínimo) como punto de partida. No uses la misma salida como única prueba del cambio.
 
-## Salida y códigos de terminación
+## Opciones
 
-Un código 0 indica que la operación terminó bajo el contrato solicitado. Trata cualquier código distinto de cero según la función; no deduzcas el estado solo a partir de que stdout esté vacío.
+Cada apartado usa una opción en una invocación concreta. Las opciones equivalentes comparten la explicación, pero cada alias tiene su propio ejemplo. Ejecuta una opción por vez antes de combinarlas.
 
-No analices mensajes destinados a personas si existe un formato de máquina. Declara los campos, desactiva color y conserva stderr para diagnóstico.
+### `-f` y `--force`
+
+Omite una protección concreta; úsala solo después de verificar el estado objetivo.  La misma línea de ayuda también acepta `-f`. Esas formas seleccionan el mismo comportamiento; cambia la escritura del argumento, no el efecto.
+
+Estas escrituras son alias: seleccionan el mismo comportamiento. Se documentan juntas para no duplicar la regla, pero cada una conserva su propia invocación reproducible.
+
+La opción controla omitir la protección. Registra el estado de las referencias y conserva los cambios sin commit antes de usarla, porque retirar rutas del índice y, por defecto, del área de trabajo puede retirar o reemplazar datos dentro del alcance seleccionado.
+
+#### Ejemplo con `-f`
+
+```bash
+git rm -f notas-temporales.txt
+git status --short
+```
+
+Esta forma no recibe un valor separado; los argumentos posteriores pertenecen a `git rm` o a otra opción. El estado muestra si cambió el área de trabajo, el índice o la operación en curso.
+
+#### Ejemplo con `--force`
+
+```bash
+git rm --force notas-temporales.txt
+git status --short
+```
+
+Esta forma no recibe un valor separado; los argumentos posteriores pertenecen a `git rm` o a otra opción. El estado muestra si cambió el área de trabajo, el índice o la operación en curso.
+
+Ejecuta una sola alternativa cada vez. Si ejecutas varias consecutivamente, el primer comando puede cambiar el estado que observa el siguiente.
+
+### `-n` y `--dry-run`
+
+Calcula el alcance y muestra lo que ocurriría sin aplicar el cambio.  La misma línea de ayuda también acepta `-n`. Esas formas seleccionan el mismo comportamiento; cambia la escritura del argumento, no el efecto.
+
+Estas escrituras son alias: seleccionan el mismo comportamiento. Se documentan juntas para no duplicar la regla, pero cada una conserva su propia invocación reproducible.
+
+La opción añade, retira o consulta una comprobación previa. Ejecuta primero la forma que no escribe cuando exista y conserva el código de terminación como parte del resultado.
+
+#### Ejemplo con `-n`
+
+```bash
+git rm -n notas-temporales.txt
+git status --short
+```
+
+Esta forma no recibe un valor separado; los argumentos posteriores pertenecen a `git rm` o a otra opción. El estado muestra si cambió el área de trabajo, el índice o la operación en curso.
+
+#### Ejemplo con `--dry-run`
+
+```bash
+git rm --dry-run notas-temporales.txt
+git status --short
+```
+
+Esta forma no recibe un valor separado; los argumentos posteriores pertenecen a `git rm` o a otra opción. El estado muestra si cambió el área de trabajo, el índice o la operación en curso.
+
+Ejecuta una sola alternativa cada vez. Si ejecutas varias consecutivamente, el primer comando puede cambiar el estado que observa el siguiente.
+
+### `-r`
+
+Permite r cuando la forma predeterminada de `git rm` lo rechazaría o lo omitiría. En Git 2.51.1, la ayuda corta expresa el contrato como `allow recursive removal`. Conserva esa formulación al comparar el efecto entre versiones de Git.
+
+La opción limita o amplía el conjunto sobre el que se ejecuta retirar rutas del índice y, por defecto, del área de trabajo. Comprueba la selección con una forma de lectura antes de combinarla con una opción que escriba estado.
+
+```bash
+git rm -r notas-temporales.txt
+git status --short
+```
+
+La opción no recibe un valor separado en la forma mostrada por la ayuda corta. Los argumentos que aparecen después pertenecen a `git rm` o a otra opción. El estado muestra si cambió el área de trabajo, el índice o la operación en curso. Ejecuta la comprobación inmediatamente después para que ningún comando intermedio cambie el estado que estás observando.
+
+### `--cached`
+
+Usa el índice como origen o destino, sin tratar el área de trabajo de la misma forma.
+
+La opción controla índice. Registra el estado de las referencias y conserva los cambios sin commit antes de usarla, porque retirar rutas del índice y, por defecto, del área de trabajo puede retirar o reemplazar datos dentro del alcance seleccionado.
+
+```bash
+git rm --cached notas-temporales.txt
+git status --short
+```
+
+La opción no recibe un valor separado en la forma mostrada por la ayuda corta. Los argumentos que aparecen después pertenecen a `git rm` o a otra opción. El estado muestra si cambió el área de trabajo, el índice o la operación en curso. Ejecuta la comprobación inmediatamente después para que ningún comando intermedio cambie el estado que estás observando.
+
+### `--ignore-unmatch`
+
+Excluye elementos que cumplan la condición indicada.
+
+La opción cambia la representación o el canal del resultado. Úsala cuando una persona o un script necesite campos, separadores o cantidad de mensajes definidos. El contenido mostrado puede cambiar aunque el repositorio permanezca igual.
+
+```bash
+git rm --ignore-unmatch notas-temporales.txt
+git status --short
+```
+
+La opción no recibe un valor separado en la forma mostrada por la ayuda corta. Los argumentos que aparecen después pertenecen a `git rm` o a otra opción. El estado muestra si cambió el área de trabajo, el índice o la operación en curso. Ejecuta la comprobación inmediatamente después para que ningún comando intermedio cambie el estado que estás observando.
+
+### `--quiet` y `-q`
+
+Reduce mensajes que no representan errores.  La misma línea de ayuda también acepta `-q`. Esas formas seleccionan el mismo comportamiento; cambia la escritura del argumento, no el efecto.
+
+Estas escrituras son alias: seleccionan el mismo comportamiento. Se documentan juntas para no duplicar la regla, pero cada una conserva su propia invocación reproducible.
+
+La opción controla reducir mensajes. Registra el estado de las referencias y conserva los cambios sin commit antes de usarla, porque retirar rutas del índice y, por defecto, del área de trabajo puede retirar o reemplazar datos dentro del alcance seleccionado.
+
+#### Ejemplo con `--quiet`
+
+```bash
+git rm --quiet notas-temporales.txt
+git status --short
+```
+
+Esta forma no recibe un valor separado; los argumentos posteriores pertenecen a `git rm` o a otra opción. El estado muestra si cambió el área de trabajo, el índice o la operación en curso.
+
+#### Ejemplo con `-q`
+
+```bash
+git rm -q notas-temporales.txt
+git status --short
+```
+
+Esta forma no recibe un valor separado; los argumentos posteriores pertenecen a `git rm` o a otra opción. El estado muestra si cambió el área de trabajo, el índice o la operación en curso.
+
+Ejecuta una sola alternativa cada vez. Si ejecutas varias consecutivamente, el primer comando puede cambiar el estado que observa el siguiente.
+
+### `--pathspec-from-file`
+
+Lee pathspecs desde un archivo o desde stdin.
+
+La opción cambia cómo `git rm` recibe datos. Define el separador, la codificación y la ruta de entrada antes de ejecutarla. Los nombres con espacios o saltos de línea requieren una interfaz terminada en NUL cuando el comando la ofrece.
+
+```bash
+git rm --pathspec-from-file=rutas.txt notas-temporales.txt
+git status --short
+```
+
+El ejemplo usa `rutas.txt` como valor. Sustitúyelo por un valor del tipo que muestra la sintaxis de tu versión. Un valor numérico conserva su unidad y un nombre de referencia debe resolver antes de ejecutar la orden. El estado muestra si cambió el área de trabajo, el índice o la operación en curso. Ejecuta la comprobación inmediatamente después para que ningún comando intermedio cambie el estado que estás observando.
+
+### `--pathspec-file-nul`
+
+Interpreta los pathspecs de archivo como registros terminados en NUL.
+
+La opción cambia cómo `git rm` recibe datos. Define el separador, la codificación y la ruta de entrada antes de ejecutarla. Los nombres con espacios o saltos de línea requieren una interfaz terminada en NUL cuando el comando la ofrece.
+
+```bash
+git rm --pathspec-file-nul notas-temporales.txt
+git status --short
+```
+
+La opción no recibe un valor separado en la forma mostrada por la ayuda corta. Los argumentos que aparecen después pertenecen a `git rm` o a otra opción. El estado muestra si cambió el área de trabajo, el índice o la operación en curso. Ejecuta la comprobación inmediatamente después para que ningún comando intermedio cambie el estado que estás observando.
+
+### `--sparse`
+
+Permite operar sobre entradas que quedan fuera de la selección sparse activa.
+
+La opción limita o amplía el conjunto sobre el que se ejecuta retirar rutas del índice y, por defecto, del área de trabajo. Comprueba la selección con una forma de lectura antes de combinarla con una opción que escriba estado.
+
+```bash
+git rm --sparse notas-temporales.txt
+git status --short
+```
+
+La opción no recibe un valor separado en la forma mostrada por la ayuda corta. Los argumentos que aparecen después pertenecen a `git rm` o a otra opción. El estado muestra si cambió el área de trabajo, el índice o la operación en curso. Ejecuta la comprobación inmediatamente después para que ningún comando intermedio cambie el estado que estás observando.
+
+### `--no-force`
+
+Desactiva para esta invocación el comportamiento que habilita `--force`. Mantén iguales los demás argumentos y compara el resultado con la forma positiva para comprobar la diferencia.
+
+La opción controla desactivar omitir la protección. Registra el estado de las referencias y conserva los cambios sin commit antes de usarla, porque retirar rutas del índice y, por defecto, del área de trabajo puede retirar o reemplazar datos dentro del alcance seleccionado.
+
+```bash
+git rm --no-force notas-temporales.txt
+git status --short
+```
+
+La opción no recibe un valor separado en la forma mostrada por la ayuda corta. Los argumentos que aparecen después pertenecen a `git rm` o a otra opción. El estado muestra si cambió el área de trabajo, el índice o la operación en curso. Ejecuta la comprobación inmediatamente después para que ningún comando intermedio cambie el estado que estás observando.
+
+### `--no-cached`
+
+Desactiva para esta invocación el comportamiento que habilita `--cached`. Mantén iguales los demás argumentos y compara el resultado con la forma positiva para comprobar la diferencia.
+
+La opción controla desactivar índice. Registra el estado de las referencias y conserva los cambios sin commit antes de usarla, porque retirar rutas del índice y, por defecto, del área de trabajo puede retirar o reemplazar datos dentro del alcance seleccionado.
+
+```bash
+git rm --no-cached notas-temporales.txt
+git status --short
+```
+
+La opción no recibe un valor separado en la forma mostrada por la ayuda corta. Los argumentos que aparecen después pertenecen a `git rm` o a otra opción. El estado muestra si cambió el área de trabajo, el índice o la operación en curso. Ejecuta la comprobación inmediatamente después para que ningún comando intermedio cambie el estado que estás observando.
+
+### `--no-ignore-unmatch`
+
+Desactiva para esta invocación el comportamiento que habilita `--ignore-unmatch`. Mantén iguales los demás argumentos y compara el resultado con la forma positiva para comprobar la diferencia.
+
+La opción cambia la representación o el canal del resultado. Úsala cuando una persona o un script necesite campos, separadores o cantidad de mensajes definidos. El contenido mostrado puede cambiar aunque el repositorio permanezca igual.
+
+```bash
+git rm --no-ignore-unmatch notas-temporales.txt
+git status --short
+```
+
+La opción no recibe un valor separado en la forma mostrada por la ayuda corta. Los argumentos que aparecen después pertenecen a `git rm` o a otra opción. El estado muestra si cambió el área de trabajo, el índice o la operación en curso. Ejecuta la comprobación inmediatamente después para que ningún comando intermedio cambie el estado que estás observando.
+
+### `--no-quiet`
+
+Desactiva para esta invocación el comportamiento que habilita `--quiet`. Mantén iguales los demás argumentos y compara el resultado con la forma positiva para comprobar la diferencia.
+
+La opción controla desactivar reducir mensajes. Registra el estado de las referencias y conserva los cambios sin commit antes de usarla, porque retirar rutas del índice y, por defecto, del área de trabajo puede retirar o reemplazar datos dentro del alcance seleccionado.
+
+```bash
+git rm --no-quiet notas-temporales.txt
+git status --short
+```
+
+La opción no recibe un valor separado en la forma mostrada por la ayuda corta. Los argumentos que aparecen después pertenecen a `git rm` o a otra opción. El estado muestra si cambió el área de trabajo, el índice o la operación en curso. Ejecuta la comprobación inmediatamente después para que ningún comando intermedio cambie el estado que estás observando.
+
+### `--no-pathspec-from-file`
+
+Desactiva para esta invocación el comportamiento que habilita `--pathspec-from-file`. Mantén iguales los demás argumentos y compara el resultado con la forma positiva para comprobar la diferencia.
+
+La opción cambia cómo `git rm` recibe datos. Define el separador, la codificación y la ruta de entrada antes de ejecutarla. Los nombres con espacios o saltos de línea requieren una interfaz terminada en NUL cuando el comando la ofrece.
+
+```bash
+git rm --no-pathspec-from-file notas-temporales.txt
+git status --short
+```
+
+La opción no recibe un valor separado en la forma mostrada por la ayuda corta. Los argumentos que aparecen después pertenecen a `git rm` o a otra opción. El estado muestra si cambió el área de trabajo, el índice o la operación en curso. Ejecuta la comprobación inmediatamente después para que ningún comando intermedio cambie el estado que estás observando.
+
+### `--no-pathspec-file-nul`
+
+Desactiva para esta invocación el comportamiento que habilita `--pathspec-file-nul`. Mantén iguales los demás argumentos y compara el resultado con la forma positiva para comprobar la diferencia.
+
+La opción cambia cómo `git rm` recibe datos. Define el separador, la codificación y la ruta de entrada antes de ejecutarla. Los nombres con espacios o saltos de línea requieren una interfaz terminada en NUL cuando el comando la ofrece.
+
+```bash
+git rm --no-pathspec-file-nul notas-temporales.txt
+git status --short
+```
+
+La opción no recibe un valor separado en la forma mostrada por la ayuda corta. Los argumentos que aparecen después pertenecen a `git rm` o a otra opción. El estado muestra si cambió el área de trabajo, el índice o la operación en curso. Ejecuta la comprobación inmediatamente después para que ningún comando intermedio cambie el estado que estás observando.
+
+### `--no-dry-run`
+
+Desactiva para esta invocación el comportamiento que habilita `--dry-run`. Mantén iguales los demás argumentos y compara el resultado con la forma positiva para comprobar la diferencia.
+
+La opción añade, retira o consulta una comprobación previa. Ejecuta primero la forma que no escribe cuando exista y conserva el código de terminación como parte del resultado.
+
+```bash
+git rm --no-dry-run notas-temporales.txt
+git status --short
+```
+
+La opción no recibe un valor separado en la forma mostrada por la ayuda corta. Los argumentos que aparecen después pertenecen a `git rm` o a otra opción. El estado muestra si cambió el área de trabajo, el índice o la operación en curso. Ejecuta la comprobación inmediatamente después para que ningún comando intermedio cambie el estado que estás observando.
+
+### `--no-sparse`
+
+Desactiva para esta invocación el comportamiento que habilita `--sparse`. Mantén iguales los demás argumentos y compara el resultado con la forma positiva para comprobar la diferencia.
+
+La opción limita o amplía el conjunto sobre el que se ejecuta retirar rutas del índice y, por defecto, del área de trabajo. Comprueba la selección con una forma de lectura antes de combinarla con una opción que escriba estado.
+
+```bash
+git rm --no-sparse notas-temporales.txt
+git status --short
+```
+
+La opción no recibe un valor separado en la forma mostrada por la ayuda corta. Los argumentos que aparecen después pertenecen a `git rm` o a otra opción. El estado muestra si cambió el área de trabajo, el índice o la operación en curso. Ejecuta la comprobación inmediatamente después para que ningún comando intermedio cambie el estado que estás observando.
 
 ## Errores y diagnóstico
 
-| Señal | Causa que debes comprobar | Acción |
-| --- | --- | --- |
-| El cambio no entra al commit | El índice no contiene la versión esperada | Compara `git diff` con `git diff --cached`. |
-| Un pathspec no coincide | La ruta se evalúa desde otro directorio o está ignorada | Usa `git status --short --untracked-files=all` y separa opciones con `--`. |
-| Se reemplaza contenido local | La orden escribe el área de trabajo | Guarda el diff o crea un stash antes de repetir la operación. |
+### El cambio no entra al commit
 
-Si una operación deja archivos de estado dentro de `.git`, usa `git status` y la acción de continuar, omitir o abortar definida por esa operación. No borres esos archivos para simular una cancelación.
+Comprueba esta causa: El índice no contiene la versión esperada. Compara `git diff` con `git diff --cached`.
 
-## Automatización
+### Un pathspec no coincide
 
-1. Declara la versión mínima de Git que necesita el script.
-2. Resuelve la raíz del repositorio y evita depender del directorio actual.
-3. Separa opciones y rutas con `--`.
-4. Captura stdout, stderr y el código de terminación.
-5. Usa formatos de máquina o terminación NUL para nombres de archivo.
-6. Ejecuta primero sobre el laboratorio y añade un caso sin coincidencias.
+Comprueba esta causa: La ruta se evalúa desde otro directorio o está ignorada. Usa `git status --short --untracked-files=all` y separa opciones con `--`.
 
-## Seguridad y recuperación
+### Se reemplaza contenido local
+
+Comprueba esta causa: La orden escribe el área de trabajo. Guarda el diff o crea un stash antes de repetir la operación.
+
+## Automatización y recuperación
 
 Persistencia: Puede persistir el estado implicado por esta operación: retirar rutas del índice y, por defecto, del área de trabajo. Las opciones pueden limitar o ampliar ese efecto. Antes de una operación que mueva o elimine referencias, registra sus hashes con `git show-ref`. Antes de cambiar archivos, conserva `git diff` y `git diff --cached`. Para objetos y commits que dejaron de estar referenciados, consulta el reflog antes de ejecutar mantenimiento que pueda eliminarlos.
-
-## Práctica guiada
 
 Crea un repositorio temporal, modifica una ruta y ejecuta `git status --short` antes y después de cada línea del ejemplo.
 

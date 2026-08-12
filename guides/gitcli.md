@@ -2,7 +2,7 @@
 title: "gitcli"
 source: "https://git-scm.com/docs/gitcli"
 section: "guides"
-status: "expanded"
+status: "option-expanded"
 ---
 
 # `gitcli`
@@ -11,44 +11,43 @@ Este caso usa `gitcli` para interpretar opciones, revisiones y rutas en la líne
 
 La guía cubre **orden de opciones**, **opciones globales**, **separador `--`**, **revisiones y pathspecs**, **citas y expansión del shell**.
 
-## Alcance y responsabilidad
+## Responsabilidad y efecto
 
 gitcli define reglas compartidas por comandos, archivos y flujos de trabajo. Recibe como entrada el estado de repositorio representado por el caso. La operación consiste en interpretar opciones, revisiones y rutas en la línea de comandos.
 
-La página distingue lectura, escritura y resultado:
+La guía no ejecuta cambios. Un productor que implemente el formato o regla puede escribir la salida que su contrato defina.
 
-| Elemento | Relación con la función | Comprobación |
-| --- | --- | --- |
-| Entrada | el estado de repositorio representado por el caso. | Registra los argumentos y resuelve revisiones antes de ejecutar. |
-| Efecto principal | interpretar opciones, revisiones y rutas en la línea de comandos. | Comprueba el resultado con una orden de lectura. |
-| Persistencia | La guía no ejecuta cambios. Un productor que implemente el formato o regla puede escribir la salida que su contrato defina. | Compara el estado antes y después. |
-| Resultado | La orden comunica datos por stdout y diagnósticos por stderr. | Captura también el código de terminación. |
-| Fuente de verdad | El repositorio y la configuración efectiva determinan el resultado. | Usa una consulta que muestre la regla efectiva y su origen. |
+## Preparación
 
-## Requisitos y laboratorio
+Los ejemplos que necesitan un repositorio parten del [laboratorio base de `git init`](../getting-and-creating-projects/init.md#laboratorio-base). Los nombres como `HEAD`, `main`, `HEAD~2` y `A..B` se explican en [revisiones y rangos](../guides/gitrevisions.md#revisiones-y-rangos). Antes de ejecutar una forma que escriba datos, registra `git status --short` y las referencias que puedan cambiar.
 
-Crea un repositorio con dos commits y archivos bajo dos directorios. Cambia una regla por vez y registra el resultado.
+## Convenciones de la CLI
+
+Una invocación comienza con `git`, continúa con opciones globales, nombra una orden y termina con los argumentos de esa orden. `git -C ruta status` cambia el directorio antes de ejecutar `status`. `git -c clave=valor orden` aplica una configuración solo durante esa invocación. Las opciones de la orden se colocan después de su nombre.
 
 ```bash
-lab_dir="$(mktemp -d)"
-git init "$lab_dir/proyecto"
-git -C "$lab_dir/proyecto" config user.name "Persona de prueba"
-git -C "$lab_dir/proyecto" config user.email "prueba@example.test"
-printf 'línea base\n' > "$lab_dir/proyecto/archivo.txt"
-git -C "$lab_dir/proyecto" add archivo.txt
-git -C "$lab_dir/proyecto" commit -m "base"
-cd "$lab_dir/proyecto"
+git -C ../proyecto -c color.ui=false status --short
 ```
 
-Antes de ejecutar el ejemplo, confirma la raíz con `git rev-parse --show-toplevel` cuando exista un repositorio. Registra `git status --short` y las referencias que puedan cambiar.
+El shell procesa comillas, variables y globos antes de que Git reciba los argumentos. Usa comillas cuando Git deba interpretar el patrón. Usa una lista terminada en NUL cuando un nombre pueda contener espacios o saltos de línea.
 
-## Modelo de funcionamiento
+## Pathspecs
+
+Un pathspec selecciona rutas. `docs/` limita la operación a ese directorio. `'*.md'` permite que Git aplique el patrón en el alcance de la orden. El separador `--` termina las opciones y evita que una ruta iniciada por guion se interprete como una opción.
+
+```bash
+printf 'dato\n' > ./-entrada.txt
+git add -- ./-entrada.txt
+git status --short
+```
+
+La ruta pertenece al índice después de `git add`. Sin `--`, el analizador podría tratar `-entrada.txt` como una opción.
+
+## Cómo funciona
 
 La guía conecta comandos con objetos, referencias, rutas y configuración. El ejemplo sirve para observar una relación antes de nombrar la regla.
 
 Cambia un solo elemento del caso y vuelve a observar el repositorio. La diferencia identifica la regla que controla ese elemento.
-
-Para comprobar el resultado: los comandos de inspección permiten relacionar el resultado con objetos, referencias, rutas o configuración. La verificación debe observar un estado distinto del canal que produjo el cambio.
 
 ## Ejemplo mínimo
 
@@ -57,16 +56,9 @@ git log main..tema -- docs/
 git restore --source=HEAD -- README.md
 ```
 
-Ejecuta el bloque en orden. Conserva los nombres del laboratorio hasta confirmar el resultado. Sustituye rutas, revisiones o URL solo después de identificar su tipo y alcance.
+La invocación `gitcli` ejecuta esta operación: interpretar opciones, revisiones y rutas en la línea de comandos. Después, los comandos de inspección permiten relacionar el resultado con objetos, referencias, rutas o configuración. Conserva stdout, stderr y el código de terminación cuando el ejemplo forme parte de un script.
 
-### Resultado esperado
-
-- La entrada queda limitada a: el estado de repositorio representado por el caso.
-- La operación observable es: interpretar opciones, revisiones y rutas en la línea de comandos.
-- La comprobación se realiza mediante: los comandos de inspección permiten relacionar el resultado con objetos, referencias, rutas o configuración.
-- stdout contiene datos o confirmaciones; stderr contiene diagnósticos. Captura ambos canales cuando automatices.
-
-## Sintaxis
+## Sintaxis y formas de invocación
 
 ```text
 git log main..tema -- docs/
@@ -75,71 +67,110 @@ git restore --source=HEAD -- README.md
 
 Los corchetes indican elementos opcionales; `<valor>` exige sustitución; los puntos suspensivos permiten repetición; `|` separa formas excluyentes. Usa la fuente oficial enlazada para consultar la sintaxis que corresponde a la instalación donde ejecutarás la orden.
 
-## Casos de uso
+## Flujos de uso
 
-| Caso | Objetivo | Criterio de verificación |
-| --- | --- | --- |
-| Caso base | interpretar opciones, revisiones y rutas en la línea de comandos | Ejecuta el ejemplo mínimo y registra el estado antes y después. |
-| orden de opciones | Aplicar las reglas de orden de opciones. | Cambia una entrada y comprueba el efecto que define la guía. |
-| opciones globales | Aplicar las reglas de opciones globales. | Cambia una entrada y comprueba el efecto que define la guía. |
-| separador `--` | Aplicar las reglas de separador `--`. | Cambia una entrada y comprueba el efecto que define la guía. |
-| revisiones y pathspecs | Aplicar las reglas de revisiones y pathspecs. | Cambia una entrada y comprueba el efecto que define la guía. |
-| citas y expansión del shell | Aplicar las reglas de citas y expansión del shell. | Cambia una entrada y comprueba el efecto que define la guía. |
+### Caso base
 
-## Reglas por área
+interpretar opciones, revisiones y rutas en la línea de comandos. Usa el [ejemplo mínimo](#ejemplo-mínimo) como punto de partida. Ejecuta el ejemplo mínimo y registra el estado antes y después.
 
-| Área | Regla | Comprobación reproducible |
-| --- | --- | --- |
-| Opciones globales | Las opciones globales se colocan después de `git` y antes de la orden. | Compara `git -C ruta status` con la ejecución dentro de la ruta. |
-| Fin de opciones | `--` impide que una ruta iniciada por guion se trate como opción. | Crea una ruta `-dato` y consúltala con `-- -dato`. |
-| Expansión del shell | Un glob sin comillas lo expande el shell; entre comillas puede llegar a Git como pathspec. | Compara `*.md` con `"*.md"` en dos directorios. |
-| Revisiones | Una posición que espera revisión acepta nombres de referencia y expresiones de alcance. | Resuelve el argumento con `git rev-parse --verify`. |
-| Pathspecs | Un pathspec selecciona rutas y admite firmas mágicas cuando la orden las soporta. | Usa `git ls-files -- <pathspec>` para observar la selección. |
+### orden de opciones
 
-## Opciones y variaciones
+Aplicar las reglas de orden de opciones. Usa el [ejemplo mínimo](#ejemplo-mínimo) como punto de partida. Cambia una entrada y comprueba el efecto que define la guía.
 
-La tabla agrupa las opciones visibles en la sintaxis y en la ayuda corta. Una opción puede tener un significado propio cuando la página lo define; ejecuta la ayuda de tu versión antes de usarla en automatización.
+### opciones globales
 
-| Opción | Efecto que debes controlar |
-| --- | --- |
-| `--source` | Activa el modo `--source`; los argumentos y restricciones aparecen en la sintaxis y en la fuente oficial. |
+Aplicar las reglas de opciones globales. Usa el [ejemplo mínimo](#ejemplo-mínimo) como punto de partida. Cambia una entrada y comprueba el efecto que define la guía.
 
-## Selección de entradas
+### separador `--`
 
-Identifica primero el tipo de nombre: configuración, referencia, objeto, pathspec, archivo de control o campo de protocolo. La misma cadena cambia de significado cuando cambia su posición o el comando que la recibe.
+Aplicar las reglas de separador `--`. Usa el [ejemplo mínimo](#ejemplo-mínimo) como punto de partida. Cambia una entrada y comprueba el efecto que define la guía.
 
-Comprueba cada entrada con una orden de lectura antes de una escritura. Para listas de rutas generadas por otro proceso, prefiere una interfaz terminada en NUL cuando esté disponible.
+### revisiones y pathspecs
 
-## Salida y códigos de terminación
+Aplicar las reglas de revisiones y pathspecs. Usa el [ejemplo mínimo](#ejemplo-mínimo) como punto de partida. Cambia una entrada y comprueba el efecto que define la guía.
 
-Un código 0 indica que la operación terminó bajo el contrato solicitado. Trata cualquier código distinto de cero según la función; no deduzcas el estado solo a partir de que stdout esté vacío.
+### citas y expansión del shell
 
-No analices mensajes destinados a personas si existe un formato de máquina. Declara los campos, desactiva color y conserva stderr para diagnóstico.
+Aplicar las reglas de citas y expansión del shell. Usa el [ejemplo mínimo](#ejemplo-mínimo) como punto de partida. Cambia una entrada y comprueba el efecto que define la guía.
+
+## Funciones y reglas
+
+### Opciones globales
+
+Las opciones globales se colocan después de `git` y antes de la orden.
+
+```bash
+git -C ruta status
+```
+
+Compara `git -C ruta status` con la ejecución dentro de la ruta. Repite la comprobación después de cambiar una sola entrada para identificar qué regla produjo la diferencia.
+
+### Fin de opciones
+
+`--` impide que una ruta iniciada por guion se trate como opción.
+
+Crea una ruta `-dato` y consúltala con `-- -dato`. Usa el [ejemplo mínimo](#ejemplo-mínimo) y cambia solo la regla descrita en este apartado. Repite la comprobación después de cambiar una sola entrada para identificar qué regla produjo la diferencia.
+
+### Expansión del shell
+
+Un glob sin comillas lo expande el shell; entre comillas puede llegar a Git como pathspec.
+
+Compara `*.md` con `"*.md"` en dos directorios. Usa el [ejemplo mínimo](#ejemplo-mínimo) y cambia solo la regla descrita en este apartado. Repite la comprobación después de cambiar una sola entrada para identificar qué regla produjo la diferencia.
+
+### Revisiones
+
+Una posición que espera revisión acepta nombres de referencia y expresiones de alcance.
+
+```bash
+git rev-parse --verify
+```
+
+Resuelve el argumento con `git rev-parse --verify`. Repite la comprobación después de cambiar una sola entrada para identificar qué regla produjo la diferencia.
+
+### Pathspecs
+
+Un pathspec selecciona rutas y admite firmas mágicas cuando la orden las soporta.
+
+```bash
+git ls-files -- archivo.txt
+```
+
+Usa `git ls-files -- <pathspec>` para observar la selección. Repite la comprobación después de cambiar una sola entrada para identificar qué regla produjo la diferencia.
+
+## Opciones
+
+Cada apartado usa una opción en una invocación concreta. Las opciones equivalentes comparten la explicación, pero cada alias tiene su propio ejemplo. Ejecuta una opción por vez antes de combinarlas.
+
+### `--source`
+
+Activa source durante interpretar opciones, revisiones y rutas en la línea de comandos. La opción afecta esta invocación y no cambia la configuración de otras órdenes salvo que la propia función escriba esa configuración.
+
+En `gitcli`, source modifica la forma en que se ejecuta interpretar opciones, revisiones y rutas en la línea de comandos. Mantén iguales los demás argumentos para atribuir el cambio observado a esta opción.
+
+```bash
+git restore --source=HEAD -- README.md
+printf 'exit=%s\n' "$?"
+```
+
+El ejemplo usa `HEAD` como valor. Sustitúyelo por un valor del tipo que muestra la sintaxis de tu versión. Un valor numérico conserva su unidad y un nombre de referencia debe resolver antes de ejecutar la orden. El código de terminación distingue una ejecución aceptada de un error y, en algunos comandos de consulta, de una respuesta negativa. Ejecuta la comprobación inmediatamente después para que ningún comando intermedio cambie el estado que estás observando.
 
 ## Errores y diagnóstico
 
-| Señal | Causa que debes comprobar | Acción |
-| --- | --- | --- |
-| La regla no se aplica | El patrón, alcance o precedencia no coincide | Consulta la regla efectiva y el archivo que la definió. |
-| Una revisión se interpreta como ruta | El nombre es ambiguo | Separa revisiones y rutas con `--`. |
-| El resultado cambia entre equipos | La regla vive en configuración no compartida | Decide qué parte debe versionarse en el repositorio. |
+### La regla no se aplica
 
-Si una operación deja archivos de estado dentro de `.git`, usa `git status` y la acción de continuar, omitir o abortar definida por esa operación. No borres esos archivos para simular una cancelación.
+Comprueba esta causa: El patrón, alcance o precedencia no coincide. Consulta la regla efectiva y el archivo que la definió.
 
-## Automatización
+### Una revisión se interpreta como ruta
 
-1. Declara la versión mínima de Git que necesita el script.
-2. Resuelve la raíz del repositorio y evita depender del directorio actual.
-3. Separa opciones y rutas con `--`.
-4. Captura stdout, stderr y el código de terminación.
-5. Usa formatos de máquina o terminación NUL para nombres de archivo.
-6. Ejecuta primero sobre el laboratorio y añade un caso sin coincidencias.
+Comprueba esta causa: El nombre es ambiguo. Separa revisiones y rutas con `--`.
 
-## Seguridad y recuperación
+### El resultado cambia entre equipos
+
+Comprueba esta causa: La regla vive en configuración no compartida. Decide qué parte debe versionarse en el repositorio.
+
+## Automatización y recuperación
 
 Persistencia: La guía no ejecuta cambios. Un productor que implemente el formato o regla puede escribir la salida que su contrato defina. Antes de una operación que mueva o elimine referencias, registra sus hashes con `git show-ref`. Antes de cambiar archivos, conserva `git diff` y `git diff --cached`. Para objetos y commits que dejaron de estar referenciados, consulta el reflog antes de ejecutar mantenimiento que pueda eliminarlos.
-
-## Práctica guiada
 
 Reproduce el ejemplo en un repositorio temporal. Anota qué objeto, referencia, ruta o valor de configuración explica cada resultado.
 

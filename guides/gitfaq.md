@@ -2,7 +2,7 @@
 title: "gitfaq"
 source: "https://git-scm.com/docs/gitfaq"
 section: "guides"
-status: "expanded"
+status: "option-expanded"
 ---
 
 # `gitfaq`
@@ -11,44 +11,21 @@ Este caso usa `gitfaq` para resolver preguntas sobre configuración, historial y
 
 La guía cubre **recuperación**, **configuración**, **rutas y nombres**, **credenciales**, **interoperabilidad**.
 
-## Alcance y responsabilidad
+## Responsabilidad y efecto
 
 gitfaq define reglas compartidas por comandos, archivos y flujos de trabajo. Recibe como entrada el estado de repositorio representado por el caso. La operación consiste en resolver preguntas sobre configuración, historial y archivos.
 
-La página distingue lectura, escritura y resultado:
+La guía no ejecuta cambios. Un productor que implemente el formato o regla puede escribir la salida que su contrato defina.
 
-| Elemento | Relación con la función | Comprobación |
-| --- | --- | --- |
-| Entrada | el estado de repositorio representado por el caso. | Registra los argumentos y resuelve revisiones antes de ejecutar. |
-| Efecto principal | resolver preguntas sobre configuración, historial y archivos. | Comprueba el resultado con una orden de lectura. |
-| Persistencia | La guía no ejecuta cambios. Un productor que implemente el formato o regla puede escribir la salida que su contrato defina. | Compara el estado antes y después. |
-| Resultado | La orden comunica datos por stdout y diagnósticos por stderr. | Captura también el código de terminación. |
-| Fuente de verdad | El repositorio y la configuración efectiva determinan el resultado. | Usa una consulta que muestre la regla efectiva y su origen. |
+## Preparación
 
-## Requisitos y laboratorio
+Los ejemplos que necesitan un repositorio parten del [laboratorio base de `git init`](../getting-and-creating-projects/init.md#laboratorio-base). Antes de ejecutar una forma que escriba datos, registra `git status --short` y las referencias que puedan cambiar.
 
-Crea un repositorio con dos commits y archivos bajo dos directorios. Cambia una regla por vez y registra el resultado.
-
-```bash
-lab_dir="$(mktemp -d)"
-git init "$lab_dir/proyecto"
-git -C "$lab_dir/proyecto" config user.name "Persona de prueba"
-git -C "$lab_dir/proyecto" config user.email "prueba@example.test"
-printf 'línea base\n' > "$lab_dir/proyecto/archivo.txt"
-git -C "$lab_dir/proyecto" add archivo.txt
-git -C "$lab_dir/proyecto" commit -m "base"
-cd "$lab_dir/proyecto"
-```
-
-Antes de ejecutar el ejemplo, confirma la raíz con `git rev-parse --show-toplevel` cuando exista un repositorio. Registra `git status --short` y las referencias que puedan cambiar.
-
-## Modelo de funcionamiento
+## Cómo funciona
 
 La guía conecta comandos con objetos, referencias, rutas y configuración. El ejemplo sirve para observar una relación antes de nombrar la regla.
 
 Cambia un solo elemento del caso y vuelve a observar el repositorio. La diferencia identifica la regla que controla ese elemento.
-
-Para comprobar el resultado: los comandos de inspección permiten relacionar el resultado con objetos, referencias, rutas o configuración. La verificación debe observar un estado distinto del canal que produjo el cambio.
 
 ## Ejemplo mínimo
 
@@ -58,16 +35,9 @@ git restore --staged README.md
 git status --short
 ```
 
-Ejecuta el bloque en orden. Conserva los nombres del laboratorio hasta confirmar el resultado. Sustituye rutas, revisiones o URL solo después de identificar su tipo y alcance.
+La invocación `gitfaq` ejecuta esta operación: resolver preguntas sobre configuración, historial y archivos. Después, los comandos de inspección permiten relacionar el resultado con objetos, referencias, rutas o configuración. Conserva stdout, stderr y el código de terminación cuando el ejemplo forme parte de un script.
 
-### Resultado esperado
-
-- La entrada queda limitada a: el estado de repositorio representado por el caso.
-- La operación observable es: resolver preguntas sobre configuración, historial y archivos.
-- La comprobación se realiza mediante: los comandos de inspección permiten relacionar el resultado con objetos, referencias, rutas o configuración.
-- stdout contiene datos o confirmaciones; stderr contiene diagnósticos. Captura ambos canales cuando automatices.
-
-## Sintaxis
+## Sintaxis y formas de invocación
 
 ```text
 git add README.md
@@ -77,72 +47,111 @@ git status --short
 
 Los corchetes indican elementos opcionales; `<valor>` exige sustitución; los puntos suspensivos permiten repetición; `|` separa formas excluyentes. Usa la fuente oficial enlazada para consultar la sintaxis que corresponde a la instalación donde ejecutarás la orden.
 
-## Casos de uso
+## Flujos de uso
 
-| Caso | Objetivo | Criterio de verificación |
-| --- | --- | --- |
-| Caso base | resolver preguntas sobre configuración, historial y archivos | Ejecuta el ejemplo mínimo y registra el estado antes y después. |
-| recuperación | Aplicar las reglas de recuperación. | Cambia una entrada y comprueba el efecto que define la guía. |
-| configuración | Aplicar las reglas de configuración. | Cambia una entrada y comprueba el efecto que define la guía. |
-| rutas y nombres | Aplicar las reglas de rutas y nombres. | Cambia una entrada y comprueba el efecto que define la guía. |
-| credenciales | Aplicar las reglas de credenciales. | Cambia una entrada y comprueba el efecto que define la guía. |
-| interoperabilidad | Aplicar las reglas de interoperabilidad. | Cambia una entrada y comprueba el efecto que define la guía. |
+### Caso base
 
-## Reglas por área
+resolver preguntas sobre configuración, historial y archivos. Usa el [ejemplo mínimo](#ejemplo-mínimo) como punto de partida. Ejecuta el ejemplo mínimo y registra el estado antes y después.
 
-| Área | Regla | Comprobación reproducible |
-| --- | --- | --- |
-| Recuperación | El reflog permite localizar valores anteriores de referencias mientras no hayan vencido. | Busca el hash y crea una rama antes de mantenimiento. |
-| Configuración | `--show-origin` identifica qué archivo aportó un valor. | Consulta todas las apariciones de la clave. |
-| Rutas | Git registra rutas y el shell decide la expansión inicial de argumentos. | Usa `--` y una ruta con espacios. |
-| Credenciales | Los helpers reciben contexto y secreto por un protocolo separado de la URL. | Evita secretos en argumentos y remotos. |
-| Historial | Cambiar un commit cambia sus descendientes porque el identificador incluye el padre. | Compara hashes antes y después de un rebase. |
+### recuperación
 
-## Opciones y variaciones
+Aplicar las reglas de recuperación. Usa el [ejemplo mínimo](#ejemplo-mínimo) como punto de partida. Cambia una entrada y comprueba el efecto que define la guía.
 
-La tabla agrupa las opciones visibles en la sintaxis y en la ayuda corta. Una opción puede tener un significado propio cuando la página lo define; ejecuta la ayuda de tu versión antes de usarla en automatización.
+### configuración
 
-| Opción | Efecto que debes controlar |
-| --- | --- |
-| `--staged` | Selecciona el contenido preparado en el índice. |
-| `--short` | Activa el modo `--short`; los argumentos y restricciones aparecen en la sintaxis y en la fuente oficial. |
+Aplicar las reglas de configuración. Usa el [ejemplo mínimo](#ejemplo-mínimo) como punto de partida. Cambia una entrada y comprueba el efecto que define la guía.
 
-## Selección de entradas
+### rutas y nombres
 
-Identifica primero el tipo de nombre: configuración, referencia, objeto, pathspec, archivo de control o campo de protocolo. La misma cadena cambia de significado cuando cambia su posición o el comando que la recibe.
+Aplicar las reglas de rutas y nombres. Usa el [ejemplo mínimo](#ejemplo-mínimo) como punto de partida. Cambia una entrada y comprueba el efecto que define la guía.
 
-Comprueba cada entrada con una orden de lectura antes de una escritura. Para listas de rutas generadas por otro proceso, prefiere una interfaz terminada en NUL cuando esté disponible.
+### credenciales
 
-## Salida y códigos de terminación
+Aplicar las reglas de credenciales. Usa el [ejemplo mínimo](#ejemplo-mínimo) como punto de partida. Cambia una entrada y comprueba el efecto que define la guía.
 
-Un código 0 indica que la operación terminó bajo el contrato solicitado. Trata cualquier código distinto de cero según la función; no deduzcas el estado solo a partir de que stdout esté vacío.
+### interoperabilidad
 
-No analices mensajes destinados a personas si existe un formato de máquina. Declara los campos, desactiva color y conserva stderr para diagnóstico.
+Aplicar las reglas de interoperabilidad. Usa el [ejemplo mínimo](#ejemplo-mínimo) como punto de partida. Cambia una entrada y comprueba el efecto que define la guía.
+
+## Funciones y reglas
+
+### Recuperación
+
+El reflog permite localizar valores anteriores de referencias mientras no hayan vencido.
+
+Busca el hash y crea una rama antes de mantenimiento. Usa el [ejemplo mínimo](#ejemplo-mínimo) y cambia solo la regla descrita en este apartado. Repite la comprobación después de cambiar una sola entrada para identificar qué regla produjo la diferencia.
+
+### Configuración
+
+`--show-origin` identifica qué archivo aportó un valor.
+
+Consulta todas las apariciones de la clave. Usa el [ejemplo mínimo](#ejemplo-mínimo) y cambia solo la regla descrita en este apartado. Repite la comprobación después de cambiar una sola entrada para identificar qué regla produjo la diferencia.
+
+### Rutas
+
+Git registra rutas y el shell decide la expansión inicial de argumentos.
+
+Usa `--` y una ruta con espacios. Usa el [ejemplo mínimo](#ejemplo-mínimo) y cambia solo la regla descrita en este apartado. Repite la comprobación después de cambiar una sola entrada para identificar qué regla produjo la diferencia.
+
+### Credenciales
+
+Los helpers reciben contexto y secreto por un protocolo separado de la URL.
+
+Evita secretos en argumentos y remotos. Usa el [ejemplo mínimo](#ejemplo-mínimo) y cambia solo la regla descrita en este apartado. Repite la comprobación después de cambiar una sola entrada para identificar qué regla produjo la diferencia.
+
+### Historial
+
+Cambiar un commit cambia sus descendientes porque el identificador incluye el padre.
+
+Compara hashes antes y después de un rebase. Usa el [ejemplo mínimo](#ejemplo-mínimo) y cambia solo la regla descrita en este apartado. Repite la comprobación después de cambiar una sola entrada para identificar qué regla produjo la diferencia.
+
+## Opciones
+
+Cada apartado usa una opción en una invocación concreta. Las opciones equivalentes comparten la explicación, pero cada alias tiene su propio ejemplo. Ejecuta una opción por vez antes de combinarlas.
+
+### `--staged`
+
+Selecciona el contenido preparado en el índice.
+
+La opción limita o amplía el conjunto sobre el que se ejecuta resolver preguntas sobre configuración, historial y archivos. Comprueba la selección con una forma de lectura antes de combinarla con una opción que escriba estado.
+
+```bash
+git restore --staged README.md
+printf 'exit=%s\n' "$?"
+```
+
+El ejemplo usa `README.md` como valor. Sustitúyelo por un valor del tipo que muestra la sintaxis de tu versión. Un valor numérico conserva su unidad y un nombre de referencia debe resolver antes de ejecutar la orden. El código de terminación distingue una ejecución aceptada de un error y, en algunos comandos de consulta, de una respuesta negativa. Ejecuta la comprobación inmediatamente después para que ningún comando intermedio cambie el estado que estás observando.
+
+### `--short`
+
+Activa short durante resolver preguntas sobre configuración, historial y archivos. La opción afecta esta invocación y no cambia la configuración de otras órdenes salvo que la propia función escriba esa configuración.
+
+En `gitfaq`, short modifica la forma en que se ejecuta resolver preguntas sobre configuración, historial y archivos. Mantén iguales los demás argumentos para atribuir el cambio observado a esta opción.
+
+```bash
+git status --short
+printf 'exit=%s\n' "$?"
+```
+
+La opción no recibe un valor separado en la forma mostrada por la ayuda corta. Los argumentos que aparecen después pertenecen a `gitfaq` o a otra opción. El código de terminación distingue una ejecución aceptada de un error y, en algunos comandos de consulta, de una respuesta negativa. Ejecuta la comprobación inmediatamente después para que ningún comando intermedio cambie el estado que estás observando.
 
 ## Errores y diagnóstico
 
-| Señal | Causa que debes comprobar | Acción |
-| --- | --- | --- |
-| La regla no se aplica | El patrón, alcance o precedencia no coincide | Consulta la regla efectiva y el archivo que la definió. |
-| Una revisión se interpreta como ruta | El nombre es ambiguo | Separa revisiones y rutas con `--`. |
-| El resultado cambia entre equipos | La regla vive en configuración no compartida | Decide qué parte debe versionarse en el repositorio. |
+### La regla no se aplica
 
-Si una operación deja archivos de estado dentro de `.git`, usa `git status` y la acción de continuar, omitir o abortar definida por esa operación. No borres esos archivos para simular una cancelación.
+Comprueba esta causa: El patrón, alcance o precedencia no coincide. Consulta la regla efectiva y el archivo que la definió.
 
-## Automatización
+### Una revisión se interpreta como ruta
 
-1. Declara la versión mínima de Git que necesita el script.
-2. Resuelve la raíz del repositorio y evita depender del directorio actual.
-3. Separa opciones y rutas con `--`.
-4. Captura stdout, stderr y el código de terminación.
-5. Usa formatos de máquina o terminación NUL para nombres de archivo.
-6. Ejecuta primero sobre el laboratorio y añade un caso sin coincidencias.
+Comprueba esta causa: El nombre es ambiguo. Separa revisiones y rutas con `--`.
 
-## Seguridad y recuperación
+### El resultado cambia entre equipos
+
+Comprueba esta causa: La regla vive en configuración no compartida. Decide qué parte debe versionarse en el repositorio.
+
+## Automatización y recuperación
 
 Persistencia: La guía no ejecuta cambios. Un productor que implemente el formato o regla puede escribir la salida que su contrato defina. Antes de una operación que mueva o elimine referencias, registra sus hashes con `git show-ref`. Antes de cambiar archivos, conserva `git diff` y `git diff --cached`. Para objetos y commits que dejaron de estar referenciados, consulta el reflog antes de ejecutar mantenimiento que pueda eliminarlos.
-
-## Práctica guiada
 
 Reproduce el ejemplo en un repositorio temporal. Anota qué objeto, referencia, ruta o valor de configuración explica cada resultado.
 

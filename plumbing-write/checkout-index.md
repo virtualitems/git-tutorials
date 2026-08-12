@@ -2,51 +2,28 @@
 title: "git checkout-index"
 source: "https://git-scm.com/docs/git-checkout-index"
 section: "plumbing-write"
-status: "expanded"
+status: "option-expanded"
 ---
 
 # `git checkout-index`
 
 Este caso usa `git checkout-index` para copiar archivos del índice al área de trabajo. Los nombres de archivo, revisiones, ramas y direcciones del ejemplo representan valores que debes sustituir por los de tu repositorio.
 
-## Alcance y responsabilidad
+## Responsabilidad y efecto
 
 git checkout-index crea objetos, índices, packs o referencias mediante contratos de bajo nivel. Recibe como entrada identificadores, entradas del índice o referencias validadas por el script. La operación consiste en copiar archivos del índice al área de trabajo.
 
-La página distingue lectura, escritura y resultado:
+Puede persistir el estado implicado por esta operación: copiar archivos del índice al área de trabajo. Las opciones pueden limitar o ampliar ese efecto.
 
-| Elemento | Relación con la función | Comprobación |
-| --- | --- | --- |
-| Entrada | identificadores, entradas del índice o referencias validadas por el script. | Registra los argumentos y resuelve revisiones antes de ejecutar. |
-| Efecto principal | copiar archivos del índice al área de trabajo. | Comprueba el resultado con una orden de lectura. |
-| Persistencia | Puede persistir el estado implicado por esta operación: copiar archivos del índice al área de trabajo. Las opciones pueden limitar o ampliar ese efecto. | Compara el estado antes y después. |
-| Resultado | La orden comunica datos por stdout y diagnósticos por stderr. | Captura también el código de terminación. |
-| Fuente de verdad | El repositorio y la configuración efectiva determinan el resultado. | Usa `git fsck`, `git cat-file`, `git ls-tree`, `git show-ref` y el hash devuelto. |
+## Preparación
 
-## Requisitos y laboratorio
+Los ejemplos que necesitan un repositorio parten del [laboratorio base de `git init`](../getting-and-creating-projects/init.md#laboratorio-base). La posición de opciones, revisiones y rutas sigue las [convenciones de la interfaz de Git](../guides/gitcli.md#convenciones-de-la-cli). La selección de rutas se explica en [pathspecs y separación con `--`](../guides/gitcli.md#pathspecs). Antes de ejecutar una forma que escriba datos, registra `git status --short` y las referencias que puedan cambiar.
 
-Usa un repositorio sin datos de valor. Guarda los hashes producidos y crea referencias solo con actualización condicional.
-
-```bash
-lab_dir="$(mktemp -d)"
-git init "$lab_dir/proyecto"
-git -C "$lab_dir/proyecto" config user.name "Persona de prueba"
-git -C "$lab_dir/proyecto" config user.email "prueba@example.test"
-printf 'línea base\n' > "$lab_dir/proyecto/archivo.txt"
-git -C "$lab_dir/proyecto" add archivo.txt
-git -C "$lab_dir/proyecto" commit -m "base"
-cd "$lab_dir/proyecto"
-```
-
-Antes de ejecutar el ejemplo, confirma la raíz con `git rev-parse --show-toplevel` cuando exista un repositorio. Registra `git status --short` y las referencias que puedan cambiar.
-
-## Modelo de funcionamiento
+## Cómo funciona
 
 Los comandos de plomería operan sobre índice, objetos o referencias sin aplicar todas las decisiones de los comandos de usuario. Un script debe validar entradas y estado antes de escribir.
 
 Valida el identificador anterior y el tipo de objeto antes de escribir. Esa comprobación evita actualizar el repositorio desde un estado que otro proceso ya cambió.
-
-Para comprobar el resultado: `git cat-file`, `git ls-files --stage` o `git show-ref` comprueban el dato escrito. La verificación debe observar un estado distinto del canal que produjo el cambio.
 
 ## Ejemplo mínimo
 
@@ -55,16 +32,9 @@ mkdir exportado
 git checkout-index --all --prefix=exportado/
 ```
 
-Ejecuta el bloque en orden. Conserva los nombres del laboratorio hasta confirmar el resultado. Sustituye rutas, revisiones o URL solo después de identificar su tipo y alcance.
+La invocación `git checkout-index --all --prefix=exportado/` ejecuta esta operación: copiar archivos del índice al área de trabajo. Después, `git cat-file`, `git ls-files --stage` o `git show-ref` comprueban el dato escrito. Conserva stdout, stderr y el código de terminación cuando el ejemplo forme parte de un script.
 
-### Resultado esperado
-
-- La entrada queda limitada a: identificadores, entradas del índice o referencias validadas por el script.
-- La operación observable es: copiar archivos del índice al área de trabajo.
-- La comprobación se realiza mediante: `git cat-file`, `git ls-files --stage` o `git show-ref` comprueban el dato escrito.
-- stdout contiene datos o confirmaciones; stderr contiene diagnósticos. Captura ambos canales cuando automatices.
-
-## Sintaxis
+## Sintaxis y formas de invocación
 
 ```text
 git checkout-index [-u] [-q] [-a] [-f] [-n] [--prefix=<string>]
@@ -81,76 +51,378 @@ git checkout-index [<options>] [--] [<file>...]
 
 Los corchetes indican elementos opcionales; `<valor>` exige sustitución; los puntos suspensivos permiten repetición; `|` separa formas excluyentes. Usa `git checkout-index -h` para consultar la sintaxis que corresponde a la instalación donde ejecutarás la orden.
 
-## Casos de uso
+## Flujos de uso
 
-| Caso | Objetivo | Criterio de verificación |
-| --- | --- | --- |
-| Caso base | copiar archivos del índice al área de trabajo | Ejecuta el ejemplo mínimo y registra el estado antes y después. |
-| Alcance explícito | Aplicar git checkout-index a una referencia, rango o ruta identificada. | Resuelve cada argumento antes de ejecutar y usa `--` para rutas. |
-| Salida para scripts | Producir registros con campos y separadores definidos. | Prueba nombres con espacios y saltos de línea. |
-| Validación | Comprobar el resultado de git checkout-index con una orden de lectura independiente. | No uses la misma salida como única prueba del cambio. |
+### Caso base
 
+copiar archivos del índice al área de trabajo. Usa el [ejemplo mínimo](#ejemplo-mínimo) como punto de partida. Ejecuta el ejemplo mínimo y registra el estado antes y después.
 
-## Opciones y variaciones
+### Alcance explícito
 
-La tabla agrupa las opciones visibles en la sintaxis y en la ayuda corta. Una opción puede tener un significado propio cuando la página lo define; ejecuta la ayuda de tu versión antes de usarla en automatización.
+Aplicar git checkout-index a una referencia, rango o ruta identificada. Usa el [ejemplo mínimo](#ejemplo-mínimo) como punto de partida. Resuelve cada argumento antes de ejecutar y usa `--` para rutas.
 
-| Opción | Efecto que debes controlar |
-| --- | --- |
-| `-u` | Activa el modo `-u`; los argumentos y restricciones aparecen en la sintaxis y en la fuente oficial. |
-| `-q` | Activa la forma corta del modo sin mensajes. |
-| `-a` | Activa la forma corta de selección total o una opción propia de la orden. |
-| `-f` | Activa la forma corta de la operación forzada. |
-| `-n` | Activa la forma corta documentada por la sintaxis; en muchas órdenes corresponde a simulación o límite numérico. |
-| `--prefix` | Activa el modo `--prefix`; los argumentos y restricciones aparecen en la sintaxis y en la fuente oficial. |
-| `--stage` | Activa el modo `--stage`; los argumentos y restricciones aparecen en la sintaxis y en la fuente oficial. |
-| `--temp` | Activa el modo `--temp`; los argumentos y restricciones aparecen en la sintaxis y en la fuente oficial. |
-| `--ignore-skip-worktree-bits` | Excluye elementos que cumplan la condición indicada. |
-| `--all` | Amplía la selección a todos los elementos del alcance definido. |
-| `--force` | Omite una protección concreta; úsala solo después de verificar el estado objetivo. |
-| `--quiet` | Reduce mensajes que no representan errores. |
-| `--no-create` | Desactiva el comportamiento `create` para esta invocación. |
-| `--create` | Permite crear o escribir el elemento seleccionado. |
-| `--index` | Incluye el índice en la operación. |
-| `-z` | Termina registros con NUL para evitar división por espacios o saltos de línea. |
-| `--stdin` | Lee registros o nombres desde la entrada estándar. |
+### Salida para scripts
 
-## Selección de entradas
+Producir registros con campos y separadores definidos. Usa el [ejemplo mínimo](#ejemplo-mínimo) como punto de partida. Prueba nombres con espacios y saltos de línea.
 
-Distingue identificadores de objeto, referencias y rutas. Resuelve revisiones con `git rev-parse --verify`; inspecciona tipo y tamaño con `git cat-file`; usa actualización condicional al escribir referencias.
+### Validación
 
-Comprueba cada entrada con una orden de lectura antes de una escritura. Para listas de rutas generadas por otro proceso, prefiere una interfaz terminada en NUL cuando esté disponible.
+Comprobar el resultado de git checkout-index con una orden de lectura independiente. Usa el [ejemplo mínimo](#ejemplo-mínimo) como punto de partida. No uses la misma salida como única prueba del cambio.
 
-## Salida y códigos de terminación
+## Opciones
 
-Un código 0 indica que la operación terminó bajo el contrato solicitado. Trata cualquier código distinto de cero según la función; no deduzcas el estado solo a partir de que stdout esté vacío.
+Cada apartado usa una opción en una invocación concreta. Las opciones equivalentes comparten la explicación, pero cada alias tiene su propio ejemplo. Ejecuta una opción por vez antes de combinarlas.
 
-No analices mensajes destinados a personas si existe un formato de máquina. Declara los campos, desactiva color y conserva stderr para diagnóstico.
+### `-u` y `--index`
+
+Incluye el índice en la operación.  La misma línea de ayuda también acepta `-u`. Esas formas seleccionan el mismo comportamiento; cambia la escritura del argumento, no el efecto.
+
+Estas escrituras son alias: seleccionan el mismo comportamiento. Se documentan juntas para no duplicar la regla, pero cada una conserva su propia invocación reproducible.
+
+La opción cambia la representación o el canal del resultado. Úsala cuando una persona o un script necesite campos, separadores o cantidad de mensajes definidos. El contenido mostrado puede cambiar aunque el repositorio permanezca igual.
+
+#### Ejemplo con `-u`
+
+```bash
+git checkout-index -u --all --prefix=exportado/
+git fsck --no-progress
+```
+
+Esta forma no recibe un valor separado; los argumentos posteriores pertenecen a `git checkout-index` o a otra opción. La comprobación detecta objetos o enlaces que no cumplen el formato esperado.
+
+#### Ejemplo con `--index`
+
+```bash
+git checkout-index --index --all --prefix=exportado/
+git fsck --no-progress
+```
+
+Esta forma no recibe un valor separado; los argumentos posteriores pertenecen a `git checkout-index` o a otra opción. La comprobación detecta objetos o enlaces que no cumplen el formato esperado.
+
+Ejecuta una sola alternativa cada vez. Si ejecutas varias consecutivamente, el primer comando puede cambiar el estado que observa el siguiente.
+
+### `-q` y `--quiet`
+
+Reduce mensajes que no representan errores.  La misma línea de ayuda también acepta `-q`. Esas formas seleccionan el mismo comportamiento; cambia la escritura del argumento, no el efecto.
+
+Estas escrituras son alias: seleccionan el mismo comportamiento. Se documentan juntas para no duplicar la regla, pero cada una conserva su propia invocación reproducible.
+
+La opción cambia la representación o el canal del resultado. Úsala cuando una persona o un script necesite campos, separadores o cantidad de mensajes definidos. El contenido mostrado puede cambiar aunque el repositorio permanezca igual.
+
+#### Ejemplo con `-q`
+
+```bash
+git checkout-index -q --all --prefix=exportado/
+git fsck --no-progress
+```
+
+Esta forma no recibe un valor separado; los argumentos posteriores pertenecen a `git checkout-index` o a otra opción. La comprobación detecta objetos o enlaces que no cumplen el formato esperado.
+
+#### Ejemplo con `--quiet`
+
+```bash
+git checkout-index --quiet --all --prefix=exportado/
+git fsck --no-progress
+```
+
+Esta forma no recibe un valor separado; los argumentos posteriores pertenecen a `git checkout-index` o a otra opción. La comprobación detecta objetos o enlaces que no cumplen el formato esperado.
+
+Ejecuta una sola alternativa cada vez. Si ejecutas varias consecutivamente, el primer comando puede cambiar el estado que observa el siguiente.
+
+### `-a` y `--all`
+
+Amplía la selección a todos los elementos del alcance definido.  La misma línea de ayuda también acepta `-a`. Esas formas seleccionan el mismo comportamiento; cambia la escritura del argumento, no el efecto.
+
+Estas escrituras son alias: seleccionan el mismo comportamiento. Se documentan juntas para no duplicar la regla, pero cada una conserva su propia invocación reproducible.
+
+La opción limita o amplía el conjunto sobre el que se ejecuta copiar archivos del índice al área de trabajo. Comprueba la selección con una forma de lectura antes de combinarla con una opción que escriba estado.
+
+#### Ejemplo con `-a`
+
+```bash
+git checkout-index -a --prefix=exportado/
+git fsck --no-progress
+```
+
+Esta forma no recibe un valor separado; los argumentos posteriores pertenecen a `git checkout-index` o a otra opción. La comprobación detecta objetos o enlaces que no cumplen el formato esperado.
+
+#### Ejemplo con `--all`
+
+```bash
+git checkout-index --all --prefix=exportado/
+git fsck --no-progress
+```
+
+Esta forma no recibe un valor separado; los argumentos posteriores pertenecen a `git checkout-index` o a otra opción. La comprobación detecta objetos o enlaces que no cumplen el formato esperado.
+
+Ejecuta una sola alternativa cada vez. Si ejecutas varias consecutivamente, el primer comando puede cambiar el estado que observa el siguiente.
+
+### `-f` y `--force`
+
+Omite una protección concreta; úsala solo después de verificar el estado objetivo.  La misma línea de ayuda también acepta `-f`. Esas formas seleccionan el mismo comportamiento; cambia la escritura del argumento, no el efecto.
+
+Estas escrituras son alias: seleccionan el mismo comportamiento. Se documentan juntas para no duplicar la regla, pero cada una conserva su propia invocación reproducible.
+
+La opción controla omitir la protección. Registra el estado de las referencias y conserva los cambios sin commit antes de usarla, porque copiar archivos del índice al área de trabajo puede retirar o reemplazar datos dentro del alcance seleccionado.
+
+#### Ejemplo con `-f`
+
+```bash
+git checkout-index -f --all --prefix=exportado/
+git fsck --no-progress
+```
+
+Esta forma no recibe un valor separado; los argumentos posteriores pertenecen a `git checkout-index` o a otra opción. La comprobación detecta objetos o enlaces que no cumplen el formato esperado.
+
+#### Ejemplo con `--force`
+
+```bash
+git checkout-index --force --all --prefix=exportado/
+git fsck --no-progress
+```
+
+Esta forma no recibe un valor separado; los argumentos posteriores pertenecen a `git checkout-index` o a otra opción. La comprobación detecta objetos o enlaces que no cumplen el formato esperado.
+
+Ejecuta una sola alternativa cada vez. Si ejecutas varias consecutivamente, el primer comando puede cambiar el estado que observa el siguiente.
+
+### `-n`
+
+Crea n como parte de copiar archivos del índice al área de trabajo. En Git 2.51.1, la ayuda corta expresa el contrato como `don't checkout new files`. Conserva esa formulación al comparar el efecto entre versiones de Git. La misma línea de ayuda también acepta `--no-create`. Esas formas seleccionan el mismo comportamiento; cambia la escritura del argumento, no el efecto.
+
+La opción cambia cómo `git checkout-index` recibe datos. Define el separador, la codificación y la ruta de entrada antes de ejecutarla. Los nombres con espacios o saltos de línea requieren una interfaz terminada en NUL cuando el comando la ofrece.
+
+```bash
+git checkout-index -n --all --prefix=exportado/
+git fsck --no-progress
+```
+
+La opción no recibe un valor separado en la forma mostrada por la ayuda corta. Los argumentos que aparecen después pertenecen a `git checkout-index` o a otra opción. La comprobación detecta objetos o enlaces que no cumplen el formato esperado. Ejecuta la comprobación inmediatamente después para que ningún comando intermedio cambie el estado que estás observando.
+
+### `--prefix`
+
+Antepone prefix al valor que produce `git checkout-index`. En Git 2.51.1, la ayuda corta expresa el contrato como `when creating files, prepend <string>`. Conserva esa formulación al comparar el efecto entre versiones de Git.
+
+La opción cambia cómo `git checkout-index` recibe datos. Define el separador, la codificación y la ruta de entrada antes de ejecutarla. Los nombres con espacios o saltos de línea requieren una interfaz terminada en NUL cuando el comando la ofrece.
+
+```bash
+git checkout-index --prefix=valor --all
+git fsck --no-progress
+```
+
+El ejemplo usa `valor` como valor. Sustitúyelo por un valor del tipo que muestra la sintaxis de tu versión. Un valor numérico conserva su unidad y un nombre de referencia debe resolver antes de ejecutar la orden. La comprobación detecta objetos o enlaces que no cumplen el formato esperado. Ejecuta la comprobación inmediatamente después para que ningún comando intermedio cambie el estado que estás observando.
+
+### `--stage`
+
+Activa stage durante copiar archivos del índice al área de trabajo. La opción afecta esta invocación y no cambia la configuración de otras órdenes salvo que la propia función escriba esa configuración. En Git 2.51.1, la ayuda corta expresa el contrato como `copy out the files from named stage`. Conserva esa formulación al comparar el efecto entre versiones de Git.
+
+La opción limita o amplía el conjunto sobre el que se ejecuta copiar archivos del índice al área de trabajo. Comprueba la selección con una forma de lectura antes de combinarla con una opción que escriba estado.
+
+```bash
+git checkout-index --stage=valor --all --prefix=exportado/
+git fsck --no-progress
+```
+
+El ejemplo usa `valor` como valor. Sustitúyelo por un valor del tipo que muestra la sintaxis de tu versión. Un valor numérico conserva su unidad y un nombre de referencia debe resolver antes de ejecutar la orden. La comprobación detecta objetos o enlaces que no cumplen el formato esperado. Ejecuta la comprobación inmediatamente después para que ningún comando intermedio cambie el estado que estás observando.
+
+### `--temp`
+
+Escribe o registra temp como parte de copiar archivos del índice al área de trabajo. En Git 2.51.1, la ayuda corta expresa el contrato como `write the content to temporary files`. Conserva esa formulación al comparar el efecto entre versiones de Git.
+
+La opción cambia cómo `git checkout-index` recibe datos. Define el separador, la codificación y la ruta de entrada antes de ejecutarla. Los nombres con espacios o saltos de línea requieren una interfaz terminada en NUL cuando el comando la ofrece.
+
+```bash
+git checkout-index --temp --all --prefix=exportado/
+git fsck --no-progress
+```
+
+La opción no recibe un valor separado en la forma mostrada por la ayuda corta. Los argumentos que aparecen después pertenecen a `git checkout-index` o a otra opción. La comprobación detecta objetos o enlaces que no cumplen el formato esperado. Ejecuta la comprobación inmediatamente después para que ningún comando intermedio cambie el estado que estás observando.
+
+### `--ignore-skip-worktree-bits`
+
+Excluye elementos que cumplan la condición indicada.
+
+Esta forma se usa cuando `git checkout-index` ya dejó una operación en curso. Revisa `git status` antes de ejecutarla porque ignorar omitir el elemento actual área de trabajo bits actúa sobre el estado que Git registró al iniciar la secuencia.
+
+```bash
+git checkout-index --ignore-skip-worktree-bits --all --prefix=exportado/
+git fsck --no-progress
+```
+
+La opción no recibe un valor separado en la forma mostrada por la ayuda corta. Los argumentos que aparecen después pertenecen a `git checkout-index` o a otra opción. La comprobación detecta objetos o enlaces que no cumplen el formato esperado. Ejecuta la comprobación inmediatamente después para que ningún comando intermedio cambie el estado que estás observando.
+
+### `--no-create`
+
+Desactiva el comportamiento `create` para esta invocación.
+
+En `git checkout-index`, desactivar crear modifica la forma en que se ejecuta copiar archivos del índice al área de trabajo. Mantén iguales los demás argumentos para atribuir el cambio observado a esta opción.
+
+```bash
+git checkout-index --no-create --all --prefix=exportado/
+git fsck --no-progress
+```
+
+La opción no recibe un valor separado en la forma mostrada por la ayuda corta. Los argumentos que aparecen después pertenecen a `git checkout-index` o a otra opción. La comprobación detecta objetos o enlaces que no cumplen el formato esperado. Ejecuta la comprobación inmediatamente después para que ningún comando intermedio cambie el estado que estás observando.
+
+### `--create`
+
+Permite crear o escribir el elemento seleccionado.
+
+En `git checkout-index`, crear modifica la forma en que se ejecuta copiar archivos del índice al área de trabajo. Mantén iguales los demás argumentos para atribuir el cambio observado a esta opción.
+
+```bash
+git checkout-index --create --all --prefix=exportado/
+git fsck --no-progress
+```
+
+La opción no recibe un valor separado en la forma mostrada por la ayuda corta. Los argumentos que aparecen después pertenecen a `git checkout-index` o a otra opción. La comprobación detecta objetos o enlaces que no cumplen el formato esperado. Ejecuta la comprobación inmediatamente después para que ningún comando intermedio cambie el estado que estás observando.
+
+### `-z`
+
+Termina registros con NUL para evitar división por espacios o saltos de línea.
+
+En `git checkout-index`, z modifica la forma en que se ejecuta copiar archivos del índice al área de trabajo. Mantén iguales los demás argumentos para atribuir el cambio observado a esta opción.
+
+```bash
+git checkout-index -z --all --prefix=exportado/
+git fsck --no-progress
+```
+
+La opción no recibe un valor separado en la forma mostrada por la ayuda corta. Los argumentos que aparecen después pertenecen a `git checkout-index` o a otra opción. La comprobación detecta objetos o enlaces que no cumplen el formato esperado. Ejecuta la comprobación inmediatamente después para que ningún comando intermedio cambie el estado que estás observando.
+
+### `--stdin`
+
+Lee registros o nombres desde la entrada estándar.
+
+La opción cambia cómo `git checkout-index` recibe datos. Define el separador, la codificación y la ruta de entrada antes de ejecutarla. Los nombres con espacios o saltos de línea requieren una interfaz terminada en NUL cuando el comando la ofrece.
+
+```bash
+git checkout-index --stdin --all --prefix=exportado/
+git fsck --no-progress
+```
+
+La opción no recibe un valor separado en la forma mostrada por la ayuda corta. Los argumentos que aparecen después pertenecen a `git checkout-index` o a otra opción. La comprobación detecta objetos o enlaces que no cumplen el formato esperado. Ejecuta la comprobación inmediatamente después para que ningún comando intermedio cambie el estado que estás observando.
+
+### `--no-prefix`
+
+Desactiva para esta invocación el comportamiento que habilita `--prefix`. Mantén iguales los demás argumentos y compara el resultado con la forma positiva para comprobar la diferencia.
+
+La opción cambia cómo `git checkout-index` recibe datos. Define el separador, la codificación y la ruta de entrada antes de ejecutarla. Los nombres con espacios o saltos de línea requieren una interfaz terminada en NUL cuando el comando la ofrece.
+
+```bash
+git checkout-index --no-prefix --all
+git fsck --no-progress
+```
+
+La opción no recibe un valor separado en la forma mostrada por la ayuda corta. Los argumentos que aparecen después pertenecen a `git checkout-index` o a otra opción. La comprobación detecta objetos o enlaces que no cumplen el formato esperado. Ejecuta la comprobación inmediatamente después para que ningún comando intermedio cambie el estado que estás observando.
+
+### `--no-temp`
+
+Desactiva para esta invocación el comportamiento que habilita `--temp`. Mantén iguales los demás argumentos y compara el resultado con la forma positiva para comprobar la diferencia.
+
+La opción cambia cómo `git checkout-index` recibe datos. Define el separador, la codificación y la ruta de entrada antes de ejecutarla. Los nombres con espacios o saltos de línea requieren una interfaz terminada en NUL cuando el comando la ofrece.
+
+```bash
+git checkout-index --no-temp --all --prefix=exportado/
+git fsck --no-progress
+```
+
+La opción no recibe un valor separado en la forma mostrada por la ayuda corta. Los argumentos que aparecen después pertenecen a `git checkout-index` o a otra opción. La comprobación detecta objetos o enlaces que no cumplen el formato esperado. Ejecuta la comprobación inmediatamente después para que ningún comando intermedio cambie el estado que estás observando.
+
+### `--no-ignore-skip-worktree-bits`
+
+Desactiva para esta invocación el comportamiento que habilita `--ignore-skip-worktree-bits`. Mantén iguales los demás argumentos y compara el resultado con la forma positiva para comprobar la diferencia.
+
+Esta forma se usa cuando `git checkout-index` ya dejó una operación en curso. Revisa `git status` antes de ejecutarla porque desactivar ignorar omitir el elemento actual área de trabajo bits actúa sobre el estado que Git registró al iniciar la secuencia.
+
+```bash
+git checkout-index --no-ignore-skip-worktree-bits --all --prefix=exportado/
+git fsck --no-progress
+```
+
+La opción no recibe un valor separado en la forma mostrada por la ayuda corta. Los argumentos que aparecen después pertenecen a `git checkout-index` o a otra opción. La comprobación detecta objetos o enlaces que no cumplen el formato esperado. Ejecuta la comprobación inmediatamente después para que ningún comando intermedio cambie el estado que estás observando.
+
+### `--no-all`
+
+Desactiva para esta invocación el comportamiento que habilita `--all`. Mantén iguales los demás argumentos y compara el resultado con la forma positiva para comprobar la diferencia.
+
+La opción limita o amplía el conjunto sobre el que se ejecuta copiar archivos del índice al área de trabajo. Comprueba la selección con una forma de lectura antes de combinarla con una opción que escriba estado.
+
+```bash
+git checkout-index --no-all --prefix=exportado/
+git fsck --no-progress
+```
+
+La opción no recibe un valor separado en la forma mostrada por la ayuda corta. Los argumentos que aparecen después pertenecen a `git checkout-index` o a otra opción. La comprobación detecta objetos o enlaces que no cumplen el formato esperado. Ejecuta la comprobación inmediatamente después para que ningún comando intermedio cambie el estado que estás observando.
+
+### `--no-force`
+
+Desactiva para esta invocación el comportamiento que habilita `--force`. Mantén iguales los demás argumentos y compara el resultado con la forma positiva para comprobar la diferencia.
+
+La opción controla desactivar omitir la protección. Registra el estado de las referencias y conserva los cambios sin commit antes de usarla, porque copiar archivos del índice al área de trabajo puede retirar o reemplazar datos dentro del alcance seleccionado.
+
+```bash
+git checkout-index --no-force --all --prefix=exportado/
+git fsck --no-progress
+```
+
+La opción no recibe un valor separado en la forma mostrada por la ayuda corta. Los argumentos que aparecen después pertenecen a `git checkout-index` o a otra opción. La comprobación detecta objetos o enlaces que no cumplen el formato esperado. Ejecuta la comprobación inmediatamente después para que ningún comando intermedio cambie el estado que estás observando.
+
+### `--no-quiet`
+
+Desactiva para esta invocación el comportamiento que habilita `--quiet`. Mantén iguales los demás argumentos y compara el resultado con la forma positiva para comprobar la diferencia.
+
+La opción cambia la representación o el canal del resultado. Úsala cuando una persona o un script necesite campos, separadores o cantidad de mensajes definidos. El contenido mostrado puede cambiar aunque el repositorio permanezca igual.
+
+```bash
+git checkout-index --no-quiet --all --prefix=exportado/
+git fsck --no-progress
+```
+
+La opción no recibe un valor separado en la forma mostrada por la ayuda corta. Los argumentos que aparecen después pertenecen a `git checkout-index` o a otra opción. La comprobación detecta objetos o enlaces que no cumplen el formato esperado. Ejecuta la comprobación inmediatamente después para que ningún comando intermedio cambie el estado que estás observando.
+
+### `--no-index`
+
+Desactiva para esta invocación el comportamiento que habilita `--index`. Mantén iguales los demás argumentos y compara el resultado con la forma positiva para comprobar la diferencia.
+
+La opción cambia la representación o el canal del resultado. Úsala cuando una persona o un script necesite campos, separadores o cantidad de mensajes definidos. El contenido mostrado puede cambiar aunque el repositorio permanezca igual.
+
+```bash
+git checkout-index --no-index --all --prefix=exportado/
+git fsck --no-progress
+```
+
+La opción no recibe un valor separado en la forma mostrada por la ayuda corta. Los argumentos que aparecen después pertenecen a `git checkout-index` o a otra opción. La comprobación detecta objetos o enlaces que no cumplen el formato esperado. Ejecuta la comprobación inmediatamente después para que ningún comando intermedio cambie el estado que estás observando.
+
+### `--no-stdin`
+
+Desactiva para esta invocación el comportamiento que habilita `--stdin`. Mantén iguales los demás argumentos y compara el resultado con la forma positiva para comprobar la diferencia.
+
+La opción cambia cómo `git checkout-index` recibe datos. Define el separador, la codificación y la ruta de entrada antes de ejecutarla. Los nombres con espacios o saltos de línea requieren una interfaz terminada en NUL cuando el comando la ofrece.
+
+```bash
+git checkout-index --no-stdin --all --prefix=exportado/
+git fsck --no-progress
+```
+
+La opción no recibe un valor separado en la forma mostrada por la ayuda corta. Los argumentos que aparecen después pertenecen a `git checkout-index` o a otra opción. La comprobación detecta objetos o enlaces que no cumplen el formato esperado. Ejecuta la comprobación inmediatamente después para que ningún comando intermedio cambie el estado que estás observando.
 
 ## Errores y diagnóstico
 
-| Señal | Causa que debes comprobar | Acción |
-| --- | --- | --- |
-| El hash no coincide | Los bytes, el tipo o la longitud difieren | Compara la entrada byte por byte y no normalices el contenido. |
-| La referencia no se actualiza | El valor anterior no coincide con la condición | Lee el valor actual y repite con una condición nueva. |
-| El índice queda sin resolver | Una entrada tiene etapas de conflicto | Inspecciona `git ls-files --stage` antes de escribir un árbol. |
+### El hash no coincide
 
-Si una operación deja archivos de estado dentro de `.git`, usa `git status` y la acción de continuar, omitir o abortar definida por esa operación. No borres esos archivos para simular una cancelación.
+Comprueba esta causa: Los bytes, el tipo o la longitud difieren. Compara la entrada byte por byte y no normalices el contenido.
 
-## Automatización
+### La referencia no se actualiza
 
-1. Declara la versión mínima de Git que necesita el script.
-2. Resuelve la raíz del repositorio y evita depender del directorio actual.
-3. Separa opciones y rutas con `--`.
-4. Captura stdout, stderr y el código de terminación.
-5. Usa formatos de máquina o terminación NUL para nombres de archivo.
-6. Ejecuta primero sobre el laboratorio y añade un caso sin coincidencias.
+Comprueba esta causa: El valor anterior no coincide con la condición. Lee el valor actual y repite con una condición nueva.
 
-## Seguridad y recuperación
+### El índice queda sin resolver
+
+Comprueba esta causa: Una entrada tiene etapas de conflicto. Inspecciona `git ls-files --stage` antes de escribir un árbol.
+
+## Automatización y recuperación
 
 Persistencia: Puede persistir el estado implicado por esta operación: copiar archivos del índice al área de trabajo. Las opciones pueden limitar o ampliar ese efecto. Antes de una operación que mueva o elimine referencias, registra sus hashes con `git show-ref`. Antes de cambiar archivos, conserva `git diff` y `git diff --cached`. Para objetos y commits que dejaron de estar referenciados, consulta el reflog antes de ejecutar mantenimiento que pueda eliminarlos.
-
-## Práctica guiada
 
 Usa un repositorio temporal y guarda los identificadores antes de escribir. Verifica cada objeto con `git cat-file` y cada referencia con `git show-ref`.
 

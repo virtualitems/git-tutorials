@@ -2,51 +2,28 @@
 title: "git difftool"
 source: "https://git-scm.com/docs/git-difftool"
 section: "inspection-and-comparison"
-status: "expanded"
+status: "option-expanded"
 ---
 
 # `git difftool`
 
 Este caso usa `git difftool` para ver comparaciones con una herramienta externa. Los nombres de archivo, revisiones, ramas y direcciones del ejemplo representan valores que debes sustituir por los de tu repositorio.
 
-## Alcance y responsabilidad
+## Responsabilidad y efecto
 
 git difftool selecciona objetos o rangos y produce una vista sin cambiar el repositorio. Recibe como entrada los estados u objetos que la consulta debe mostrar o comparar. La operación consiste en ver comparaciones con una herramienta externa.
 
-La página distingue lectura, escritura y resultado:
+No modifica el repositorio en su forma de consulta. Puede iniciar un visor o escribir un archivo si se solicita de forma explícita.
 
-| Elemento | Relación con la función | Comprobación |
-| --- | --- | --- |
-| Entrada | los estados u objetos que la consulta debe mostrar o comparar. | Registra los argumentos y resuelve revisiones antes de ejecutar. |
-| Efecto principal | ver comparaciones con una herramienta externa. | Comprueba el resultado con una orden de lectura. |
-| Persistencia | No modifica el repositorio en su forma de consulta. Puede iniciar un visor o escribir un archivo si se solicita de forma explícita. | Compara el estado antes y después. |
-| Resultado | La orden comunica datos por stdout y diagnósticos por stderr. | Captura también el código de terminación. |
-| Fuente de verdad | El repositorio y la configuración efectiva determinan el resultado. | Usa el hash, el rango y el pathspec impresos junto al resultado. |
+## Preparación
 
-## Requisitos y laboratorio
+Los ejemplos que necesitan un repositorio parten del [laboratorio base de `git init`](../getting-and-creating-projects/init.md#laboratorio-base). La posición de opciones, revisiones y rutas sigue las [convenciones de la interfaz de Git](../guides/gitcli.md#convenciones-de-la-cli). Los nombres como `HEAD`, `main`, `HEAD~2` y `A..B` se explican en [revisiones y rangos](../guides/gitrevisions.md#revisiones-y-rangos). La selección de rutas se explica en [pathspecs y separación con `--`](../guides/gitcli.md#pathspecs). Antes de ejecutar una forma que escriba datos, registra `git status --short` y las referencias que puedan cambiar.
 
-Crea dos commits y una rama. Compara cada par de estados con una ruta explícita y después sin limitar la ruta.
-
-```bash
-lab_dir="$(mktemp -d)"
-git init "$lab_dir/proyecto"
-git -C "$lab_dir/proyecto" config user.name "Persona de prueba"
-git -C "$lab_dir/proyecto" config user.email "prueba@example.test"
-printf 'línea base\n' > "$lab_dir/proyecto/archivo.txt"
-git -C "$lab_dir/proyecto" add archivo.txt
-git -C "$lab_dir/proyecto" commit -m "base"
-cd "$lab_dir/proyecto"
-```
-
-Antes de ejecutar el ejemplo, confirma la raíz con `git rev-parse --show-toplevel` cuando exista un repositorio. Registra `git status --short` y las referencias que puedan cambiar.
-
-## Modelo de funcionamiento
+## Cómo funciona
 
 Estas operaciones leen objetos, referencias, índice o área de trabajo. Sus argumentos determinan los dos estados que se comparan o el conjunto que se recorre.
 
 Nombra los estados que se leen a cada lado de la consulta. La revisión omitida suele implicar HEAD, el índice o el área de trabajo según el comando.
-
-Para comprobar el resultado: la salida cambia cuando se modifica una sola revisión, ruta u opción de formato. La verificación debe observar un estado distinto del canal que produjo el cambio.
 
 ## Ejemplo mínimo
 
@@ -54,16 +31,9 @@ Para comprobar el resultado: la salida cambia cuando se modifica una sola revisi
 git difftool main..tema-portada -- README.md
 ```
 
-Ejecuta el bloque en orden. Conserva los nombres del laboratorio hasta confirmar el resultado. Sustituye rutas, revisiones o URL solo después de identificar su tipo y alcance.
+La invocación `git difftool main..tema-portada -- README.md` ejecuta esta operación: ver comparaciones con una herramienta externa. Después, la salida cambia cuando se modifica una sola revisión, ruta u opción de formato. Conserva stdout, stderr y el código de terminación cuando el ejemplo forme parte de un script.
 
-### Resultado esperado
-
-- La entrada queda limitada a: los estados u objetos que la consulta debe mostrar o comparar.
-- La operación observable es: ver comparaciones con una herramienta externa.
-- La comprobación se realiza mediante: la salida cambia cuando se modifica una sola revisión, ruta u opción de formato.
-- stdout contiene datos o confirmaciones; stderr contiene diagnósticos. Captura ambos canales cuando automatices.
-
-## Sintaxis
+## Sintaxis y formas de invocación
 
 ```text
 git difftool [<options>] [<commit> [<commit>]] [--] [<path>…]
@@ -77,73 +47,335 @@ git difftool [<options>] [<commit> [<commit>]] [--] [<path>...]
 
 Los corchetes indican elementos opcionales; `<valor>` exige sustitución; los puntos suspensivos permiten repetición; `|` separa formas excluyentes. Usa `git difftool -h` para consultar la sintaxis que corresponde a la instalación donde ejecutarás la orden.
 
-## Casos de uso
+## Flujos de uso
 
-| Caso | Objetivo | Criterio de verificación |
-| --- | --- | --- |
-| Caso base | ver comparaciones con una herramienta externa | Ejecuta el ejemplo mínimo y registra el estado antes y después. |
-| Alcance explícito | Aplicar git difftool a una referencia, rango o ruta identificada. | Resuelve cada argumento antes de ejecutar y usa `--` para rutas. |
-| Validación | Comprobar el resultado de git difftool con una orden de lectura independiente. | No uses la misma salida como única prueba del cambio. |
+### Caso base
 
+ver comparaciones con una herramienta externa. Usa el [ejemplo mínimo](#ejemplo-mínimo) como punto de partida. Ejecuta el ejemplo mínimo y registra el estado antes y después.
 
-## Opciones y variaciones
+### Alcance explícito
 
-La tabla agrupa las opciones visibles en la sintaxis y en la ayuda corta. Una opción puede tener un significado propio cuando la página lo define; ejecuta la ayuda de tu versión antes de usarla en automatización.
+Aplicar git difftool a una referencia, rango o ruta identificada. Usa el [ejemplo mínimo](#ejemplo-mínimo) como punto de partida. Resuelve cada argumento antes de ejecutar y usa `--` para rutas.
 
-| Opción | Efecto que debes controlar |
-| --- | --- |
-| `-g` | Activa el modo `-g`; los argumentos y restricciones aparecen en la sintaxis y en la fuente oficial. |
-| `--gui` | Activa el modo `--gui`; los argumentos y restricciones aparecen en la sintaxis y en la fuente oficial. |
-| `-d` | Activa la forma corta de eliminación o una opción propia de la orden. |
-| `--dir-diff` | Activa el modo `--dir-diff`; los argumentos y restricciones aparecen en la sintaxis y en la fuente oficial. |
-| `-y` | Activa el modo `-y`; los argumentos y restricciones aparecen en la sintaxis y en la fuente oficial. |
-| `--no-prompt` | Desactiva el comportamiento `prompt` para esta invocación. |
-| `--symlinks` | Activa el modo `--symlinks`; los argumentos y restricciones aparecen en la sintaxis y en la fuente oficial. |
-| `-t` | Activa el modo `-t`; los argumentos y restricciones aparecen en la sintaxis y en la fuente oficial. |
-| `--tool` | Activa el modo `--tool`; los argumentos y restricciones aparecen en la sintaxis y en la fuente oficial. |
-| `--tool-help` | Activa el modo `--tool-help`; los argumentos y restricciones aparecen en la sintaxis y en la fuente oficial. |
-| `--trust-exit-code` | Activa el modo `--trust-exit-code`; los argumentos y restricciones aparecen en la sintaxis y en la fuente oficial. |
-| `-x` | Activa el modo `-x`; los argumentos y restricciones aparecen en la sintaxis y en la fuente oficial. |
-| `--extcmd` | Activa el modo `--extcmd`; los argumentos y restricciones aparecen en la sintaxis y en la fuente oficial. |
-| `--no-index` | Desactiva el comportamiento `index` para esta invocación. |
-| `--index` | Incluye el índice en la operación. |
+### Validación
 
-## Selección de entradas
+Comprobar el resultado de git difftool con una orden de lectura independiente. Usa el [ejemplo mínimo](#ejemplo-mínimo) como punto de partida. No uses la misma salida como única prueba del cambio.
 
-Las revisiones se resuelven antes que los pathspecs cuando la sintaxis las espera. Usa `--` para separar opciones y rutas. Cita los globos para decidir si los expande el shell o Git.
+## Opciones
 
-Comprueba cada entrada con una orden de lectura antes de una escritura. Para listas de rutas generadas por otro proceso, prefiere una interfaz terminada en NUL cuando esté disponible.
+Cada apartado usa una opción en una invocación concreta. Las opciones equivalentes comparten la explicación, pero cada alias tiene su propio ejemplo. Ejecuta una opción por vez antes de combinarlas.
 
-## Salida y códigos de terminación
+### `-g` y `--gui`
 
-Un código 0 indica que la operación terminó bajo el contrato solicitado. Trata cualquier código distinto de cero según la función; no deduzcas el estado solo a partir de que stdout esté vacío.
+Define gui para esta ejecución de `git difftool`. En Git 2.51.1, la ayuda corta expresa el contrato como `use `diff.guitool` instead of `diff.tool``. Conserva esa formulación al comparar el efecto entre versiones de Git. La misma línea de ayuda también acepta `-g`. Esas formas seleccionan el mismo comportamiento; cambia la escritura del argumento, no el efecto.
 
-No analices mensajes destinados a personas si existe un formato de máquina. Declara los campos, desactiva color y conserva stderr para diagnóstico.
+Estas escrituras son alias: seleccionan el mismo comportamiento. Se documentan juntas para no duplicar la regla, pero cada una conserva su propia invocación reproducible.
+
+En `git difftool`, gui modifica la forma en que se ejecuta ver comparaciones con una herramienta externa. Mantén iguales los demás argumentos para atribuir el cambio observado a esta opción.
+
+#### Ejemplo con `-g`
+
+```bash
+git difftool -g main..tema-portada -- README.md
+printf 'exit=%s\n' "$?"
+```
+
+Esta forma no recibe un valor separado; los argumentos posteriores pertenecen a `git difftool` o a otra opción. El código de terminación distingue una ejecución aceptada de un error y, en algunos comandos de consulta, de una respuesta negativa.
+
+#### Ejemplo con `--gui`
+
+```bash
+git difftool --gui main..tema-portada -- README.md
+printf 'exit=%s\n' "$?"
+```
+
+Esta forma no recibe un valor separado; los argumentos posteriores pertenecen a `git difftool` o a otra opción. El código de terminación distingue una ejecución aceptada de un error y, en algunos comandos de consulta, de una respuesta negativa.
+
+Ejecuta una sola alternativa cada vez. Si ejecutas varias consecutivamente, el primer comando puede cambiar el estado que observa el siguiente.
+
+### `-d` y `--dir-diff`
+
+Ejecuta dir diff durante ver comparaciones con una herramienta externa. En Git 2.51.1, la ayuda corta expresa el contrato como `perform a full-directory diff`. Conserva esa formulación al comparar el efecto entre versiones de Git. La misma línea de ayuda también acepta `-d`. Esas formas seleccionan el mismo comportamiento; cambia la escritura del argumento, no el efecto.
+
+Estas escrituras son alias: seleccionan el mismo comportamiento. Se documentan juntas para no duplicar la regla, pero cada una conserva su propia invocación reproducible.
+
+En `git difftool`, dir diff modifica la forma en que se ejecuta ver comparaciones con una herramienta externa. Mantén iguales los demás argumentos para atribuir el cambio observado a esta opción.
+
+#### Ejemplo con `-d`
+
+```bash
+git difftool -d main..tema-portada -- README.md
+printf 'exit=%s\n' "$?"
+```
+
+Esta forma no recibe un valor separado; los argumentos posteriores pertenecen a `git difftool` o a otra opción. El código de terminación distingue una ejecución aceptada de un error y, en algunos comandos de consulta, de una respuesta negativa.
+
+#### Ejemplo con `--dir-diff`
+
+```bash
+git difftool --dir-diff main..tema-portada -- README.md
+printf 'exit=%s\n' "$?"
+```
+
+Esta forma no recibe un valor separado; los argumentos posteriores pertenecen a `git difftool` o a otra opción. El código de terminación distingue una ejecución aceptada de un error y, en algunos comandos de consulta, de una respuesta negativa.
+
+Ejecuta una sola alternativa cada vez. Si ejecutas varias consecutivamente, el primer comando puede cambiar el estado que observa el siguiente.
+
+### `-y`
+
+Impide y durante esta invocación de `git difftool`. En Git 2.51.1, la ayuda corta expresa el contrato como `do not prompt before launching a diff tool`. Conserva esa formulación al comparar el efecto entre versiones de Git. La misma línea de ayuda también acepta `--no-prompt`. Esas formas seleccionan el mismo comportamiento; cambia la escritura del argumento, no el efecto.
+
+En `git difftool`, y modifica la forma en que se ejecuta ver comparaciones con una herramienta externa. Mantén iguales los demás argumentos para atribuir el cambio observado a esta opción.
+
+```bash
+git difftool -y main..tema-portada -- README.md
+printf 'exit=%s\n' "$?"
+```
+
+La opción no recibe un valor separado en la forma mostrada por la ayuda corta. Los argumentos que aparecen después pertenecen a `git difftool` o a otra opción. El código de terminación distingue una ejecución aceptada de un error y, en algunos comandos de consulta, de una respuesta negativa. Ejecuta la comprobación inmediatamente después para que ningún comando intermedio cambie el estado que estás observando.
+
+### `--no-prompt`
+
+Desactiva el comportamiento `prompt` para esta invocación.
+
+En `git difftool`, desactivar prompt modifica la forma en que se ejecuta ver comparaciones con una herramienta externa. Mantén iguales los demás argumentos para atribuir el cambio observado a esta opción.
+
+```bash
+git difftool --no-prompt main..tema-portada -- README.md
+printf 'exit=%s\n' "$?"
+```
+
+La opción no recibe un valor separado en la forma mostrada por la ayuda corta. Los argumentos que aparecen después pertenecen a `git difftool` o a otra opción. El código de terminación distingue una ejecución aceptada de un error y, en algunos comandos de consulta, de una respuesta negativa. Ejecuta la comprobación inmediatamente después para que ningún comando intermedio cambie el estado que estás observando.
+
+### `--symlinks`
+
+Define symlinks para esta ejecución de `git difftool`. En Git 2.51.1, la ayuda corta expresa el contrato como `use symlinks in dir-diff mode`. Conserva esa formulación al comparar el efecto entre versiones de Git.
+
+En `git difftool`, symlinks modifica la forma en que se ejecuta ver comparaciones con una herramienta externa. Mantén iguales los demás argumentos para atribuir el cambio observado a esta opción.
+
+```bash
+git difftool --symlinks main..tema-portada -- README.md
+printf 'exit=%s\n' "$?"
+```
+
+La opción no recibe un valor separado en la forma mostrada por la ayuda corta. Los argumentos que aparecen después pertenecen a `git difftool` o a otra opción. El código de terminación distingue una ejecución aceptada de un error y, en algunos comandos de consulta, de una respuesta negativa. Ejecuta la comprobación inmediatamente después para que ningún comando intermedio cambie el estado que estás observando.
+
+### `-t` y `--tool`
+
+Define tool para esta ejecución de `git difftool`. En Git 2.51.1, la ayuda corta expresa el contrato como `use the specified diff tool`. Conserva esa formulación al comparar el efecto entre versiones de Git. La misma línea de ayuda también acepta `-t`. Esas formas seleccionan el mismo comportamiento; cambia la escritura del argumento, no el efecto.
+
+Estas escrituras son alias: seleccionan el mismo comportamiento. Se documentan juntas para no duplicar la regla, pero cada una conserva su propia invocación reproducible.
+
+En `git difftool`, tool modifica la forma en que se ejecuta ver comparaciones con una herramienta externa. Mantén iguales los demás argumentos para atribuir el cambio observado a esta opción.
+
+#### Ejemplo con `-t`
+
+```bash
+git difftool -t valor main..tema-portada -- README.md
+printf 'exit=%s\n' "$?"
+```
+
+En esta forma, `valor` es un valor de ejemplo. Sustitúyelo por un valor que cumpla el tipo y el alcance indicados por la sintaxis. El código de terminación distingue una ejecución aceptada de un error y, en algunos comandos de consulta, de una respuesta negativa.
+
+#### Ejemplo con `--tool`
+
+```bash
+git difftool --tool=valor main..tema-portada -- README.md
+printf 'exit=%s\n' "$?"
+```
+
+En esta forma, `valor` es un valor de ejemplo. Sustitúyelo por un valor que cumpla el tipo y el alcance indicados por la sintaxis. El código de terminación distingue una ejecución aceptada de un error y, en algunos comandos de consulta, de una respuesta negativa.
+
+Ejecuta una sola alternativa cada vez. Si ejecutas varias consecutivamente, el primer comando puede cambiar el estado que observa el siguiente.
+
+### `--tool-help`
+
+Incluye tool ayuda en la salida o cambia cómo `git difftool` la representa. En Git 2.51.1, la ayuda corta expresa el contrato como `print a list of diff tools that may be used with `--tool``. Conserva esa formulación al comparar el efecto entre versiones de Git.
+
+La opción cambia la representación o el canal del resultado. Úsala cuando una persona o un script necesite campos, separadores o cantidad de mensajes definidos. El contenido mostrado puede cambiar aunque el repositorio permanezca igual.
+
+```bash
+git difftool --tool-help main..tema-portada -- README.md
+printf 'exit=%s\n' "$?"
+```
+
+La opción no recibe un valor separado en la forma mostrada por la ayuda corta. Los argumentos que aparecen después pertenecen a `git difftool` o a otra opción. El código de terminación distingue una ejecución aceptada de un error y, en algunos comandos de consulta, de una respuesta negativa. Ejecuta la comprobación inmediatamente después para que ningún comando intermedio cambie el estado que estás observando.
+
+### `--trust-exit-code`
+
+Activa trust exit code durante ver comparaciones con una herramienta externa. La opción afecta esta invocación y no cambia la configuración de otras órdenes salvo que la propia función escriba esa configuración. En Git 2.51.1, la ayuda corta expresa el contrato como `make 'git-difftool' exit when an invoked diff tool returns a non-zero exit code`. Conserva esa formulación al comparar el efecto entre versiones de Git.
+
+En `git difftool`, trust exit code modifica la forma en que se ejecuta ver comparaciones con una herramienta externa. Mantén iguales los demás argumentos para atribuir el cambio observado a esta opción.
+
+```bash
+git difftool --trust-exit-code main..tema-portada -- README.md
+printf 'exit=%s\n' "$?"
+```
+
+La opción no recibe un valor separado en la forma mostrada por la ayuda corta. Los argumentos que aparecen después pertenecen a `git difftool` o a otra opción. El código de terminación distingue una ejecución aceptada de un error y, en algunos comandos de consulta, de una respuesta negativa. Ejecuta la comprobación inmediatamente después para que ningún comando intermedio cambie el estado que estás observando.
+
+### `-x` y `--extcmd`
+
+Define extcmd para esta ejecución de `git difftool`. En Git 2.51.1, la ayuda corta expresa el contrato como `specify a custom command for viewing diffs`. Conserva esa formulación al comparar el efecto entre versiones de Git. La misma línea de ayuda también acepta `-x`. Esas formas seleccionan el mismo comportamiento; cambia la escritura del argumento, no el efecto.
+
+Estas escrituras son alias: seleccionan el mismo comportamiento. Se documentan juntas para no duplicar la regla, pero cada una conserva su propia invocación reproducible.
+
+En `git difftool`, extcmd modifica la forma en que se ejecuta ver comparaciones con una herramienta externa. Mantén iguales los demás argumentos para atribuir el cambio observado a esta opción.
+
+#### Ejemplo con `-x`
+
+```bash
+git difftool -x status main..tema-portada -- README.md
+printf 'exit=%s\n' "$?"
+```
+
+En esta forma, `status` es un valor de ejemplo. Sustitúyelo por un valor que cumpla el tipo y el alcance indicados por la sintaxis. El código de terminación distingue una ejecución aceptada de un error y, en algunos comandos de consulta, de una respuesta negativa.
+
+#### Ejemplo con `--extcmd`
+
+```bash
+git difftool --extcmd=status main..tema-portada -- README.md
+printf 'exit=%s\n' "$?"
+```
+
+En esta forma, `status` es un valor de ejemplo. Sustitúyelo por un valor que cumpla el tipo y el alcance indicados por la sintaxis. El código de terminación distingue una ejecución aceptada de un error y, en algunos comandos de consulta, de una respuesta negativa.
+
+Ejecuta una sola alternativa cada vez. Si ejecutas varias consecutivamente, el primer comando puede cambiar el estado que observa el siguiente.
+
+### `--no-index`
+
+Desactiva el comportamiento `index` para esta invocación.
+
+En `git difftool`, desactivar índice modifica la forma en que se ejecuta ver comparaciones con una herramienta externa. Mantén iguales los demás argumentos para atribuir el cambio observado a esta opción.
+
+```bash
+git difftool --no-index main..tema-portada -- README.md
+printf 'exit=%s\n' "$?"
+```
+
+La opción no recibe un valor separado en la forma mostrada por la ayuda corta. Los argumentos que aparecen después pertenecen a `git difftool` o a otra opción. El código de terminación distingue una ejecución aceptada de un error y, en algunos comandos de consulta, de una respuesta negativa. Ejecuta la comprobación inmediatamente después para que ningún comando intermedio cambie el estado que estás observando.
+
+### `--index`
+
+Incluye el índice en la operación.
+
+En `git difftool`, índice modifica la forma en que se ejecuta ver comparaciones con una herramienta externa. Mantén iguales los demás argumentos para atribuir el cambio observado a esta opción.
+
+```bash
+git difftool --index main..tema-portada -- README.md
+printf 'exit=%s\n' "$?"
+```
+
+La opción no recibe un valor separado en la forma mostrada por la ayuda corta. Los argumentos que aparecen después pertenecen a `git difftool` o a otra opción. El código de terminación distingue una ejecución aceptada de un error y, en algunos comandos de consulta, de una respuesta negativa. Ejecuta la comprobación inmediatamente después para que ningún comando intermedio cambie el estado que estás observando.
+
+### `--no-gui`
+
+Desactiva para esta invocación el comportamiento que habilita `--gui`. Mantén iguales los demás argumentos y compara el resultado con la forma positiva para comprobar la diferencia.
+
+En `git difftool`, desactivar gui modifica la forma en que se ejecuta ver comparaciones con una herramienta externa. Mantén iguales los demás argumentos para atribuir el cambio observado a esta opción.
+
+```bash
+git difftool --no-gui main..tema-portada -- README.md
+printf 'exit=%s\n' "$?"
+```
+
+La opción no recibe un valor separado en la forma mostrada por la ayuda corta. Los argumentos que aparecen después pertenecen a `git difftool` o a otra opción. El código de terminación distingue una ejecución aceptada de un error y, en algunos comandos de consulta, de una respuesta negativa. Ejecuta la comprobación inmediatamente después para que ningún comando intermedio cambie el estado que estás observando.
+
+### `--no-dir-diff`
+
+Desactiva para esta invocación el comportamiento que habilita `--dir-diff`. Mantén iguales los demás argumentos y compara el resultado con la forma positiva para comprobar la diferencia.
+
+En `git difftool`, desactivar dir diff modifica la forma en que se ejecuta ver comparaciones con una herramienta externa. Mantén iguales los demás argumentos para atribuir el cambio observado a esta opción.
+
+```bash
+git difftool --no-dir-diff main..tema-portada -- README.md
+printf 'exit=%s\n' "$?"
+```
+
+La opción no recibe un valor separado en la forma mostrada por la ayuda corta. Los argumentos que aparecen después pertenecen a `git difftool` o a otra opción. El código de terminación distingue una ejecución aceptada de un error y, en algunos comandos de consulta, de una respuesta negativa. Ejecuta la comprobación inmediatamente después para que ningún comando intermedio cambie el estado que estás observando.
+
+### `--no-symlinks`
+
+Desactiva para esta invocación el comportamiento que habilita `--symlinks`. Mantén iguales los demás argumentos y compara el resultado con la forma positiva para comprobar la diferencia.
+
+En `git difftool`, desactivar symlinks modifica la forma en que se ejecuta ver comparaciones con una herramienta externa. Mantén iguales los demás argumentos para atribuir el cambio observado a esta opción.
+
+```bash
+git difftool --no-symlinks main..tema-portada -- README.md
+printf 'exit=%s\n' "$?"
+```
+
+La opción no recibe un valor separado en la forma mostrada por la ayuda corta. Los argumentos que aparecen después pertenecen a `git difftool` o a otra opción. El código de terminación distingue una ejecución aceptada de un error y, en algunos comandos de consulta, de una respuesta negativa. Ejecuta la comprobación inmediatamente después para que ningún comando intermedio cambie el estado que estás observando.
+
+### `--no-tool`
+
+Desactiva para esta invocación el comportamiento que habilita `--tool`. Mantén iguales los demás argumentos y compara el resultado con la forma positiva para comprobar la diferencia.
+
+En `git difftool`, desactivar tool modifica la forma en que se ejecuta ver comparaciones con una herramienta externa. Mantén iguales los demás argumentos para atribuir el cambio observado a esta opción.
+
+```bash
+git difftool --no-tool main..tema-portada -- README.md
+printf 'exit=%s\n' "$?"
+```
+
+La opción no recibe un valor separado en la forma mostrada por la ayuda corta. Los argumentos que aparecen después pertenecen a `git difftool` o a otra opción. El código de terminación distingue una ejecución aceptada de un error y, en algunos comandos de consulta, de una respuesta negativa. Ejecuta la comprobación inmediatamente después para que ningún comando intermedio cambie el estado que estás observando.
+
+### `--no-tool-help`
+
+Desactiva para esta invocación el comportamiento que habilita `--tool-help`. Mantén iguales los demás argumentos y compara el resultado con la forma positiva para comprobar la diferencia.
+
+La opción cambia la representación o el canal del resultado. Úsala cuando una persona o un script necesite campos, separadores o cantidad de mensajes definidos. El contenido mostrado puede cambiar aunque el repositorio permanezca igual.
+
+```bash
+git difftool --no-tool-help main..tema-portada -- README.md
+printf 'exit=%s\n' "$?"
+```
+
+La opción no recibe un valor separado en la forma mostrada por la ayuda corta. Los argumentos que aparecen después pertenecen a `git difftool` o a otra opción. El código de terminación distingue una ejecución aceptada de un error y, en algunos comandos de consulta, de una respuesta negativa. Ejecuta la comprobación inmediatamente después para que ningún comando intermedio cambie el estado que estás observando.
+
+### `--no-trust-exit-code`
+
+Desactiva para esta invocación el comportamiento que habilita `--trust-exit-code`. Mantén iguales los demás argumentos y compara el resultado con la forma positiva para comprobar la diferencia.
+
+En `git difftool`, desactivar trust exit code modifica la forma en que se ejecuta ver comparaciones con una herramienta externa. Mantén iguales los demás argumentos para atribuir el cambio observado a esta opción.
+
+```bash
+git difftool --no-trust-exit-code main..tema-portada -- README.md
+printf 'exit=%s\n' "$?"
+```
+
+La opción no recibe un valor separado en la forma mostrada por la ayuda corta. Los argumentos que aparecen después pertenecen a `git difftool` o a otra opción. El código de terminación distingue una ejecución aceptada de un error y, en algunos comandos de consulta, de una respuesta negativa. Ejecuta la comprobación inmediatamente después para que ningún comando intermedio cambie el estado que estás observando.
+
+### `--no-extcmd`
+
+Desactiva para esta invocación el comportamiento que habilita `--extcmd`. Mantén iguales los demás argumentos y compara el resultado con la forma positiva para comprobar la diferencia.
+
+En `git difftool`, desactivar extcmd modifica la forma en que se ejecuta ver comparaciones con una herramienta externa. Mantén iguales los demás argumentos para atribuir el cambio observado a esta opción.
+
+```bash
+git difftool --no-extcmd main..tema-portada -- README.md
+printf 'exit=%s\n' "$?"
+```
+
+La opción no recibe un valor separado en la forma mostrada por la ayuda corta. Los argumentos que aparecen después pertenecen a `git difftool` o a otra opción. El código de terminación distingue una ejecución aceptada de un error y, en algunos comandos de consulta, de una respuesta negativa. Ejecuta la comprobación inmediatamente después para que ningún comando intermedio cambie el estado que estás observando.
 
 ## Errores y diagnóstico
 
-| Señal | Causa que debes comprobar | Acción |
-| --- | --- | --- |
-| La salida está vacía | El rango o el pathspec no contiene cambios | Resuelve cada revisión con `git rev-parse --verify`. |
-| El orden no coincide con el esperado | La función usa un recorrido o criterio de orden | Declara el criterio con opciones de fecha, topología o formato. |
-| Un script interpreta colores | La salida está destinada a terminal | Usa una forma de formato y desactiva color para datos de máquina. |
+### La salida está vacía
 
-Si una operación deja archivos de estado dentro de `.git`, usa `git status` y la acción de continuar, omitir o abortar definida por esa operación. No borres esos archivos para simular una cancelación.
+Comprueba esta causa: El rango o el pathspec no contiene cambios. Resuelve cada revisión con `git rev-parse --verify`.
 
-## Automatización
+### El orden no coincide con el esperado
 
-1. Declara la versión mínima de Git que necesita el script.
-2. Resuelve la raíz del repositorio y evita depender del directorio actual.
-3. Separa opciones y rutas con `--`.
-4. Captura stdout, stderr y el código de terminación.
-5. Usa formatos de máquina o terminación NUL para nombres de archivo.
-6. Ejecuta primero sobre el laboratorio y añade un caso sin coincidencias.
+Comprueba esta causa: La función usa un recorrido o criterio de orden. Declara el criterio con opciones de fecha, topología o formato.
 
-## Seguridad y recuperación
+### Un script interpreta colores
+
+Comprueba esta causa: La salida está destinada a terminal. Usa una forma de formato y desactiva color para datos de máquina.
+
+## Automatización y recuperación
 
 Persistencia: No modifica el repositorio en su forma de consulta. Puede iniciar un visor o escribir un archivo si se solicita de forma explícita. Antes de una operación que mueva o elimine referencias, registra sus hashes con `git show-ref`. Antes de cambiar archivos, conserva `git diff` y `git diff --cached`. Para objetos y commits que dejaron de estar referenciados, consulta el reflog antes de ejecutar mantenimiento que pueda eliminarlos.
-
-## Práctica guiada
 
 Ejecuta la consulta sobre dos revisiones conocidas. Cambia un solo argumento y explica qué conjunto de objetos o rutas cambió.
 

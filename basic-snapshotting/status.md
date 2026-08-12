@@ -2,51 +2,28 @@
 title: "git status"
 source: "https://git-scm.com/docs/git-status"
 section: "basic-snapshotting"
-status: "expanded"
+status: "option-expanded"
 ---
 
 # `git status`
 
 Este caso usa `git status` para comparar el área de trabajo y el índice con el commit actual. Los nombres de archivo, revisiones, ramas y direcciones del ejemplo representan valores que debes sustituir por los de tu repositorio.
 
-## Alcance y responsabilidad
+## Responsabilidad y efecto
 
 git status mueve contenido entre el área de trabajo, el índice y el commit señalado por `HEAD`. Recibe como entrada las rutas y el estado de origen seleccionados por los argumentos. La operación consiste en comparar el área de trabajo y el índice con el commit actual.
 
-La página distingue lectura, escritura y resultado:
+No modifica el repositorio en su forma de consulta. Puede iniciar un visor o escribir un archivo si se solicita de forma explícita.
 
-| Elemento | Relación con la función | Comprobación |
-| --- | --- | --- |
-| Entrada | las rutas y el estado de origen seleccionados por los argumentos. | Registra los argumentos y resuelve revisiones antes de ejecutar. |
-| Efecto principal | comparar el área de trabajo y el índice con el commit actual. | Comprueba el resultado con una orden de lectura. |
-| Persistencia | No modifica el repositorio en su forma de consulta. Puede iniciar un visor o escribir un archivo si se solicita de forma explícita. | Compara el estado antes y después. |
-| Resultado | La orden comunica datos por stdout y diagnósticos por stderr. | Captura también el código de terminación. |
-| Fuente de verdad | El repositorio y la configuración efectiva determinan el resultado. | Usa `git status --short`, `git diff` y `git diff --cached`. |
+## Preparación
 
-## Requisitos y laboratorio
+Los ejemplos que necesitan un repositorio parten del [laboratorio base de `git init`](../getting-and-creating-projects/init.md#laboratorio-base). La posición de opciones, revisiones y rutas sigue las [convenciones de la interfaz de Git](../guides/gitcli.md#convenciones-de-la-cli). La selección de rutas se explica en [pathspecs y separación con `--`](../guides/gitcli.md#pathspecs). Antes de ejecutar una forma que escriba datos, registra `git status --short` y las referencias que puedan cambiar.
 
-Crea un repositorio con un commit base. Observa `HEAD`, el índice y el archivo antes y después de cada orden.
-
-```bash
-lab_dir="$(mktemp -d)"
-git init "$lab_dir/proyecto"
-git -C "$lab_dir/proyecto" config user.name "Persona de prueba"
-git -C "$lab_dir/proyecto" config user.email "prueba@example.test"
-printf 'línea base\n' > "$lab_dir/proyecto/archivo.txt"
-git -C "$lab_dir/proyecto" add archivo.txt
-git -C "$lab_dir/proyecto" commit -m "base"
-cd "$lab_dir/proyecto"
-```
-
-Antes de ejecutar el ejemplo, confirma la raíz con `git rev-parse --show-toplevel` cuando exista un repositorio. Registra `git status --short` y las referencias que puedan cambiar.
-
-## Modelo de funcionamiento
+## Cómo funciona
 
 El área de trabajo contiene los archivos editables. El índice describe el próximo snapshot. Un commit registra un árbol derivado del índice y enlaza con commits anteriores.
 
 Identifica el origen y el destino de cada cambio. Una orden puede leer HEAD y escribir el índice sin modificar el archivo del área de trabajo.
-
-Para comprobar el resultado: `git status` permite distinguir cambios en el área de trabajo, el índice y HEAD. La verificación debe observar un estado distinto del canal que produjo el cambio.
 
 ## Ejemplo mínimo
 
@@ -54,16 +31,9 @@ Para comprobar el resultado: `git status` permite distinguir cambios en el área
 git status --short --branch
 ```
 
-Ejecuta el bloque en orden. Conserva los nombres del laboratorio hasta confirmar el resultado. Sustituye rutas, revisiones o URL solo después de identificar su tipo y alcance.
+La invocación `git status --short --branch` ejecuta esta operación: comparar el área de trabajo y el índice con el commit actual. Después, `git status` permite distinguir cambios en el área de trabajo, el índice y HEAD. Conserva stdout, stderr y el código de terminación cuando el ejemplo forme parte de un script.
 
-### Resultado esperado
-
-- La entrada queda limitada a: las rutas y el estado de origen seleccionados por los argumentos.
-- La operación observable es: comparar el área de trabajo y el índice con el commit actual.
-- La comprobación se realiza mediante: `git status` permite distinguir cambios en el área de trabajo, el índice y HEAD.
-- stdout contiene datos o confirmaciones; stderr contiene diagnósticos. Captura ambos canales cuando automatices.
-
-## Sintaxis
+## Sintaxis y formas de invocación
 
 ```text
 git status [<options>] [--] [<pathspec>…]
@@ -77,80 +47,486 @@ git status [<options>] [--] [<pathspec>...]
 
 Los corchetes indican elementos opcionales; `<valor>` exige sustitución; los puntos suspensivos permiten repetición; `|` separa formas excluyentes. Usa `git status -h` para consultar la sintaxis que corresponde a la instalación donde ejecutarás la orden.
 
-## Casos de uso
+## Flujos de uso
 
-| Caso | Objetivo | Criterio de verificación |
-| --- | --- | --- |
-| Caso base | comparar el área de trabajo y el índice con el commit actual | Ejecuta el ejemplo mínimo y registra el estado antes y después. |
-| Alcance explícito | Aplicar git status a una referencia, rango o ruta identificada. | Resuelve cada argumento antes de ejecutar y usa `--` para rutas. |
-| Salida para scripts | Producir registros con campos y separadores definidos. | Prueba nombres con espacios y saltos de línea. |
-| Validación | Comprobar el resultado de git status con una orden de lectura independiente. | No uses la misma salida como única prueba del cambio. |
+### Caso base
 
+comparar el área de trabajo y el índice con el commit actual. Usa el [ejemplo mínimo](#ejemplo-mínimo) como punto de partida. Ejecuta el ejemplo mínimo y registra el estado antes y después.
 
-## Opciones y variaciones
+### Alcance explícito
 
-La tabla agrupa las opciones visibles en la sintaxis y en la ayuda corta. Una opción puede tener un significado propio cuando la página lo define; ejecuta la ayuda de tu versión antes de usarla en automatización.
+Aplicar git status a una referencia, rango o ruta identificada. Usa el [ejemplo mínimo](#ejemplo-mínimo) como punto de partida. Resuelve cada argumento antes de ejecutar y usa `--` para rutas.
 
-| Opción | Efecto que debes controlar |
-| --- | --- |
-| `-v` | Activa la forma corta de salida con detalle o muestra versión según la orden. |
-| `--verbose` | Aumenta el detalle enviado a la salida. |
-| `-s` | Activa el modo `-s`; los argumentos y restricciones aparecen en la sintaxis y en la fuente oficial. |
-| `--short` | Activa el modo `--short`; los argumentos y restricciones aparecen en la sintaxis y en la fuente oficial. |
-| `-b` | Activa el modo `-b`; los argumentos y restricciones aparecen en la sintaxis y en la fuente oficial. |
-| `--branch` | Selecciona o modifica referencias dentro del alcance de la orden. |
-| `--show-stash` | Incluye información adicional en la salida. |
-| `--ahead-behind` | Activa el modo `--ahead-behind`; los argumentos y restricciones aparecen en la sintaxis y en la fuente oficial. |
-| `--porcelain` | Produce un contrato de salida destinado a scripts. |
-| `--long` | Activa el modo `--long`; los argumentos y restricciones aparecen en la sintaxis y en la fuente oficial. |
-| `-z` | Termina registros con NUL para evitar división por espacios o saltos de línea. |
-| `--null` | Usa NUL como terminador para conservar cualquier byte válido de un nombre. |
-| `-u` | Activa el modo `-u`; los argumentos y restricciones aparecen en la sintaxis y en la fuente oficial. |
-| `--untracked-files` | Activa el modo `--untracked-files`; los argumentos y restricciones aparecen en la sintaxis y en la fuente oficial. |
-| `--ignored` | Activa el modo `--ignored`; los argumentos y restricciones aparecen en la sintaxis y en la fuente oficial. |
-| `--ignore-submodules` | Excluye elementos que cumplan la condición indicada. |
-| `--column` | Activa el modo `--column`; los argumentos y restricciones aparecen en la sintaxis y en la fuente oficial. |
-| `--no-renames` | Desactiva el comportamiento `renames` para esta invocación. |
-| `--renames` | Controla detección o búsqueda de relaciones entre entradas. |
-| `-M` | Activa el modo `-M`; los argumentos y restricciones aparecen en la sintaxis y en la fuente oficial. |
-| `--find-renames` | Controla detección o búsqueda de relaciones entre entradas. |
+### Salida para scripts
 
-## Selección de entradas
+Producir registros con campos y separadores definidos. Usa el [ejemplo mínimo](#ejemplo-mínimo) como punto de partida. Prueba nombres con espacios y saltos de línea.
 
-Las revisiones se resuelven antes que los pathspecs cuando la sintaxis las espera. Usa `--` para separar opciones y rutas. Cita los globos para decidir si los expande el shell o Git.
+### Validación
 
-Comprueba cada entrada con una orden de lectura antes de una escritura. Para listas de rutas generadas por otro proceso, prefiere una interfaz terminada en NUL cuando esté disponible.
+Comprobar el resultado de git status con una orden de lectura independiente. Usa el [ejemplo mínimo](#ejemplo-mínimo) como punto de partida. No uses la misma salida como única prueba del cambio.
 
-## Salida y códigos de terminación
+## Opciones
 
-Un código 0 indica que la operación terminó bajo el contrato solicitado. Trata cualquier código distinto de cero según la función; no deduzcas el estado solo a partir de que stdout esté vacío.
+Cada apartado usa una opción en una invocación concreta. Las opciones equivalentes comparten la explicación, pero cada alias tiene su propio ejemplo. Ejecuta una opción por vez antes de combinarlas.
 
-No analices mensajes destinados a personas si existe un formato de máquina. Declara los campos, desactiva color y conserva stderr para diagnóstico.
+### `-v` y `--verbose`
+
+Aumenta el detalle enviado a la salida.  La misma línea de ayuda también acepta `-v`. Esas formas seleccionan el mismo comportamiento; cambia la escritura del argumento, no el efecto.
+
+Estas escrituras son alias: seleccionan el mismo comportamiento. Se documentan juntas para no duplicar la regla, pero cada una conserva su propia invocación reproducible.
+
+La opción cambia la representación o el canal del resultado. Úsala cuando una persona o un script necesite campos, separadores o cantidad de mensajes definidos. El contenido mostrado puede cambiar aunque el repositorio permanezca igual.
+
+#### Ejemplo con `-v`
+
+```bash
+git status -v --short --branch
+git status --short
+```
+
+Esta forma no recibe un valor separado; los argumentos posteriores pertenecen a `git status` o a otra opción. El estado muestra si cambió el área de trabajo, el índice o la operación en curso.
+
+#### Ejemplo con `--verbose`
+
+```bash
+git status --verbose --short --branch
+git status --short
+```
+
+Esta forma no recibe un valor separado; los argumentos posteriores pertenecen a `git status` o a otra opción. El estado muestra si cambió el área de trabajo, el índice o la operación en curso.
+
+Ejecuta una sola alternativa cada vez. Si ejecutas varias consecutivamente, el primer comando puede cambiar el estado que observa el siguiente.
+
+### `-s` y `--short`
+
+Incluye short en la salida o cambia cómo `git status` la representa. En Git 2.51.1, la ayuda corta expresa el contrato como `show status concisely`. Conserva esa formulación al comparar el efecto entre versiones de Git. La misma línea de ayuda también acepta `-s`. Esas formas seleccionan el mismo comportamiento; cambia la escritura del argumento, no el efecto.
+
+Estas escrituras son alias: seleccionan el mismo comportamiento. Se documentan juntas para no duplicar la regla, pero cada una conserva su propia invocación reproducible.
+
+La opción cambia la representación o el canal del resultado. Úsala cuando una persona o un script necesite campos, separadores o cantidad de mensajes definidos. El contenido mostrado puede cambiar aunque el repositorio permanezca igual.
+
+#### Ejemplo con `-s`
+
+```bash
+git status -s --branch
+git status --short
+```
+
+Esta forma no recibe un valor separado; los argumentos posteriores pertenecen a `git status` o a otra opción. El estado muestra si cambió el área de trabajo, el índice o la operación en curso.
+
+#### Ejemplo con `--short`
+
+```bash
+git status --short --branch
+git status --short
+```
+
+Esta forma no recibe un valor separado; los argumentos posteriores pertenecen a `git status` o a otra opción. El estado muestra si cambió el área de trabajo, el índice o la operación en curso.
+
+Ejecuta una sola alternativa cada vez. Si ejecutas varias consecutivamente, el primer comando puede cambiar el estado que observa el siguiente.
+
+### `-b` y `--branch`
+
+Selecciona o modifica referencias dentro del alcance de la orden.  La misma línea de ayuda también acepta `-b`. Esas formas seleccionan el mismo comportamiento; cambia la escritura del argumento, no el efecto.
+
+Estas escrituras son alias: seleccionan el mismo comportamiento. Se documentan juntas para no duplicar la regla, pero cada una conserva su propia invocación reproducible.
+
+La opción cambia la representación o el canal del resultado. Úsala cuando una persona o un script necesite campos, separadores o cantidad de mensajes definidos. El contenido mostrado puede cambiar aunque el repositorio permanezca igual.
+
+#### Ejemplo con `-b`
+
+```bash
+git status -b --short
+git status --short
+```
+
+Esta forma no recibe un valor separado; los argumentos posteriores pertenecen a `git status` o a otra opción. El estado muestra si cambió el área de trabajo, el índice o la operación en curso.
+
+#### Ejemplo con `--branch`
+
+```bash
+git status --branch --short
+git status --short
+```
+
+Esta forma no recibe un valor separado; los argumentos posteriores pertenecen a `git status` o a otra opción. El estado muestra si cambió el área de trabajo, el índice o la operación en curso.
+
+Ejecuta una sola alternativa cada vez. Si ejecutas varias consecutivamente, el primer comando puede cambiar el estado que observa el siguiente.
+
+### `--show-stash`
+
+Incluye información adicional en la salida.
+
+La opción cambia la representación o el canal del resultado. Úsala cuando una persona o un script necesite campos, separadores o cantidad de mensajes definidos. El contenido mostrado puede cambiar aunque el repositorio permanezca igual.
+
+```bash
+git status --show-stash --short --branch
+git status --short
+```
+
+La opción no recibe un valor separado en la forma mostrada por la ayuda corta. Los argumentos que aparecen después pertenecen a `git status` o a otra opción. El estado muestra si cambió el área de trabajo, el índice o la operación en curso. Ejecuta la comprobación inmediatamente después para que ningún comando intermedio cambie el estado que estás observando.
+
+### `--ahead-behind`
+
+Calcula cuántos commits separan una rama de su upstream. En Git 2.51.1, la ayuda corta expresa el contrato como `compute full ahead/behind values`. Conserva esa formulación al comparar el efecto entre versiones de Git.
+
+En `git status`, ahead behind modifica la forma en que se ejecuta comparar el área de trabajo y el índice con el commit actual. Mantén iguales los demás argumentos para atribuir el cambio observado a esta opción.
+
+```bash
+git status --ahead-behind --short --branch
+git status --short
+```
+
+La opción no recibe un valor separado en la forma mostrada por la ayuda corta. Los argumentos que aparecen después pertenecen a `git status` o a otra opción. El estado muestra si cambió el área de trabajo, el índice o la operación en curso. Ejecuta la comprobación inmediatamente después para que ningún comando intermedio cambie el estado que estás observando.
+
+### `--porcelain`
+
+Produce un contrato de salida destinado a scripts.
+
+La opción cambia la representación o el canal del resultado. Úsala cuando una persona o un script necesite campos, separadores o cantidad de mensajes definidos. El contenido mostrado puede cambiar aunque el repositorio permanezca igual.
+
+```bash
+git status --porcelain=valor --short --branch
+git status --short
+```
+
+El ejemplo usa `valor` como valor. Sustitúyelo por un valor del tipo que muestra la sintaxis de tu versión. Un valor numérico conserva su unidad y un nombre de referencia debe resolver antes de ejecutar la orden. El estado muestra si cambió el área de trabajo, el índice o la operación en curso. Ejecuta la comprobación inmediatamente después para que ningún comando intermedio cambie el estado que estás observando.
+
+### `--long`
+
+Incluye long en la salida o cambia cómo `git status` la representa. En Git 2.51.1, la ayuda corta expresa el contrato como `show status in long format (default)`. Conserva esa formulación al comparar el efecto entre versiones de Git.
+
+La opción cambia la representación o el canal del resultado. Úsala cuando una persona o un script necesite campos, separadores o cantidad de mensajes definidos. El contenido mostrado puede cambiar aunque el repositorio permanezca igual.
+
+```bash
+git status --long --short --branch
+git status --short
+```
+
+La opción no recibe un valor separado en la forma mostrada por la ayuda corta. Los argumentos que aparecen después pertenecen a `git status` o a otra opción. El estado muestra si cambió el área de trabajo, el índice o la operación en curso. Ejecuta la comprobación inmediatamente después para que ningún comando intermedio cambie el estado que estás observando.
+
+### `-z` y `--null`
+
+Usa NUL como terminador para conservar cualquier byte válido de un nombre.  La misma línea de ayuda también acepta `-z`. Esas formas seleccionan el mismo comportamiento; cambia la escritura del argumento, no el efecto.
+
+Estas escrituras son alias: seleccionan el mismo comportamiento. Se documentan juntas para no duplicar la regla, pero cada una conserva su propia invocación reproducible.
+
+En `git status`, terminación NUL modifica la forma en que se ejecuta comparar el área de trabajo y el índice con el commit actual. Mantén iguales los demás argumentos para atribuir el cambio observado a esta opción.
+
+#### Ejemplo con `-z`
+
+```bash
+git status -z --short --branch
+git status --short
+```
+
+Esta forma no recibe un valor separado; los argumentos posteriores pertenecen a `git status` o a otra opción. El estado muestra si cambió el área de trabajo, el índice o la operación en curso.
+
+#### Ejemplo con `--null`
+
+```bash
+git status --null --short --branch
+git status --short
+```
+
+Esta forma no recibe un valor separado; los argumentos posteriores pertenecen a `git status` o a otra opción. El estado muestra si cambió el área de trabajo, el índice o la operación en curso.
+
+Ejecuta una sola alternativa cada vez. Si ejecutas varias consecutivamente, el primer comando puede cambiar el estado que observa el siguiente.
+
+### `-u` y `--untracked-files`
+
+Define cuánto detalle muestra Git sobre archivos que todavía no están en el índice. En Git 2.51.1, la ayuda corta expresa el contrato como `show untracked files, optional modes: all, normal, no. (Default: all)`. Conserva esa formulación al comparar el efecto entre versiones de Git. La misma línea de ayuda también acepta `-u`. Esas formas seleccionan el mismo comportamiento; cambia la escritura del argumento, no el efecto.
+
+Estas escrituras son alias: seleccionan el mismo comportamiento. Se documentan juntas para no duplicar la regla, pero cada una conserva su propia invocación reproducible.
+
+La opción cambia la representación o el canal del resultado. Úsala cuando una persona o un script necesite campos, separadores o cantidad de mensajes definidos. El contenido mostrado puede cambiar aunque el repositorio permanezca igual.
+
+#### Ejemplo con `-u`
+
+```bash
+git status -u=all --short --branch
+git status --short
+```
+
+En esta forma, `all` es un valor de ejemplo. Sustitúyelo por un valor que cumpla el tipo y el alcance indicados por la sintaxis. El estado muestra si cambió el área de trabajo, el índice o la operación en curso.
+
+#### Ejemplo con `--untracked-files`
+
+```bash
+git status --untracked-files=all --short --branch
+git status --short
+```
+
+En esta forma, `all` es un valor de ejemplo. Sustitúyelo por un valor que cumpla el tipo y el alcance indicados por la sintaxis. El estado muestra si cambió el área de trabajo, el índice o la operación en curso.
+
+Ejecuta una sola alternativa cada vez. Si ejecutas varias consecutivamente, el primer comando puede cambiar el estado que observa el siguiente.
+
+### `--ignored`
+
+Incluye archivos ignorados en la vista solicitada. En Git 2.51.1, la ayuda corta expresa el contrato como `show ignored files, optional modes: traditional, matching, no. (Default: traditional)`. Conserva esa formulación al comparar el efecto entre versiones de Git.
+
+La opción cambia la representación o el canal del resultado. Úsala cuando una persona o un script necesite campos, separadores o cantidad de mensajes definidos. El contenido mostrado puede cambiar aunque el repositorio permanezca igual.
+
+```bash
+git status --ignored=all --short --branch
+git status --short
+```
+
+El ejemplo usa `all` como valor. Sustitúyelo por un valor del tipo que muestra la sintaxis de tu versión. Un valor numérico conserva su unidad y un nombre de referencia debe resolver antes de ejecutar la orden. El estado muestra si cambió el área de trabajo, el índice o la operación en curso. Ejecuta la comprobación inmediatamente después para que ningún comando intermedio cambie el estado que estás observando.
+
+### `--ignore-submodules`
+
+Excluye elementos que cumplan la condición indicada.
+
+La opción limita o amplía el conjunto sobre el que se ejecuta comparar el área de trabajo y el índice con el commit actual. Comprueba la selección con una forma de lectura antes de combinarla con una opción que escriba estado.
+
+```bash
+git status --ignore-submodules=always --short --branch
+git status --short
+```
+
+El ejemplo usa `always` como valor. Sustitúyelo por un valor del tipo que muestra la sintaxis de tu versión. Un valor numérico conserva su unidad y un nombre de referencia debe resolver antes de ejecutar la orden. El estado muestra si cambió el área de trabajo, el índice o la operación en curso. Ejecuta la comprobación inmediatamente después para que ningún comando intermedio cambie el estado que estás observando.
+
+### `--column`
+
+Incluye column en la salida o cambia cómo `git status` la representa. En Git 2.51.1, la ayuda corta expresa el contrato como `list untracked files in columns`. Conserva esa formulación al comparar el efecto entre versiones de Git.
+
+La opción cambia cómo `git status` recibe datos. Define el separador, la codificación y la ruta de entrada antes de ejecutarla. Los nombres con espacios o saltos de línea requieren una interfaz terminada en NUL cuando el comando la ofrece.
+
+```bash
+git status --column=short --short --branch
+git status --short
+```
+
+El ejemplo usa `short` como valor. Sustitúyelo por un valor del tipo que muestra la sintaxis de tu versión. Un valor numérico conserva su unidad y un nombre de referencia debe resolver antes de ejecutar la orden. El estado muestra si cambió el área de trabajo, el índice o la operación en curso. Ejecuta la comprobación inmediatamente después para que ningún comando intermedio cambie el estado que estás observando.
+
+### `--no-renames`
+
+Desactiva el comportamiento `renames` para esta invocación.
+
+La opción selecciona el procedimiento que `git status` aplica a la misma entrada. Mantén constantes las revisiones, rutas y archivos cuando compares el resultado con otra estrategia.
+
+```bash
+git status --no-renames --short --branch
+git status --short
+```
+
+La opción no recibe un valor separado en la forma mostrada por la ayuda corta. Los argumentos que aparecen después pertenecen a `git status` o a otra opción. El estado muestra si cambió el área de trabajo, el índice o la operación en curso. Ejecuta la comprobación inmediatamente después para que ningún comando intermedio cambie el estado que estás observando.
+
+### `--renames`
+
+Controla detección o búsqueda de relaciones entre entradas.
+
+La opción selecciona el procedimiento que `git status` aplica a la misma entrada. Mantén constantes las revisiones, rutas y archivos cuando compares el resultado con otra estrategia.
+
+```bash
+git status --renames --short --branch
+git status --short
+```
+
+La opción no recibe un valor separado en la forma mostrada por la ayuda corta. Los argumentos que aparecen después pertenecen a `git status` o a otra opción. El estado muestra si cambió el área de trabajo, el índice o la operación en curso. Ejecuta la comprobación inmediatamente después para que ningún comando intermedio cambie el estado que estás observando.
+
+### `-M` y `--find-renames`
+
+Controla detección o búsqueda de relaciones entre entradas.  La misma línea de ayuda también acepta `-M`. Esas formas seleccionan el mismo comportamiento; cambia la escritura del argumento, no el efecto.
+
+Estas escrituras son alias: seleccionan el mismo comportamiento. Se documentan juntas para no duplicar la regla, pero cada una conserva su propia invocación reproducible.
+
+La opción limita o amplía el conjunto sobre el que se ejecuta comparar el área de trabajo y el índice con el commit actual. Comprueba la selección con una forma de lectura antes de combinarla con una opción que escriba estado.
+
+#### Ejemplo con `-M`
+
+```bash
+git status -M=5 --short --branch
+git status --short
+```
+
+En esta forma, `5` es un valor de ejemplo. Sustitúyelo por un valor que cumpla el tipo y el alcance indicados por la sintaxis. El estado muestra si cambió el área de trabajo, el índice o la operación en curso.
+
+#### Ejemplo con `--find-renames`
+
+```bash
+git status --find-renames=5 --short --branch
+git status --short
+```
+
+En esta forma, `5` es un valor de ejemplo. Sustitúyelo por un valor que cumpla el tipo y el alcance indicados por la sintaxis. El estado muestra si cambió el área de trabajo, el índice o la operación en curso.
+
+Ejecuta una sola alternativa cada vez. Si ejecutas varias consecutivamente, el primer comando puede cambiar el estado que observa el siguiente.
+
+### `--no-verbose`
+
+Desactiva para esta invocación el comportamiento que habilita `--verbose`. Mantén iguales los demás argumentos y compara el resultado con la forma positiva para comprobar la diferencia.
+
+La opción cambia la representación o el canal del resultado. Úsala cuando una persona o un script necesite campos, separadores o cantidad de mensajes definidos. El contenido mostrado puede cambiar aunque el repositorio permanezca igual.
+
+```bash
+git status --no-verbose --short --branch
+git status --short
+```
+
+La opción no recibe un valor separado en la forma mostrada por la ayuda corta. Los argumentos que aparecen después pertenecen a `git status` o a otra opción. El estado muestra si cambió el área de trabajo, el índice o la operación en curso. Ejecuta la comprobación inmediatamente después para que ningún comando intermedio cambie el estado que estás observando.
+
+### `--no-short`
+
+Desactiva para esta invocación el comportamiento que habilita `--short`. Mantén iguales los demás argumentos y compara el resultado con la forma positiva para comprobar la diferencia.
+
+La opción cambia la representación o el canal del resultado. Úsala cuando una persona o un script necesite campos, separadores o cantidad de mensajes definidos. El contenido mostrado puede cambiar aunque el repositorio permanezca igual.
+
+```bash
+git status --no-short --branch
+git status --short
+```
+
+La opción no recibe un valor separado en la forma mostrada por la ayuda corta. Los argumentos que aparecen después pertenecen a `git status` o a otra opción. El estado muestra si cambió el área de trabajo, el índice o la operación en curso. Ejecuta la comprobación inmediatamente después para que ningún comando intermedio cambie el estado que estás observando.
+
+### `--no-branch`
+
+Desactiva para esta invocación el comportamiento que habilita `--branch`. Mantén iguales los demás argumentos y compara el resultado con la forma positiva para comprobar la diferencia.
+
+La opción cambia la representación o el canal del resultado. Úsala cuando una persona o un script necesite campos, separadores o cantidad de mensajes definidos. El contenido mostrado puede cambiar aunque el repositorio permanezca igual.
+
+```bash
+git status --no-branch --short
+git status --short
+```
+
+La opción no recibe un valor separado en la forma mostrada por la ayuda corta. Los argumentos que aparecen después pertenecen a `git status` o a otra opción. El estado muestra si cambió el área de trabajo, el índice o la operación en curso. Ejecuta la comprobación inmediatamente después para que ningún comando intermedio cambie el estado que estás observando.
+
+### `--no-show-stash`
+
+Desactiva para esta invocación el comportamiento que habilita `--show-stash`. Mantén iguales los demás argumentos y compara el resultado con la forma positiva para comprobar la diferencia.
+
+La opción cambia la representación o el canal del resultado. Úsala cuando una persona o un script necesite campos, separadores o cantidad de mensajes definidos. El contenido mostrado puede cambiar aunque el repositorio permanezca igual.
+
+```bash
+git status --no-show-stash --short --branch
+git status --short
+```
+
+La opción no recibe un valor separado en la forma mostrada por la ayuda corta. Los argumentos que aparecen después pertenecen a `git status` o a otra opción. El estado muestra si cambió el área de trabajo, el índice o la operación en curso. Ejecuta la comprobación inmediatamente después para que ningún comando intermedio cambie el estado que estás observando.
+
+### `--no-ahead-behind`
+
+Desactiva para esta invocación el comportamiento que habilita `--ahead-behind`. Mantén iguales los demás argumentos y compara el resultado con la forma positiva para comprobar la diferencia.
+
+En `git status`, desactivar ahead behind modifica la forma en que se ejecuta comparar el área de trabajo y el índice con el commit actual. Mantén iguales los demás argumentos para atribuir el cambio observado a esta opción.
+
+```bash
+git status --no-ahead-behind --short --branch
+git status --short
+```
+
+La opción no recibe un valor separado en la forma mostrada por la ayuda corta. Los argumentos que aparecen después pertenecen a `git status` o a otra opción. El estado muestra si cambió el área de trabajo, el índice o la operación en curso. Ejecuta la comprobación inmediatamente después para que ningún comando intermedio cambie el estado que estás observando.
+
+### `--no-porcelain`
+
+Desactiva para esta invocación el comportamiento que habilita `--porcelain`. Mantén iguales los demás argumentos y compara el resultado con la forma positiva para comprobar la diferencia.
+
+La opción cambia la representación o el canal del resultado. Úsala cuando una persona o un script necesite campos, separadores o cantidad de mensajes definidos. El contenido mostrado puede cambiar aunque el repositorio permanezca igual.
+
+```bash
+git status --no-porcelain --short --branch
+git status --short
+```
+
+La opción no recibe un valor separado en la forma mostrada por la ayuda corta. Los argumentos que aparecen después pertenecen a `git status` o a otra opción. El estado muestra si cambió el área de trabajo, el índice o la operación en curso. Ejecuta la comprobación inmediatamente después para que ningún comando intermedio cambie el estado que estás observando.
+
+### `--no-long`
+
+Desactiva para esta invocación el comportamiento que habilita `--long`. Mantén iguales los demás argumentos y compara el resultado con la forma positiva para comprobar la diferencia.
+
+La opción cambia la representación o el canal del resultado. Úsala cuando una persona o un script necesite campos, separadores o cantidad de mensajes definidos. El contenido mostrado puede cambiar aunque el repositorio permanezca igual.
+
+```bash
+git status --no-long --short --branch
+git status --short
+```
+
+La opción no recibe un valor separado en la forma mostrada por la ayuda corta. Los argumentos que aparecen después pertenecen a `git status` o a otra opción. El estado muestra si cambió el área de trabajo, el índice o la operación en curso. Ejecuta la comprobación inmediatamente después para que ningún comando intermedio cambie el estado que estás observando.
+
+### `--no-null`
+
+Desactiva para esta invocación el comportamiento que habilita `--null`. Mantén iguales los demás argumentos y compara el resultado con la forma positiva para comprobar la diferencia.
+
+En `git status`, desactivar terminación NUL modifica la forma en que se ejecuta comparar el área de trabajo y el índice con el commit actual. Mantén iguales los demás argumentos para atribuir el cambio observado a esta opción.
+
+```bash
+git status --no-null --short --branch
+git status --short
+```
+
+La opción no recibe un valor separado en la forma mostrada por la ayuda corta. Los argumentos que aparecen después pertenecen a `git status` o a otra opción. El estado muestra si cambió el área de trabajo, el índice o la operación en curso. Ejecuta la comprobación inmediatamente después para que ningún comando intermedio cambie el estado que estás observando.
+
+### `--no-untracked-files`
+
+Desactiva para esta invocación el comportamiento que habilita `--untracked-files`. Mantén iguales los demás argumentos y compara el resultado con la forma positiva para comprobar la diferencia.
+
+La opción cambia la representación o el canal del resultado. Úsala cuando una persona o un script necesite campos, separadores o cantidad de mensajes definidos. El contenido mostrado puede cambiar aunque el repositorio permanezca igual.
+
+```bash
+git status --no-untracked-files --short --branch
+git status --short
+```
+
+La opción no recibe un valor separado en la forma mostrada por la ayuda corta. Los argumentos que aparecen después pertenecen a `git status` o a otra opción. El estado muestra si cambió el área de trabajo, el índice o la operación en curso. Ejecuta la comprobación inmediatamente después para que ningún comando intermedio cambie el estado que estás observando.
+
+### `--no-ignored`
+
+Desactiva para esta invocación el comportamiento que habilita `--ignored`. Mantén iguales los demás argumentos y compara el resultado con la forma positiva para comprobar la diferencia.
+
+La opción cambia la representación o el canal del resultado. Úsala cuando una persona o un script necesite campos, separadores o cantidad de mensajes definidos. El contenido mostrado puede cambiar aunque el repositorio permanezca igual.
+
+```bash
+git status --no-ignored --short --branch
+git status --short
+```
+
+La opción no recibe un valor separado en la forma mostrada por la ayuda corta. Los argumentos que aparecen después pertenecen a `git status` o a otra opción. El estado muestra si cambió el área de trabajo, el índice o la operación en curso. Ejecuta la comprobación inmediatamente después para que ningún comando intermedio cambie el estado que estás observando.
+
+### `--no-ignore-submodules`
+
+Desactiva para esta invocación el comportamiento que habilita `--ignore-submodules`. Mantén iguales los demás argumentos y compara el resultado con la forma positiva para comprobar la diferencia.
+
+La opción limita o amplía el conjunto sobre el que se ejecuta comparar el área de trabajo y el índice con el commit actual. Comprueba la selección con una forma de lectura antes de combinarla con una opción que escriba estado.
+
+```bash
+git status --no-ignore-submodules --short --branch
+git status --short
+```
+
+La opción no recibe un valor separado en la forma mostrada por la ayuda corta. Los argumentos que aparecen después pertenecen a `git status` o a otra opción. El estado muestra si cambió el área de trabajo, el índice o la operación en curso. Ejecuta la comprobación inmediatamente después para que ningún comando intermedio cambie el estado que estás observando.
+
+### `--no-column`
+
+Desactiva para esta invocación el comportamiento que habilita `--column`. Mantén iguales los demás argumentos y compara el resultado con la forma positiva para comprobar la diferencia.
+
+La opción cambia cómo `git status` recibe datos. Define el separador, la codificación y la ruta de entrada antes de ejecutarla. Los nombres con espacios o saltos de línea requieren una interfaz terminada en NUL cuando el comando la ofrece.
+
+```bash
+git status --no-column --short --branch
+git status --short
+```
+
+La opción no recibe un valor separado en la forma mostrada por la ayuda corta. Los argumentos que aparecen después pertenecen a `git status` o a otra opción. El estado muestra si cambió el área de trabajo, el índice o la operación en curso. Ejecuta la comprobación inmediatamente después para que ningún comando intermedio cambie el estado que estás observando.
 
 ## Errores y diagnóstico
 
-| Señal | Causa que debes comprobar | Acción |
-| --- | --- | --- |
-| El cambio no entra al commit | El índice no contiene la versión esperada | Compara `git diff` con `git diff --cached`. |
-| Un pathspec no coincide | La ruta se evalúa desde otro directorio o está ignorada | Usa `git status --short --untracked-files=all` y separa opciones con `--`. |
-| Se reemplaza contenido local | La orden escribe el área de trabajo | Guarda el diff o crea un stash antes de repetir la operación. |
+### El cambio no entra al commit
 
-Si una operación deja archivos de estado dentro de `.git`, usa `git status` y la acción de continuar, omitir o abortar definida por esa operación. No borres esos archivos para simular una cancelación.
+Comprueba esta causa: El índice no contiene la versión esperada. Compara `git diff` con `git diff --cached`.
 
-## Automatización
+### Un pathspec no coincide
 
-1. Declara la versión mínima de Git que necesita el script.
-2. Resuelve la raíz del repositorio y evita depender del directorio actual.
-3. Separa opciones y rutas con `--`.
-4. Captura stdout, stderr y el código de terminación.
-5. Usa formatos de máquina o terminación NUL para nombres de archivo.
-6. Ejecuta primero sobre el laboratorio y añade un caso sin coincidencias.
+Comprueba esta causa: La ruta se evalúa desde otro directorio o está ignorada. Usa `git status --short --untracked-files=all` y separa opciones con `--`.
 
-## Seguridad y recuperación
+### Se reemplaza contenido local
+
+Comprueba esta causa: La orden escribe el área de trabajo. Guarda el diff o crea un stash antes de repetir la operación.
+
+## Automatización y recuperación
 
 Persistencia: No modifica el repositorio en su forma de consulta. Puede iniciar un visor o escribir un archivo si se solicita de forma explícita. Antes de una operación que mueva o elimine referencias, registra sus hashes con `git show-ref`. Antes de cambiar archivos, conserva `git diff` y `git diff --cached`. Para objetos y commits que dejaron de estar referenciados, consulta el reflog antes de ejecutar mantenimiento que pueda eliminarlos.
-
-## Práctica guiada
 
 Crea un repositorio temporal, modifica una ruta y ejecuta `git status --short` antes y después de cada línea del ejemplo.
 

@@ -2,51 +2,28 @@
 title: "git cvsexportcommit"
 source: "https://git-scm.com/docs/git-cvsexportcommit"
 section: "external-systems"
-status: "expanded"
+status: "option-expanded"
 ---
 
 # `git cvsexportcommit`
 
 Este caso usa `git cvsexportcommit` para aplicar un commit de Git sobre un checkout de CVS. Los nombres de archivo, revisiones, ramas y direcciones del ejemplo representan valores que debes sustituir por los de tu repositorio.
 
-## Alcance y responsabilidad
+## Responsabilidad y efecto
 
 git cvsexportcommit traduce historial, referencias e identidades entre Git y otro sistema. Recibe como entrada la ubicación y los nombres que deben traducirse desde el sistema de origen. La operación consiste en aplicar un commit de Git sobre un checkout de CVS.
 
-La página distingue lectura, escritura y resultado:
+Puede persistir el estado implicado por esta operación: aplicar un commit de Git sobre un checkout de CVS. Las opciones pueden limitar o ampliar ese efecto.
 
-| Elemento | Relación con la función | Comprobación |
-| --- | --- | --- |
-| Entrada | la ubicación y los nombres que deben traducirse desde el sistema de origen. | Registra los argumentos y resuelve revisiones antes de ejecutar. |
-| Efecto principal | aplicar un commit de Git sobre un checkout de CVS. | Comprueba el resultado con una orden de lectura. |
-| Persistencia | Puede persistir el estado implicado por esta operación: aplicar un commit de Git sobre un checkout de CVS. Las opciones pueden limitar o ampliar ese efecto. | Compara el estado antes y después. |
-| Resultado | La orden comunica datos por stdout y diagnósticos por stderr. | Captura también el código de terminación. |
-| Fuente de verdad | El repositorio y la configuración efectiva determinan el resultado. | Usa conteo de revisiones, autores, marcas, ramas y una comparación de contenido. |
+## Preparación
 
-## Requisitos y laboratorio
+Los ejemplos que necesitan un repositorio parten del [laboratorio base de `git init`](../getting-and-creating-projects/init.md#laboratorio-base). La posición de opciones, revisiones y rutas sigue las [convenciones de la interfaz de Git](../guides/gitcli.md#convenciones-de-la-cli). Los nombres como `HEAD`, `main`, `HEAD~2` y `A..B` se explican en [revisiones y rangos](../guides/gitrevisions.md#revisiones-y-rangos). Antes de ejecutar una forma que escriba datos, registra `git status --short` y las referencias que puedan cambiar.
 
-Usa una copia del origen y una rama de migración. Conserva un mapa de identidades y revisiones.
-
-```bash
-lab_dir="$(mktemp -d)"
-git init "$lab_dir/proyecto"
-git -C "$lab_dir/proyecto" config user.name "Persona de prueba"
-git -C "$lab_dir/proyecto" config user.email "prueba@example.test"
-printf 'línea base\n' > "$lab_dir/proyecto/archivo.txt"
-git -C "$lab_dir/proyecto" add archivo.txt
-git -C "$lab_dir/proyecto" commit -m "base"
-cd "$lab_dir/proyecto"
-```
-
-Antes de ejecutar el ejemplo, confirma la raíz con `git rev-parse --show-toplevel` cuando exista un repositorio. Registra `git status --short` y las referencias que puedan cambiar.
-
-## Modelo de funcionamiento
+## Cómo funciona
 
 La integración traduce identidades, ramas y cambios entre dos modelos de control de versiones. Una migración se valida comparando historial, contenido y referencias en el destino.
 
 Define una regla para autores, ramas, etiquetas y finales de línea antes de importar. Valida cada regla con un conjunto que contenga ese caso.
-
-Para comprobar el resultado: el destino conserva el contenido, autores, ramas y etiquetas que admita la conversión. La verificación debe observar un estado distinto del canal que produjo el cambio.
 
 ## Ejemplo mínimo
 
@@ -54,16 +31,9 @@ Para comprobar el resultado: el destino conserva el contenido, autores, ramas y 
 git cvsexportcommit -w /tmp/checkout-cvs HEAD
 ```
 
-Ejecuta el bloque en orden. Conserva los nombres del laboratorio hasta confirmar el resultado. Sustituye rutas, revisiones o URL solo después de identificar su tipo y alcance.
+La invocación `git cvsexportcommit -w /tmp/checkout-cvs HEAD` ejecuta esta operación: aplicar un commit de Git sobre un checkout de CVS. Después, el destino conserva el contenido, autores, ramas y etiquetas que admita la conversión. Conserva stdout, stderr y el código de terminación cuando el ejemplo forme parte de un script.
 
-### Resultado esperado
-
-- La entrada queda limitada a: la ubicación y los nombres que deben traducirse desde el sistema de origen.
-- La operación observable es: aplicar un commit de Git sobre un checkout de CVS.
-- La comprobación se realiza mediante: el destino conserva el contenido, autores, ramas y etiquetas que admita la conversión.
-- stdout contiene datos o confirmaciones; stderr contiene diagnósticos. Captura ambos canales cuando automatices.
-
-## Sintaxis
+## Sintaxis y formas de invocación
 
 ```text
 git cvsexportcommit [-h] [-u] [-v] [-c] [-P] [-p] [-a] [-d <cvsroot>]
@@ -78,71 +48,210 @@ GIT_DIR=/path/to/.git git cvsexportcommit [-h] [-p] [-v] [-c] [-f] [-u] [-k] [-w
 
 Los corchetes indican elementos opcionales; `<valor>` exige sustitución; los puntos suspensivos permiten repetición; `|` separa formas excluyentes. Usa `git cvsexportcommit -h` para consultar la sintaxis que corresponde a la instalación donde ejecutarás la orden.
 
-## Casos de uso
+## Flujos de uso
 
-| Caso | Objetivo | Criterio de verificación |
-| --- | --- | --- |
-| Caso base | aplicar un commit de Git sobre un checkout de CVS | Ejecuta el ejemplo mínimo y registra el estado antes y después. |
-| Alcance explícito | Aplicar git cvsexportcommit a una referencia, rango o ruta identificada. | Resuelve cada argumento antes de ejecutar y usa `--` para rutas. |
-| Validación | Comprobar el resultado de git cvsexportcommit con una orden de lectura independiente. | No uses la misma salida como única prueba del cambio. |
+### Caso base
 
+aplicar un commit de Git sobre un checkout de CVS. Usa el [ejemplo mínimo](#ejemplo-mínimo) como punto de partida. Ejecuta el ejemplo mínimo y registra el estado antes y después.
 
-## Opciones y variaciones
+### Alcance explícito
 
-La tabla agrupa las opciones visibles en la sintaxis y en la ayuda corta. Una opción puede tener un significado propio cuando la página lo define; ejecuta la ayuda de tu versión antes de usarla en automatización.
+Aplicar git cvsexportcommit a una referencia, rango o ruta identificada. Usa el [ejemplo mínimo](#ejemplo-mínimo) como punto de partida. Resuelve cada argumento antes de ejecutar y usa `--` para rutas.
 
-| Opción | Efecto que debes controlar |
-| --- | --- |
-| `-h` | Muestra ayuda corta cuando la orden admite esta convención. |
-| `-u` | Activa el modo `-u`; los argumentos y restricciones aparecen en la sintaxis y en la fuente oficial. |
-| `-v` | Activa la forma corta de salida con detalle o muestra versión según la orden. |
-| `-c` | Aplica una clave de configuración solo a esta invocación. |
-| `-P` | Activa el modo `-P`; los argumentos y restricciones aparecen en la sintaxis y en la fuente oficial. |
-| `-p` | Activa la forma corta del modo patch o de una opción propia de la orden. |
-| `-a` | Activa la forma corta de selección total o una opción propia de la orden. |
-| `-d` | Activa la forma corta de eliminación o una opción propia de la orden. |
-| `-w` | Activa el modo `-w`; los argumentos y restricciones aparecen en la sintaxis y en la fuente oficial. |
-| `-W` | Activa el modo `-W`; los argumentos y restricciones aparecen en la sintaxis y en la fuente oficial. |
-| `-f` | Activa la forma corta de la operación forzada. |
-| `-m` | Activa el modo `-m`; los argumentos y restricciones aparecen en la sintaxis y en la fuente oficial. |
-| `-k` | Activa el modo `-k`; los argumentos y restricciones aparecen en la sintaxis y en la fuente oficial. |
+### Validación
 
-## Selección de entradas
+Comprobar el resultado de git cvsexportcommit con una orden de lectura independiente. Usa el [ejemplo mínimo](#ejemplo-mínimo) como punto de partida. No uses la misma salida como única prueba del cambio.
 
-Resuelve por separado origen, destino y política de actualización. Una URL identifica un transporte; un refspec asigna referencias; un filtro limita objetos. Registra cada valor sin incluir credenciales.
+## Opciones
 
-Comprueba cada entrada con una orden de lectura antes de una escritura. Para listas de rutas generadas por otro proceso, prefiere una interfaz terminada en NUL cuando esté disponible.
+Cada apartado usa una opción en una invocación concreta. Las opciones equivalentes comparten la explicación, pero cada alias tiene su propio ejemplo. Ejecuta una opción por vez antes de combinarlas.
 
-## Salida y códigos de terminación
+### `-h`
 
-Un código 0 indica que la operación terminó bajo el contrato solicitado. Trata cualquier código distinto de cero según la función; no deduzcas el estado solo a partir de que stdout esté vacío.
+Muestra ayuda corta cuando la orden admite esta convención.
 
-No analices mensajes destinados a personas si existe un formato de máquina. Declara los campos, desactiva color y conserva stderr para diagnóstico.
+En `git cvsexportcommit`, h modifica la forma en que se ejecuta aplicar un commit de Git sobre un checkout de CVS. Mantén iguales los demás argumentos para atribuir el cambio observado a esta opción.
+
+```bash
+git cvsexportcommit -h
+printf 'exit=%s\n' "$?"
+```
+
+La opción no recibe un valor separado en la forma mostrada por la ayuda corta. Los argumentos que aparecen después pertenecen a `git cvsexportcommit` o a otra opción. El código de terminación distingue una ejecución aceptada de un error y, en algunos comandos de consulta, de una respuesta negativa. Ejecuta la comprobación inmediatamente después para que ningún comando intermedio cambie el estado que estás observando.
+
+### `-u`
+
+Activa u durante aplicar un commit de Git sobre un checkout de CVS. La opción afecta esta invocación y no cambia la configuración de otras órdenes salvo que la propia función escriba esa configuración.
+
+En `git cvsexportcommit`, u modifica la forma en que se ejecuta aplicar un commit de Git sobre un checkout de CVS. Mantén iguales los demás argumentos para atribuir el cambio observado a esta opción.
+
+```bash
+git cvsexportcommit -u -w /tmp/checkout-cvs HEAD
+printf 'exit=%s\n' "$?"
+```
+
+La opción no recibe un valor separado en la forma mostrada por la ayuda corta. Los argumentos que aparecen después pertenecen a `git cvsexportcommit` o a otra opción. El código de terminación distingue una ejecución aceptada de un error y, en algunos comandos de consulta, de una respuesta negativa. Ejecuta la comprobación inmediatamente después para que ningún comando intermedio cambie el estado que estás observando.
+
+### `-v`
+
+Activa v durante aplicar un commit de Git sobre un checkout de CVS. La opción afecta esta invocación y no cambia la configuración de otras órdenes salvo que la propia función escriba esa configuración.
+
+La opción limita o amplía el conjunto sobre el que se ejecuta aplicar un commit de Git sobre un checkout de CVS. Comprueba la selección con una forma de lectura antes de combinarla con una opción que escriba estado.
+
+```bash
+git cvsexportcommit -v -w /tmp/checkout-cvs HEAD
+printf 'exit=%s\n' "$?"
+```
+
+La opción no recibe un valor separado en la forma mostrada por la ayuda corta. Los argumentos que aparecen después pertenecen a `git cvsexportcommit` o a otra opción. El código de terminación distingue una ejecución aceptada de un error y, en algunos comandos de consulta, de una respuesta negativa. Ejecuta la comprobación inmediatamente después para que ningún comando intermedio cambie el estado que estás observando.
+
+### `-c`
+
+Aplica una clave de configuración solo a esta invocación.
+
+En `git cvsexportcommit`, c modifica la forma en que se ejecuta aplicar un commit de Git sobre un checkout de CVS. Mantén iguales los demás argumentos para atribuir el cambio observado a esta opción.
+
+```bash
+git cvsexportcommit -c -w /tmp/checkout-cvs HEAD
+printf 'exit=%s\n' "$?"
+```
+
+La opción no recibe un valor separado en la forma mostrada por la ayuda corta. Los argumentos que aparecen después pertenecen a `git cvsexportcommit` o a otra opción. El código de terminación distingue una ejecución aceptada de un error y, en algunos comandos de consulta, de una respuesta negativa. Ejecuta la comprobación inmediatamente después para que ningún comando intermedio cambie el estado que estás observando.
+
+### `-P`
+
+Activa P durante aplicar un commit de Git sobre un checkout de CVS. La opción afecta esta invocación y no cambia la configuración de otras órdenes salvo que la propia función escriba esa configuración.
+
+En `git cvsexportcommit`, P modifica la forma en que se ejecuta aplicar un commit de Git sobre un checkout de CVS. Mantén iguales los demás argumentos para atribuir el cambio observado a esta opción.
+
+```bash
+git cvsexportcommit -P -w /tmp/checkout-cvs HEAD
+printf 'exit=%s\n' "$?"
+```
+
+La opción no recibe un valor separado en la forma mostrada por la ayuda corta. Los argumentos que aparecen después pertenecen a `git cvsexportcommit` o a otra opción. El código de terminación distingue una ejecución aceptada de un error y, en algunos comandos de consulta, de una respuesta negativa. Ejecuta la comprobación inmediatamente después para que ningún comando intermedio cambie el estado que estás observando.
+
+### `-p`
+
+Activa p durante aplicar un commit de Git sobre un checkout de CVS. La opción afecta esta invocación y no cambia la configuración de otras órdenes salvo que la propia función escriba esa configuración.
+
+En `git cvsexportcommit`, p modifica la forma en que se ejecuta aplicar un commit de Git sobre un checkout de CVS. Mantén iguales los demás argumentos para atribuir el cambio observado a esta opción.
+
+```bash
+git cvsexportcommit -p -w /tmp/checkout-cvs HEAD
+printf 'exit=%s\n' "$?"
+```
+
+La opción no recibe un valor separado en la forma mostrada por la ayuda corta. Los argumentos que aparecen después pertenecen a `git cvsexportcommit` o a otra opción. El código de terminación distingue una ejecución aceptada de un error y, en algunos comandos de consulta, de una respuesta negativa. Ejecuta la comprobación inmediatamente después para que ningún comando intermedio cambie el estado que estás observando.
+
+### `-a`
+
+Activa a durante aplicar un commit de Git sobre un checkout de CVS. La opción afecta esta invocación y no cambia la configuración de otras órdenes salvo que la propia función escriba esa configuración.
+
+En `git cvsexportcommit`, a modifica la forma en que se ejecuta aplicar un commit de Git sobre un checkout de CVS. Mantén iguales los demás argumentos para atribuir el cambio observado a esta opción.
+
+```bash
+git cvsexportcommit -a -w /tmp/checkout-cvs HEAD
+printf 'exit=%s\n' "$?"
+```
+
+La opción no recibe un valor separado en la forma mostrada por la ayuda corta. Los argumentos que aparecen después pertenecen a `git cvsexportcommit` o a otra opción. El código de terminación distingue una ejecución aceptada de un error y, en algunos comandos de consulta, de una respuesta negativa. Ejecuta la comprobación inmediatamente después para que ningún comando intermedio cambie el estado que estás observando.
+
+### `-d`
+
+Activa d durante aplicar un commit de Git sobre un checkout de CVS. La opción afecta esta invocación y no cambia la configuración de otras órdenes salvo que la propia función escriba esa configuración.
+
+En `git cvsexportcommit`, d modifica la forma en que se ejecuta aplicar un commit de Git sobre un checkout de CVS. Mantén iguales los demás argumentos para atribuir el cambio observado a esta opción.
+
+```bash
+git cvsexportcommit -d -w /tmp/checkout-cvs HEAD
+printf 'exit=%s\n' "$?"
+```
+
+La opción no recibe un valor separado en la forma mostrada por la ayuda corta. Los argumentos que aparecen después pertenecen a `git cvsexportcommit` o a otra opción. El código de terminación distingue una ejecución aceptada de un error y, en algunos comandos de consulta, de una respuesta negativa. Ejecuta la comprobación inmediatamente después para que ningún comando intermedio cambie el estado que estás observando.
+
+### `-w`
+
+Activa w durante aplicar un commit de Git sobre un checkout de CVS. La opción afecta esta invocación y no cambia la configuración de otras órdenes salvo que la propia función escriba esa configuración.
+
+En `git cvsexportcommit`, w modifica la forma en que se ejecuta aplicar un commit de Git sobre un checkout de CVS. Mantén iguales los demás argumentos para atribuir el cambio observado a esta opción.
+
+```bash
+git cvsexportcommit -w /tmp/checkout-cvs HEAD
+printf 'exit=%s\n' "$?"
+```
+
+La opción no recibe un valor separado en la forma mostrada por la ayuda corta. Los argumentos que aparecen después pertenecen a `git cvsexportcommit` o a otra opción. El código de terminación distingue una ejecución aceptada de un error y, en algunos comandos de consulta, de una respuesta negativa. Ejecuta la comprobación inmediatamente después para que ningún comando intermedio cambie el estado que estás observando.
+
+### `-W`
+
+Activa W durante aplicar un commit de Git sobre un checkout de CVS. La opción afecta esta invocación y no cambia la configuración de otras órdenes salvo que la propia función escriba esa configuración.
+
+En `git cvsexportcommit`, W modifica la forma en que se ejecuta aplicar un commit de Git sobre un checkout de CVS. Mantén iguales los demás argumentos para atribuir el cambio observado a esta opción.
+
+```bash
+git cvsexportcommit -W -w /tmp/checkout-cvs HEAD
+printf 'exit=%s\n' "$?"
+```
+
+La opción no recibe un valor separado en la forma mostrada por la ayuda corta. Los argumentos que aparecen después pertenecen a `git cvsexportcommit` o a otra opción. El código de terminación distingue una ejecución aceptada de un error y, en algunos comandos de consulta, de una respuesta negativa. Ejecuta la comprobación inmediatamente después para que ningún comando intermedio cambie el estado que estás observando.
+
+### `-f`
+
+Activa f durante aplicar un commit de Git sobre un checkout de CVS. La opción afecta esta invocación y no cambia la configuración de otras órdenes salvo que la propia función escriba esa configuración.
+
+En `git cvsexportcommit`, f modifica la forma en que se ejecuta aplicar un commit de Git sobre un checkout de CVS. Mantén iguales los demás argumentos para atribuir el cambio observado a esta opción.
+
+```bash
+git cvsexportcommit -f -w /tmp/checkout-cvs HEAD
+printf 'exit=%s\n' "$?"
+```
+
+La opción no recibe un valor separado en la forma mostrada por la ayuda corta. Los argumentos que aparecen después pertenecen a `git cvsexportcommit` o a otra opción. El código de terminación distingue una ejecución aceptada de un error y, en algunos comandos de consulta, de una respuesta negativa. Ejecuta la comprobación inmediatamente después para que ningún comando intermedio cambie el estado que estás observando.
+
+### `-m`
+
+Activa m durante aplicar un commit de Git sobre un checkout de CVS. La opción afecta esta invocación y no cambia la configuración de otras órdenes salvo que la propia función escriba esa configuración.
+
+En `git cvsexportcommit`, m modifica la forma en que se ejecuta aplicar un commit de Git sobre un checkout de CVS. Mantén iguales los demás argumentos para atribuir el cambio observado a esta opción.
+
+```bash
+git cvsexportcommit -m -w /tmp/checkout-cvs HEAD
+printf 'exit=%s\n' "$?"
+```
+
+La opción no recibe un valor separado en la forma mostrada por la ayuda corta. Los argumentos que aparecen después pertenecen a `git cvsexportcommit` o a otra opción. El código de terminación distingue una ejecución aceptada de un error y, en algunos comandos de consulta, de una respuesta negativa. Ejecuta la comprobación inmediatamente después para que ningún comando intermedio cambie el estado que estás observando.
+
+### `-k`
+
+Activa k durante aplicar un commit de Git sobre un checkout de CVS. La opción afecta esta invocación y no cambia la configuración de otras órdenes salvo que la propia función escriba esa configuración.
+
+En `git cvsexportcommit`, k modifica la forma en que se ejecuta aplicar un commit de Git sobre un checkout de CVS. Mantén iguales los demás argumentos para atribuir el cambio observado a esta opción.
+
+```bash
+git cvsexportcommit -k -w /tmp/checkout-cvs HEAD
+printf 'exit=%s\n' "$?"
+```
+
+La opción no recibe un valor separado en la forma mostrada por la ayuda corta. Los argumentos que aparecen después pertenecen a `git cvsexportcommit` o a otra opción. El código de terminación distingue una ejecución aceptada de un error y, en algunos comandos de consulta, de una respuesta negativa. Ejecuta la comprobación inmediatamente después para que ningún comando intermedio cambie el estado que estás observando.
 
 ## Errores y diagnóstico
 
-| Señal | Causa que debes comprobar | Acción |
-| --- | --- | --- |
-| Faltan revisiones | El rango, rama o marcador de importación las excluye | Compara conteos y el último identificador importado. |
-| La identidad cambia | No existe una regla de mapeo estable | Define el mapa antes de repetir la importación. |
-| La sincronización duplica cambios | Se perdió el marcador entre sistemas | Restaura el punto de control y prueba sobre una copia. |
+### Faltan revisiones
 
-Si una operación deja archivos de estado dentro de `.git`, usa `git status` y la acción de continuar, omitir o abortar definida por esa operación. No borres esos archivos para simular una cancelación.
+Comprueba esta causa: El rango, rama o marcador de importación las excluye. Compara conteos y el último identificador importado.
 
-## Automatización
+### La identidad cambia
 
-1. Declara la versión mínima de Git que necesita el script.
-2. Resuelve la raíz del repositorio y evita depender del directorio actual.
-3. Separa opciones y rutas con `--`.
-4. Captura stdout, stderr y el código de terminación.
-5. Usa formatos de máquina o terminación NUL para nombres de archivo.
-6. Ejecuta primero sobre el laboratorio y añade un caso sin coincidencias.
+Comprueba esta causa: No existe una regla de mapeo estable. Define el mapa antes de repetir la importación.
 
-## Seguridad y recuperación
+### La sincronización duplica cambios
+
+Comprueba esta causa: Se perdió el marcador entre sistemas. Restaura el punto de control y prueba sobre una copia.
+
+## Automatización y recuperación
 
 Persistencia: Puede persistir el estado implicado por esta operación: aplicar un commit de Git sobre un checkout de CVS. Las opciones pueden limitar o ampliar ese efecto. Antes de una operación que mueva o elimine referencias, registra sus hashes con `git show-ref`. Antes de cambiar archivos, conserva `git diff` y `git diff --cached`. Para objetos y commits que dejaron de estar referenciados, consulta el reflog antes de ejecutar mantenimiento que pueda eliminarlos.
-
-## Práctica guiada
 
 Importa un conjunto de prueba con dos autores, dos ramas y una etiqueta. Compara cantidades, nombres y contenido en el destino.
 

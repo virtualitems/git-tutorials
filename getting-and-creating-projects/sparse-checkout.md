@@ -2,51 +2,28 @@
 title: "git sparse-checkout"
 source: "https://git-scm.com/docs/git-sparse-checkout"
 section: "getting-and-creating-projects"
-status: "expanded"
+status: "option-expanded"
 ---
 
 # `git sparse-checkout`
 
 Este caso usa `git sparse-checkout` para materializar solo una parte de los archivos seguidos. Los nombres de archivo, revisiones, ramas y direcciones del ejemplo representan valores que debes sustituir por los de tu repositorio.
 
-## Alcance y responsabilidad
+## Responsabilidad y efecto
 
 git sparse-checkout crea la base de datos local de objetos y prepara el área de trabajo. Recibe como entrada un directorio, una URL o una selección de rutas. La operación consiste en materializar solo una parte de los archivos seguidos.
 
-La página distingue lectura, escritura y resultado:
+Puede persistir el estado implicado por esta operación: materializar solo una parte de los archivos seguidos. Las opciones pueden limitar o ampliar ese efecto.
 
-| Elemento | Relación con la función | Comprobación |
-| --- | --- | --- |
-| Entrada | un directorio, una URL o una selección de rutas. | Registra los argumentos y resuelve revisiones antes de ejecutar. |
-| Efecto principal | materializar solo una parte de los archivos seguidos. | Comprueba el resultado con una orden de lectura. |
-| Persistencia | Puede persistir el estado implicado por esta operación: materializar solo una parte de los archivos seguidos. Las opciones pueden limitar o ampliar ese efecto. | Compara el estado antes y después. |
-| Resultado | La orden comunica datos por stdout y diagnósticos por stderr. | Captura también el código de terminación. |
-| Fuente de verdad | El repositorio y la configuración efectiva determinan el resultado. | Usa `git status`, `git remote -v` y `git rev-parse --show-toplevel`. |
+## Preparación
 
-## Requisitos y laboratorio
+Los ejemplos que necesitan un repositorio parten del [laboratorio base de `git init`](../getting-and-creating-projects/init.md#laboratorio-base). La posición de opciones, revisiones y rutas sigue las [convenciones de la interfaz de Git](../guides/gitcli.md#convenciones-de-la-cli). Antes de ejecutar una forma que escriba datos, registra `git status --short` y las referencias que puedan cambiar.
 
-Usa dos directorios bajo una ruta creada con `mktemp -d`: uno como origen y otro como destino.
-
-```bash
-lab_dir="$(mktemp -d)"
-git init "$lab_dir/proyecto"
-git -C "$lab_dir/proyecto" config user.name "Persona de prueba"
-git -C "$lab_dir/proyecto" config user.email "prueba@example.test"
-printf 'línea base\n' > "$lab_dir/proyecto/archivo.txt"
-git -C "$lab_dir/proyecto" add archivo.txt
-git -C "$lab_dir/proyecto" commit -m "base"
-cd "$lab_dir/proyecto"
-```
-
-Antes de ejecutar el ejemplo, confirma la raíz con `git rev-parse --show-toplevel` cuando exista un repositorio. Registra `git status --short` y las referencias que puedan cambiar.
-
-## Modelo de funcionamiento
+## Cómo funciona
 
 Un repositorio contiene objetos y referencias. Un área de trabajo materializa un commit para que los archivos puedan editarse.
 
 Separa los datos del repositorio de los archivos materializados. Un repositorio bare conserva objetos y referencias sin área de trabajo.
-
-Para comprobar el resultado: el directorio resultante contiene el repositorio y, cuando corresponde, un área de trabajo. La verificación debe observar un estado distinto del canal que produjo el cambio.
 
 ## Ejemplo mínimo
 
@@ -55,16 +32,9 @@ git sparse-checkout init --cone
 git sparse-checkout set app docs
 ```
 
-Ejecuta el bloque en orden. Conserva los nombres del laboratorio hasta confirmar el resultado. Sustituye rutas, revisiones o URL solo después de identificar su tipo y alcance.
+La invocación `git sparse-checkout init --cone` ejecuta esta operación: materializar solo una parte de los archivos seguidos. Después, el directorio resultante contiene el repositorio y, cuando corresponde, un área de trabajo. Conserva stdout, stderr y el código de terminación cuando el ejemplo forme parte de un script.
 
-### Resultado esperado
-
-- La entrada queda limitada a: un directorio, una URL o una selección de rutas.
-- La operación observable es: materializar solo una parte de los archivos seguidos.
-- La comprobación se realiza mediante: el directorio resultante contiene el repositorio y, cuando corresponde, un área de trabajo.
-- stdout contiene datos o confirmaciones; stderr contiene diagnósticos. Captura ambos canales cuando automatices.
-
-## Sintaxis
+## Sintaxis y formas de invocación
 
 ```text
 git sparse-checkout (init | list | set | add | reapply | disable | check-rules | clean) [<options>]
@@ -78,52 +48,54 @@ git sparse-checkout (init | list | set | add | reapply | disable | check-rules) 
 
 Los corchetes indican elementos opcionales; `<valor>` exige sustitución; los puntos suspensivos permiten repetición; `|` separa formas excluyentes. Usa `git sparse-checkout -h` para consultar la sintaxis que corresponde a la instalación donde ejecutarás la orden.
 
-## Casos de uso
+## Flujos de uso
 
-| Caso | Objetivo | Criterio de verificación |
-| --- | --- | --- |
-| Caso base | materializar solo una parte de los archivos seguidos | Ejecuta el ejemplo mínimo y registra el estado antes y después. |
-| Alcance explícito | Aplicar git sparse-checkout a una referencia, rango o ruta identificada. | Resuelve cada argumento antes de ejecutar y usa `--` para rutas. |
-| Validación | Comprobar el resultado de git sparse-checkout con una orden de lectura independiente. | No uses la misma salida como única prueba del cambio. |
+### Caso base
 
+materializar solo una parte de los archivos seguidos. Usa el [ejemplo mínimo](#ejemplo-mínimo) como punto de partida. Ejecuta el ejemplo mínimo y registra el estado antes y después.
 
+### Alcance explícito
 
-## Selección de entradas
+Aplicar git sparse-checkout a una referencia, rango o ruta identificada. Usa el [ejemplo mínimo](#ejemplo-mínimo) como punto de partida. Resuelve cada argumento antes de ejecutar y usa `--` para rutas.
 
-Las revisiones se resuelven antes que los pathspecs cuando la sintaxis las espera. Usa `--` para separar opciones y rutas. Cita los globos para decidir si los expande el shell o Git.
+### Validación
 
-Comprueba cada entrada con una orden de lectura antes de una escritura. Para listas de rutas generadas por otro proceso, prefiere una interfaz terminada en NUL cuando esté disponible.
+Comprobar el resultado de git sparse-checkout con una orden de lectura independiente. Usa el [ejemplo mínimo](#ejemplo-mínimo) como punto de partida. No uses la misma salida como única prueba del cambio.
 
-## Salida y códigos de terminación
+## Opciones
 
-Un código 0 indica que la operación terminó bajo el contrato solicitado. Trata cualquier código distinto de cero según la función; no deduzcas el estado solo a partir de que stdout esté vacío.
+Cada apartado usa una opción en una invocación concreta. Las opciones equivalentes comparten la explicación, pero cada alias tiene su propio ejemplo. Ejecuta una opción por vez antes de combinarlas.
 
-No analices mensajes destinados a personas si existe un formato de máquina. Declara los campos, desactiva color y conserva stderr para diagnóstico.
+### `-h`
+
+Activa h durante materializar solo una parte de los archivos seguidos. La opción afecta esta invocación y no cambia la configuración de otras órdenes salvo que la propia función escriba esa configuración.
+
+En `git sparse-checkout`, h modifica la forma en que se ejecuta materializar solo una parte de los archivos seguidos. Mantén iguales los demás argumentos para atribuir el cambio observado a esta opción.
+
+```bash
+git sparse-checkout -h
+printf 'exit=%s\n' "$?"
+```
+
+La opción no recibe un valor separado en la forma mostrada por la ayuda corta. Los argumentos que aparecen después pertenecen a `git sparse-checkout` o a otra opción. El código de terminación distingue una ejecución aceptada de un error y, en algunos comandos de consulta, de una respuesta negativa. Ejecuta la comprobación inmediatamente después para que ningún comando intermedio cambie el estado que estás observando.
 
 ## Errores y diagnóstico
 
-| Señal | Causa que debes comprobar | Acción |
-| --- | --- | --- |
-| El destino ya contiene archivos | La creación o clonación requiere una ruta compatible | Elige un directorio vacío o inicializa la ruta de forma explícita. |
-| No se recibe una referencia | El remoto no la anuncia o el filtro la excluye | Ejecuta `git ls-remote <url>` y revisa los filtros. |
-| Falla la autenticación | La URL o el helper de credenciales no entrega acceso | Comprueba la URL sin registrar credenciales en el historial del shell. |
+### El destino ya contiene archivos
 
-Si una operación deja archivos de estado dentro de `.git`, usa `git status` y la acción de continuar, omitir o abortar definida por esa operación. No borres esos archivos para simular una cancelación.
+Comprueba esta causa: La creación o clonación requiere una ruta compatible. Elige un directorio vacío o inicializa la ruta de forma explícita.
 
-## Automatización
+### No se recibe una referencia
 
-1. Declara la versión mínima de Git que necesita el script.
-2. Resuelve la raíz del repositorio y evita depender del directorio actual.
-3. Separa opciones y rutas con `--`.
-4. Captura stdout, stderr y el código de terminación.
-5. Usa formatos de máquina o terminación NUL para nombres de archivo.
-6. Ejecuta primero sobre el laboratorio y añade un caso sin coincidencias.
+Comprueba esta causa: El remoto no la anuncia o el filtro la excluye. Ejecuta `git ls-remote <url>` y revisa los filtros.
 
-## Seguridad y recuperación
+### Falla la autenticación
+
+Comprueba esta causa: La URL o el helper de credenciales no entrega acceso. Comprueba la URL sin registrar credenciales en el historial del shell.
+
+## Automatización y recuperación
 
 Persistencia: Puede persistir el estado implicado por esta operación: materializar solo una parte de los archivos seguidos. Las opciones pueden limitar o ampliar ese efecto. Antes de una operación que mueva o elimine referencias, registra sus hashes con `git show-ref`. Antes de cambiar archivos, conserva `git diff` y `git diff --cached`. Para objetos y commits que dejaron de estar referenciados, consulta el reflog antes de ejecutar mantenimiento que pueda eliminarlos.
-
-## Práctica guiada
 
 Usa un directorio temporal. Compara el contenido antes y después, incluidos `.git`, HEAD y las ramas disponibles.
 

@@ -2,51 +2,28 @@
 title: "git quiltimport"
 source: "https://git-scm.com/docs/git-quiltimport"
 section: "external-systems"
-status: "expanded"
+status: "option-expanded"
 ---
 
 # `git quiltimport`
 
 Este caso usa `git quiltimport` para importar una serie de parches administrada por quilt. Los nombres de archivo, revisiones, ramas y direcciones del ejemplo representan valores que debes sustituir por los de tu repositorio.
 
-## Alcance y responsabilidad
+## Responsabilidad y efecto
 
 git quiltimport traduce historial, referencias e identidades entre Git y otro sistema. Recibe como entrada la ubicación y los nombres que deben traducirse desde el sistema de origen. La operación consiste en importar una serie de parches administrada por quilt.
 
-La página distingue lectura, escritura y resultado:
+Puede persistir el estado implicado por esta operación: importar una serie de parches administrada por quilt. Las opciones pueden limitar o ampliar ese efecto.
 
-| Elemento | Relación con la función | Comprobación |
-| --- | --- | --- |
-| Entrada | la ubicación y los nombres que deben traducirse desde el sistema de origen. | Registra los argumentos y resuelve revisiones antes de ejecutar. |
-| Efecto principal | importar una serie de parches administrada por quilt. | Comprueba el resultado con una orden de lectura. |
-| Persistencia | Puede persistir el estado implicado por esta operación: importar una serie de parches administrada por quilt. Las opciones pueden limitar o ampliar ese efecto. | Compara el estado antes y después. |
-| Resultado | La orden comunica datos por stdout y diagnósticos por stderr. | Captura también el código de terminación. |
-| Fuente de verdad | El repositorio y la configuración efectiva determinan el resultado. | Usa conteo de revisiones, autores, marcas, ramas y una comparación de contenido. |
+## Preparación
 
-## Requisitos y laboratorio
+Los ejemplos que necesitan un repositorio parten del [laboratorio base de `git init`](../getting-and-creating-projects/init.md#laboratorio-base). La posición de opciones, revisiones y rutas sigue las [convenciones de la interfaz de Git](../guides/gitcli.md#convenciones-de-la-cli). La selección de rutas se explica en [pathspecs y separación con `--`](../guides/gitcli.md#pathspecs). Antes de ejecutar una forma que escriba datos, registra `git status --short` y las referencias que puedan cambiar.
 
-Usa una copia del origen y una rama de migración. Conserva un mapa de identidades y revisiones.
-
-```bash
-lab_dir="$(mktemp -d)"
-git init "$lab_dir/proyecto"
-git -C "$lab_dir/proyecto" config user.name "Persona de prueba"
-git -C "$lab_dir/proyecto" config user.email "prueba@example.test"
-printf 'línea base\n' > "$lab_dir/proyecto/archivo.txt"
-git -C "$lab_dir/proyecto" add archivo.txt
-git -C "$lab_dir/proyecto" commit -m "base"
-cd "$lab_dir/proyecto"
-```
-
-Antes de ejecutar el ejemplo, confirma la raíz con `git rev-parse --show-toplevel` cuando exista un repositorio. Registra `git status --short` y las referencias que puedan cambiar.
-
-## Modelo de funcionamiento
+## Cómo funciona
 
 La integración traduce identidades, ramas y cambios entre dos modelos de control de versiones. Una migración se valida comparando historial, contenido y referencias en el destino.
 
 Define una regla para autores, ramas, etiquetas y finales de línea antes de importar. Valida cada regla con un conjunto que contenga ese caso.
-
-Para comprobar el resultado: el destino conserva el contenido, autores, ramas y etiquetas que admita la conversión. La verificación debe observar un estado distinto del canal que produjo el cambio.
 
 ## Ejemplo mínimo
 
@@ -54,16 +31,9 @@ Para comprobar el resultado: el destino conserva el contenido, autores, ramas y 
 git quiltimport --patches parches
 ```
 
-Ejecuta el bloque en orden. Conserva los nombres del laboratorio hasta confirmar el resultado. Sustituye rutas, revisiones o URL solo después de identificar su tipo y alcance.
+La invocación `git quiltimport --patches parches` ejecuta esta operación: importar una serie de parches administrada por quilt. Después, el destino conserva el contenido, autores, ramas y etiquetas que admita la conversión. Conserva stdout, stderr y el código de terminación cuando el ejemplo forme parte de un script.
 
-### Resultado esperado
-
-- La entrada queda limitada a: la ubicación y los nombres que deben traducirse desde el sistema de origen.
-- La operación observable es: importar una serie de parches administrada por quilt.
-- La comprobación se realiza mediante: el destino conserva el contenido, autores, ramas y etiquetas que admita la conversión.
-- stdout contiene datos o confirmaciones; stderr contiene diagnósticos. Captura ambos canales cuando automatices.
-
-## Sintaxis
+## Sintaxis y formas de invocación
 
 ```text
 git quiltimport [--dry-run | -n] [--author <author>] [--patches <dir>]
@@ -78,66 +48,205 @@ git quiltimport [options]
 
 Los corchetes indican elementos opcionales; `<valor>` exige sustitución; los puntos suspensivos permiten repetición; `|` separa formas excluyentes. Usa `git quiltimport -h` para consultar la sintaxis que corresponde a la instalación donde ejecutarás la orden.
 
-## Casos de uso
+## Flujos de uso
 
-| Caso | Objetivo | Criterio de verificación |
-| --- | --- | --- |
-| Caso base | importar una serie de parches administrada por quilt | Ejecuta el ejemplo mínimo y registra el estado antes y después. |
-| Alcance explícito | Aplicar git quiltimport a una referencia, rango o ruta identificada. | Resuelve cada argumento antes de ejecutar y usa `--` para rutas. |
-| Simulación | Calcular el efecto sin escribir el estado principal. | Compara la simulación con la selección prevista. |
-| Validación | Comprobar el resultado de git quiltimport con una orden de lectura independiente. | No uses la misma salida como única prueba del cambio. |
+### Caso base
 
+importar una serie de parches administrada por quilt. Usa el [ejemplo mínimo](#ejemplo-mínimo) como punto de partida. Ejecuta el ejemplo mínimo y registra el estado antes y después.
 
-## Opciones y variaciones
+### Alcance explícito
 
-La tabla agrupa las opciones visibles en la sintaxis y en la ayuda corta. Una opción puede tener un significado propio cuando la página lo define; ejecuta la ayuda de tu versión antes de usarla en automatización.
+Aplicar git quiltimport a una referencia, rango o ruta identificada. Usa el [ejemplo mínimo](#ejemplo-mínimo) como punto de partida. Resuelve cada argumento antes de ejecutar y usa `--` para rutas.
 
-| Opción | Efecto que debes controlar |
-| --- | --- |
-| `--dry-run` | Calcula el alcance y muestra lo que ocurriría sin aplicar el cambio. |
-| `-n` | Activa la forma corta documentada por la sintaxis; en muchas órdenes corresponde a simulación o límite numérico. |
-| `--author` | Activa el modo `--author`; los argumentos y restricciones aparecen en la sintaxis y en la fuente oficial. |
-| `--patches` | Activa el modo `--patches`; los argumentos y restricciones aparecen en la sintaxis y en la fuente oficial. |
-| `--series` | Activa el modo `--series`; los argumentos y restricciones aparecen en la sintaxis y en la fuente oficial. |
-| `--keep-non-patch` | Activa el modo `--keep-non-patch`; los argumentos y restricciones aparecen en la sintaxis y en la fuente oficial. |
-| `-b` | Activa el modo `-b`; los argumentos y restricciones aparecen en la sintaxis y en la fuente oficial. |
+### Simulación
 
-## Selección de entradas
+Calcular el efecto sin escribir el estado principal. Usa el [ejemplo mínimo](#ejemplo-mínimo) como punto de partida. Compara la simulación con la selección prevista.
 
-Resuelve por separado origen, destino y política de actualización. Una URL identifica un transporte; un refspec asigna referencias; un filtro limita objetos. Registra cada valor sin incluir credenciales.
+### Validación
 
-Comprueba cada entrada con una orden de lectura antes de una escritura. Para listas de rutas generadas por otro proceso, prefiere una interfaz terminada en NUL cuando esté disponible.
+Comprobar el resultado de git quiltimport con una orden de lectura independiente. Usa el [ejemplo mínimo](#ejemplo-mínimo) como punto de partida. No uses la misma salida como única prueba del cambio.
 
-## Salida y códigos de terminación
+## Opciones
 
-Un código 0 indica que la operación terminó bajo el contrato solicitado. Trata cualquier código distinto de cero según la función; no deduzcas el estado solo a partir de que stdout esté vacío.
+Cada apartado usa una opción en una invocación concreta. Las opciones equivalentes comparten la explicación, pero cada alias tiene su propio ejemplo. Ejecuta una opción por vez antes de combinarlas.
 
-No analices mensajes destinados a personas si existe un formato de máquina. Declara los campos, desactiva color y conserva stderr para diagnóstico.
+### `--dry-run` y `-n`
+
+Calcula el alcance y muestra lo que ocurriría sin aplicar el cambio.  La misma línea de ayuda también acepta `-n`. Esas formas seleccionan el mismo comportamiento; cambia la escritura del argumento, no el efecto.
+
+Estas escrituras son alias: seleccionan el mismo comportamiento. Se documentan juntas para no duplicar la regla, pero cada una conserva su propia invocación reproducible.
+
+La opción añade, retira o consulta una comprobación previa. Ejecuta primero la forma que no escribe cuando exista y conserva el código de terminación como parte del resultado.
+
+#### Ejemplo con `--dry-run`
+
+```bash
+git quiltimport --dry-run --patches parches
+printf 'exit=%s\n' "$?"
+```
+
+Esta forma no recibe un valor separado; los argumentos posteriores pertenecen a `git quiltimport` o a otra opción. El código de terminación distingue una ejecución aceptada de un error y, en algunos comandos de consulta, de una respuesta negativa.
+
+#### Ejemplo con `-n`
+
+```bash
+git quiltimport -n --patches parches
+printf 'exit=%s\n' "$?"
+```
+
+Esta forma no recibe un valor separado; los argumentos posteriores pertenecen a `git quiltimport` o a otra opción. El código de terminación distingue una ejecución aceptada de un error y, en algunos comandos de consulta, de una respuesta negativa.
+
+Ejecuta una sola alternativa cada vez. Si ejecutas varias consecutivamente, el primer comando puede cambiar el estado que observa el siguiente.
+
+### `--author`
+
+Limita el resultado a autores que coinciden con el patrón indicado. En Git 2.51.1, la ayuda corta expresa el contrato como `author name and email address for patches without any`. Conserva esa formulación al comparar el efecto entre versiones de Git.
+
+La opción limita o amplía el conjunto sobre el que se ejecuta importar una serie de parches administrada por quilt. Comprueba la selección con una forma de lectura antes de combinarla con una opción que escriba estado.
+
+```bash
+git quiltimport --author --patches parches
+printf 'exit=%s\n' "$?"
+```
+
+La opción no recibe un valor separado en la forma mostrada por la ayuda corta. Los argumentos que aparecen después pertenecen a `git quiltimport` o a otra opción. El código de terminación distingue una ejecución aceptada de un error y, en algunos comandos de consulta, de una respuesta negativa. Ejecuta la comprobación inmediatamente después para que ningún comando intermedio cambie el estado que estás observando.
+
+### `--patches`
+
+Define patches con el valor que recibe la opción. En Git 2.51.1, la ayuda corta expresa el contrato como `path to the quilt patches`. Conserva esa formulación al comparar el efecto entre versiones de Git.
+
+En `git quiltimport`, patches modifica la forma en que se ejecuta importar una serie de parches administrada por quilt. Mantén iguales los demás argumentos para atribuir el cambio observado a esta opción.
+
+```bash
+git quiltimport --patches parches
+printf 'exit=%s\n' "$?"
+```
+
+La opción no recibe un valor separado en la forma mostrada por la ayuda corta. Los argumentos que aparecen después pertenecen a `git quiltimport` o a otra opción. El código de terminación distingue una ejecución aceptada de un error y, en algunos comandos de consulta, de una respuesta negativa. Ejecuta la comprobación inmediatamente después para que ningún comando intermedio cambie el estado que estás observando.
+
+### `--series`
+
+Define series con el valor que recibe la opción. En Git 2.51.1, la ayuda corta expresa el contrato como `path to the quilt series file`. Conserva esa formulación al comparar el efecto entre versiones de Git.
+
+La opción cambia cómo `git quiltimport` recibe datos. Define el separador, la codificación y la ruta de entrada antes de ejecutarla. Los nombres con espacios o saltos de línea requieren una interfaz terminada en NUL cuando el comando la ofrece.
+
+```bash
+git quiltimport --series --patches parches
+printf 'exit=%s\n' "$?"
+```
+
+La opción no recibe un valor separado en la forma mostrada por la ayuda corta. Los argumentos que aparecen después pertenecen a `git quiltimport` o a otra opción. El código de terminación distingue una ejecución aceptada de un error y, en algunos comandos de consulta, de una respuesta negativa. Ejecuta la comprobación inmediatamente después para que ningún comando intermedio cambie el estado que estás observando.
+
+### `--keep-non-patch` y `-b`
+
+Activa conservar non parche durante importar una serie de parches administrada por quilt. La opción afecta esta invocación y no cambia la configuración de otras órdenes salvo que la propia función escriba esa configuración.  La misma línea de ayuda también acepta `-b`. Esas formas seleccionan el mismo comportamiento; cambia la escritura del argumento, no el efecto.
+
+Estas escrituras son alias: seleccionan el mismo comportamiento. Se documentan juntas para no duplicar la regla, pero cada una conserva su propia invocación reproducible.
+
+En `git quiltimport`, conservar non parche modifica la forma en que se ejecuta importar una serie de parches administrada por quilt. Mantén iguales los demás argumentos para atribuir el cambio observado a esta opción.
+
+#### Ejemplo con `--keep-non-patch`
+
+```bash
+git quiltimport --keep-non-patch --patches parches
+printf 'exit=%s\n' "$?"
+```
+
+Esta forma no recibe un valor separado; los argumentos posteriores pertenecen a `git quiltimport` o a otra opción. El código de terminación distingue una ejecución aceptada de un error y, en algunos comandos de consulta, de una respuesta negativa.
+
+#### Ejemplo con `-b`
+
+```bash
+git quiltimport -b --patches parches
+printf 'exit=%s\n' "$?"
+```
+
+Esta forma no recibe un valor separado; los argumentos posteriores pertenecen a `git quiltimport` o a otra opción. El código de terminación distingue una ejecución aceptada de un error y, en algunos comandos de consulta, de una respuesta negativa.
+
+Ejecuta una sola alternativa cada vez. Si ejecutas varias consecutivamente, el primer comando puede cambiar el estado que observa el siguiente.
+
+### `--no-dry-run`
+
+Desactiva para esta invocación el comportamiento que habilita `--dry-run`. Mantén iguales los demás argumentos y compara el resultado con la forma positiva para comprobar la diferencia.
+
+La opción añade, retira o consulta una comprobación previa. Ejecuta primero la forma que no escribe cuando exista y conserva el código de terminación como parte del resultado.
+
+```bash
+git quiltimport --no-dry-run --patches parches
+printf 'exit=%s\n' "$?"
+```
+
+La opción no recibe un valor separado en la forma mostrada por la ayuda corta. Los argumentos que aparecen después pertenecen a `git quiltimport` o a otra opción. El código de terminación distingue una ejecución aceptada de un error y, en algunos comandos de consulta, de una respuesta negativa. Ejecuta la comprobación inmediatamente después para que ningún comando intermedio cambie el estado que estás observando.
+
+### `--no-author`
+
+Desactiva para esta invocación el comportamiento que habilita `--author`. Mantén iguales los demás argumentos y compara el resultado con la forma positiva para comprobar la diferencia.
+
+La opción limita o amplía el conjunto sobre el que se ejecuta importar una serie de parches administrada por quilt. Comprueba la selección con una forma de lectura antes de combinarla con una opción que escriba estado.
+
+```bash
+git quiltimport --no-author --patches parches
+printf 'exit=%s\n' "$?"
+```
+
+La opción no recibe un valor separado en la forma mostrada por la ayuda corta. Los argumentos que aparecen después pertenecen a `git quiltimport` o a otra opción. El código de terminación distingue una ejecución aceptada de un error y, en algunos comandos de consulta, de una respuesta negativa. Ejecuta la comprobación inmediatamente después para que ningún comando intermedio cambie el estado que estás observando.
+
+### `--no-patches`
+
+Desactiva para esta invocación el comportamiento que habilita `--patches`. Mantén iguales los demás argumentos y compara el resultado con la forma positiva para comprobar la diferencia.
+
+En `git quiltimport`, desactivar patches modifica la forma en que se ejecuta importar una serie de parches administrada por quilt. Mantén iguales los demás argumentos para atribuir el cambio observado a esta opción.
+
+```bash
+git quiltimport --no-patches parches
+printf 'exit=%s\n' "$?"
+```
+
+La opción no recibe un valor separado en la forma mostrada por la ayuda corta. Los argumentos que aparecen después pertenecen a `git quiltimport` o a otra opción. El código de terminación distingue una ejecución aceptada de un error y, en algunos comandos de consulta, de una respuesta negativa. Ejecuta la comprobación inmediatamente después para que ningún comando intermedio cambie el estado que estás observando.
+
+### `--no-series`
+
+Desactiva para esta invocación el comportamiento que habilita `--series`. Mantén iguales los demás argumentos y compara el resultado con la forma positiva para comprobar la diferencia.
+
+La opción cambia cómo `git quiltimport` recibe datos. Define el separador, la codificación y la ruta de entrada antes de ejecutarla. Los nombres con espacios o saltos de línea requieren una interfaz terminada en NUL cuando el comando la ofrece.
+
+```bash
+git quiltimport --no-series --patches parches
+printf 'exit=%s\n' "$?"
+```
+
+La opción no recibe un valor separado en la forma mostrada por la ayuda corta. Los argumentos que aparecen después pertenecen a `git quiltimport` o a otra opción. El código de terminación distingue una ejecución aceptada de un error y, en algunos comandos de consulta, de una respuesta negativa. Ejecuta la comprobación inmediatamente después para que ningún comando intermedio cambie el estado que estás observando.
+
+### `--no-keep-non-patch`
+
+Desactiva para esta invocación el comportamiento que habilita `--keep-non-patch`. Mantén iguales los demás argumentos y compara el resultado con la forma positiva para comprobar la diferencia.
+
+En `git quiltimport`, desactivar conservar non parche modifica la forma en que se ejecuta importar una serie de parches administrada por quilt. Mantén iguales los demás argumentos para atribuir el cambio observado a esta opción.
+
+```bash
+git quiltimport --no-keep-non-patch --patches parches
+printf 'exit=%s\n' "$?"
+```
+
+La opción no recibe un valor separado en la forma mostrada por la ayuda corta. Los argumentos que aparecen después pertenecen a `git quiltimport` o a otra opción. El código de terminación distingue una ejecución aceptada de un error y, en algunos comandos de consulta, de una respuesta negativa. Ejecuta la comprobación inmediatamente después para que ningún comando intermedio cambie el estado que estás observando.
 
 ## Errores y diagnóstico
 
-| Señal | Causa que debes comprobar | Acción |
-| --- | --- | --- |
-| Faltan revisiones | El rango, rama o marcador de importación las excluye | Compara conteos y el último identificador importado. |
-| La identidad cambia | No existe una regla de mapeo estable | Define el mapa antes de repetir la importación. |
-| La sincronización duplica cambios | Se perdió el marcador entre sistemas | Restaura el punto de control y prueba sobre una copia. |
+### Faltan revisiones
 
-Si una operación deja archivos de estado dentro de `.git`, usa `git status` y la acción de continuar, omitir o abortar definida por esa operación. No borres esos archivos para simular una cancelación.
+Comprueba esta causa: El rango, rama o marcador de importación las excluye. Compara conteos y el último identificador importado.
 
-## Automatización
+### La identidad cambia
 
-1. Declara la versión mínima de Git que necesita el script.
-2. Resuelve la raíz del repositorio y evita depender del directorio actual.
-3. Separa opciones y rutas con `--`.
-4. Captura stdout, stderr y el código de terminación.
-5. Usa formatos de máquina o terminación NUL para nombres de archivo.
-6. Ejecuta primero sobre el laboratorio y añade un caso sin coincidencias.
+Comprueba esta causa: No existe una regla de mapeo estable. Define el mapa antes de repetir la importación.
 
-## Seguridad y recuperación
+### La sincronización duplica cambios
+
+Comprueba esta causa: Se perdió el marcador entre sistemas. Restaura el punto de control y prueba sobre una copia.
+
+## Automatización y recuperación
 
 Persistencia: Puede persistir el estado implicado por esta operación: importar una serie de parches administrada por quilt. Las opciones pueden limitar o ampliar ese efecto. Antes de una operación que mueva o elimine referencias, registra sus hashes con `git show-ref`. Antes de cambiar archivos, conserva `git diff` y `git diff --cached`. Para objetos y commits que dejaron de estar referenciados, consulta el reflog antes de ejecutar mantenimiento que pueda eliminarlos.
-
-## Práctica guiada
 
 Importa un conjunto de prueba con dos autores, dos ramas y una etiqueta. Compara cantidades, nombres y contenido en el destino.
 

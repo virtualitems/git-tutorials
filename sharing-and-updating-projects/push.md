@@ -2,51 +2,28 @@
 title: "git push"
 source: "https://git-scm.com/docs/git-push"
 section: "sharing-and-updating-projects"
-status: "expanded"
+status: "option-expanded"
 ---
 
 # `git push`
 
 Este caso usa `git push` para actualizar referencias de un repositorio remoto y enviar sus objetos. Los nombres de archivo, revisiones, ramas y direcciones del ejemplo representan valores que debes sustituir por los de tu repositorio.
 
-## Alcance y responsabilidad
+## Responsabilidad y efecto
 
 git push anuncia, descarga o actualiza objetos y referencias entre repositorios. Recibe como entrada el repositorio, las referencias y el sentido de la transferencia. La operación consiste en actualizar referencias de un repositorio remoto y enviar sus objetos.
 
-La página distingue lectura, escritura y resultado:
+Puede persistir el estado implicado por esta operación: actualizar referencias de un repositorio remoto y enviar sus objetos. Las opciones pueden limitar o ampliar ese efecto.
 
-| Elemento | Relación con la función | Comprobación |
-| --- | --- | --- |
-| Entrada | el repositorio, las referencias y el sentido de la transferencia. | Registra los argumentos y resuelve revisiones antes de ejecutar. |
-| Efecto principal | actualizar referencias de un repositorio remoto y enviar sus objetos. | Comprueba el resultado con una orden de lectura. |
-| Persistencia | Puede persistir el estado implicado por esta operación: actualizar referencias de un repositorio remoto y enviar sus objetos. Las opciones pueden limitar o ampliar ese efecto. | Compara el estado antes y después. |
-| Resultado | La orden comunica datos por stdout y diagnósticos por stderr. | Captura también el código de terminación. |
-| Fuente de verdad | El repositorio y la configuración efectiva determinan el resultado. | Usa `git remote -v`, `git branch -vv`, `git ls-remote` y el log de las referencias. |
+## Preparación
 
-## Requisitos y laboratorio
+Los ejemplos que necesitan un repositorio parten del [laboratorio base de `git init`](../getting-and-creating-projects/init.md#laboratorio-base). La posición de opciones, revisiones y rutas sigue las [convenciones de la interfaz de Git](../guides/gitcli.md#convenciones-de-la-cli). Los nombres como `HEAD`, `main`, `HEAD~2` y `A..B` se explican en [revisiones y rangos](../guides/gitrevisions.md#revisiones-y-rangos). La relación entre URL, remoto y refspec se desarrolla en [`git remote`](../sharing-and-updating-projects/remote.md#remotos-y-refspecs). Antes de ejecutar una forma que escriba datos, registra `git status --short` y las referencias que puedan cambiar.
 
-Usa un repositorio bare local como remoto. Permite probar fetch, pull y push sin credenciales ni red.
-
-```bash
-lab_dir="$(mktemp -d)"
-git init "$lab_dir/proyecto"
-git -C "$lab_dir/proyecto" config user.name "Persona de prueba"
-git -C "$lab_dir/proyecto" config user.email "prueba@example.test"
-printf 'línea base\n' > "$lab_dir/proyecto/archivo.txt"
-git -C "$lab_dir/proyecto" add archivo.txt
-git -C "$lab_dir/proyecto" commit -m "base"
-cd "$lab_dir/proyecto"
-```
-
-Antes de ejecutar el ejemplo, confirma la raíz con `git rev-parse --show-toplevel` cuando exista un repositorio. Registra `git status --short` y las referencias que puedan cambiar.
-
-## Modelo de funcionamiento
+## Cómo funciona
 
 La transferencia copia objetos y actualiza referencias. Descargar, integrar y publicar son operaciones separadas aunque algunos comandos las encadenen.
 
 Distingue las referencias de seguimiento remoto de la rama actual. Descargar una referencia no integra por sí mismo sus commits.
-
-Para comprobar el resultado: las referencias locales y remotas permiten separar descarga, integración y publicación. La verificación debe observar un estado distinto del canal que produjo el cambio.
 
 ## Ejemplo mínimo
 
@@ -54,16 +31,9 @@ Para comprobar el resultado: las referencias locales y remotas permiten separar 
 git push -u origin tema-portada
 ```
 
-Ejecuta el bloque en orden. Conserva los nombres del laboratorio hasta confirmar el resultado. Sustituye rutas, revisiones o URL solo después de identificar su tipo y alcance.
+La invocación `git push -u origin tema-portada` ejecuta esta operación: actualizar referencias de un repositorio remoto y enviar sus objetos. Después, las referencias locales y remotas permiten separar descarga, integración y publicación. Conserva stdout, stderr y el código de terminación cuando el ejemplo forme parte de un script.
 
-### Resultado esperado
-
-- La entrada queda limitada a: el repositorio, las referencias y el sentido de la transferencia.
-- La operación observable es: actualizar referencias de un repositorio remoto y enviar sus objetos.
-- La comprobación se realiza mediante: las referencias locales y remotas permiten separar descarga, integración y publicación.
-- stdout contiene datos o confirmaciones; stderr contiene diagnósticos. Captura ambos canales cuando automatices.
-
-## Sintaxis
+## Sintaxis y formas de invocación
 
 ```text
 git push [--all | --branches | --mirror | --tags] [--follow-tags] [--atomic] [-n | --dry-run] [--receive-pack=<git-receive-pack>]
@@ -80,97 +50,860 @@ git push [<options>] [<repository> [<refspec>...]]
 
 Los corchetes indican elementos opcionales; `<valor>` exige sustitución; los puntos suspensivos permiten repetición; `|` separa formas excluyentes. Usa `git push -h` para consultar la sintaxis que corresponde a la instalación donde ejecutarás la orden.
 
-## Casos de uso
+## Flujos de uso
 
-| Caso | Objetivo | Criterio de verificación |
-| --- | --- | --- |
-| Caso base | actualizar referencias de un repositorio remoto y enviar sus objetos | Ejecuta el ejemplo mínimo y registra el estado antes y después. |
-| Alcance explícito | Aplicar git push a una referencia, rango o ruta identificada. | Resuelve cada argumento antes de ejecutar y usa `--` para rutas. |
-| Simulación | Calcular el efecto sin escribir el estado principal. | Compara la simulación con la selección prevista. |
-| Salida para scripts | Producir registros con campos y separadores definidos. | Prueba nombres con espacios y saltos de línea. |
-| Validación | Comprobar el resultado de git push con una orden de lectura independiente. | No uses la misma salida como única prueba del cambio. |
+### Caso base
 
+actualizar referencias de un repositorio remoto y enviar sus objetos. Usa el [ejemplo mínimo](#ejemplo-mínimo) como punto de partida. Ejecuta el ejemplo mínimo y registra el estado antes y después.
 
-## Opciones y variaciones
+### Alcance explícito
 
-La tabla agrupa las opciones visibles en la sintaxis y en la ayuda corta. Una opción puede tener un significado propio cuando la página lo define; ejecuta la ayuda de tu versión antes de usarla en automatización.
+Aplicar git push a una referencia, rango o ruta identificada. Usa el [ejemplo mínimo](#ejemplo-mínimo) como punto de partida. Resuelve cada argumento antes de ejecutar y usa `--` para rutas.
 
-| Opción | Efecto que debes controlar |
-| --- | --- |
-| `--all` | Amplía la selección a todos los elementos del alcance definido. |
-| `--branches` | Incluye o selecciona ramas según la operación. |
-| `--mirror` | Activa el modo `--mirror`; los argumentos y restricciones aparecen en la sintaxis y en la fuente oficial. |
-| `--tags` | Incluye o selecciona etiquetas según la operación. |
-| `--follow-tags` | Selecciona o modifica referencias dentro del alcance de la orden. |
-| `--atomic` | Exige que el conjunto se aplique completo o no se aplique. |
-| `-n` | Activa la forma corta documentada por la sintaxis; en muchas órdenes corresponde a simulación o límite numérico. |
-| `--dry-run` | Calcula el alcance y muestra lo que ocurriría sin aplicar el cambio. |
-| `--receive-pack` | Activa el modo `--receive-pack`; los argumentos y restricciones aparecen en la sintaxis y en la fuente oficial. |
-| `--repo` | Activa el modo `--repo`; los argumentos y restricciones aparecen en la sintaxis y en la fuente oficial. |
-| `-f` | Activa la forma corta de la operación forzada. |
-| `--force` | Omite una protección concreta; úsala solo después de verificar el estado objetivo. |
-| `-d` | Activa la forma corta de eliminación o una opción propia de la orden. |
-| `--delete` | Elimina el elemento seleccionado. |
-| `--prune` | Retira entradas que ya no cumplen la condición documentada. |
-| `-q` | Activa la forma corta del modo sin mensajes. |
-| `--quiet` | Reduce mensajes que no representan errores. |
-| `-v` | Activa la forma corta de salida con detalle o muestra versión según la orden. |
-| `--verbose` | Aumenta el detalle enviado a la salida. |
-| `-u` | Activa el modo `-u`; los argumentos y restricciones aparecen en la sintaxis y en la fuente oficial. |
-| `--set-upstream` | Activa el modo `--set-upstream`; los argumentos y restricciones aparecen en la sintaxis y en la fuente oficial. |
-| `-o` | Activa la forma corta de salida o una opción propia de la orden. |
-| `--push-option` | Activa el modo `--push-option`; los argumentos y restricciones aparecen en la sintaxis y en la fuente oficial. |
-| `--signed` | Activa el modo `--signed`; los argumentos y restricciones aparecen en la sintaxis y en la fuente oficial. |
-| `--porcelain` | Produce un contrato de salida destinado a scripts. |
-| `--force-with-lease` | Omite una protección concreta de la orden; requiere verificar origen y destino. |
-| `--force-if-includes` | Omite una protección concreta de la orden; requiere verificar origen y destino. |
-| `--recurse-submodules` | Propaga la operación a submódulos dentro del alcance. |
-| `--thin` | Activa el modo `--thin`; los argumentos y restricciones aparecen en la sintaxis y en la fuente oficial. |
-| `--exec` | Activa el modo `--exec`; los argumentos y restricciones aparecen en la sintaxis y en la fuente oficial. |
-| `--progress` | Muestra progreso aunque la salida no sea un terminal. |
-| `--no-verify` | Desactiva el comportamiento `verify` para esta invocación. |
-| `--verify` | Exige que el nombre o estructura cumpla el contrato antes de continuar. |
-| `-4` | Activa el modo `-4`; los argumentos y restricciones aparecen en la sintaxis y en la fuente oficial. |
-| `--ipv4` | Activa el modo `--ipv4`; los argumentos y restricciones aparecen en la sintaxis y en la fuente oficial. |
-| `-6` | Activa el modo `-6`; los argumentos y restricciones aparecen en la sintaxis y en la fuente oficial. |
-| `--ipv6` | Activa el modo `--ipv6`; los argumentos y restricciones aparecen en la sintaxis y en la fuente oficial. |
+### Simulación
 
-## Selección de entradas
+Calcular el efecto sin escribir el estado principal. Usa el [ejemplo mínimo](#ejemplo-mínimo) como punto de partida. Compara la simulación con la selección prevista.
 
-Resuelve por separado origen, destino y política de actualización. Una URL identifica un transporte; un refspec asigna referencias; un filtro limita objetos. Registra cada valor sin incluir credenciales.
+### Salida para scripts
 
-Comprueba cada entrada con una orden de lectura antes de una escritura. Para listas de rutas generadas por otro proceso, prefiere una interfaz terminada en NUL cuando esté disponible.
+Producir registros con campos y separadores definidos. Usa el [ejemplo mínimo](#ejemplo-mínimo) como punto de partida. Prueba nombres con espacios y saltos de línea.
 
-## Salida y códigos de terminación
+### Validación
 
-Un código 0 indica que la operación terminó bajo el contrato solicitado. Trata cualquier código distinto de cero según la función; no deduzcas el estado solo a partir de que stdout esté vacío.
+Comprobar el resultado de git push con una orden de lectura independiente. Usa el [ejemplo mínimo](#ejemplo-mínimo) como punto de partida. No uses la misma salida como única prueba del cambio.
 
-No analices mensajes destinados a personas si existe un formato de máquina. Declara los campos, desactiva color y conserva stderr para diagnóstico.
+## Opciones
+
+Cada apartado usa una opción en una invocación concreta. Las opciones equivalentes comparten la explicación, pero cada alias tiene su propio ejemplo. Ejecuta una opción por vez antes de combinarlas.
+
+### `--all`
+
+Amplía la selección a todos los elementos del alcance definido.
+
+La opción limita o amplía el conjunto sobre el que se ejecuta actualizar referencias de un repositorio remoto y enviar sus objetos. Comprueba la selección con una forma de lectura antes de combinarla con una opción que escriba estado.
+
+```bash
+git push --all -u origin tema-portada
+git branch -vv
+```
+
+La opción no recibe un valor separado en la forma mostrada por la ayuda corta. Los argumentos que aparecen después pertenecen a `git push` o a otra opción. La salida permite comparar la rama local con su upstream. Ejecuta la comprobación inmediatamente después para que ningún comando intermedio cambie el estado que estás observando.
+
+### `--branches`
+
+Incluye o selecciona ramas según la operación.
+
+La opción limita o amplía el conjunto sobre el que se ejecuta actualizar referencias de un repositorio remoto y enviar sus objetos. Comprueba la selección con una forma de lectura antes de combinarla con una opción que escriba estado.
+
+```bash
+git push --branches -u origin tema-portada
+git branch -vv
+```
+
+La opción no recibe un valor separado en la forma mostrada por la ayuda corta. Los argumentos que aparecen después pertenecen a `git push` o a otra opción. La salida permite comparar la rama local con su upstream. Ejecuta la comprobación inmediatamente después para que ningún comando intermedio cambie el estado que estás observando.
+
+### `--mirror`
+
+Activa espejo durante actualizar referencias de un repositorio remoto y enviar sus objetos. La opción afecta esta invocación y no cambia la configuración de otras órdenes salvo que la propia función escriba esa configuración. En Git 2.51.1, la ayuda corta expresa el contrato como `mirror all refs`. Conserva esa formulación al comparar el efecto entre versiones de Git.
+
+La opción limita o amplía el conjunto sobre el que se ejecuta actualizar referencias de un repositorio remoto y enviar sus objetos. Comprueba la selección con una forma de lectura antes de combinarla con una opción que escriba estado.
+
+```bash
+git push --mirror -u origin tema-portada
+git branch -vv
+```
+
+La opción no recibe un valor separado en la forma mostrada por la ayuda corta. Los argumentos que aparecen después pertenecen a `git push` o a otra opción. La salida permite comparar la rama local con su upstream. Ejecuta la comprobación inmediatamente después para que ningún comando intermedio cambie el estado que estás observando.
+
+### `--tags`
+
+Incluye o selecciona etiquetas según la operación.
+
+La opción limita o amplía el conjunto sobre el que se ejecuta actualizar referencias de un repositorio remoto y enviar sus objetos. Comprueba la selección con una forma de lectura antes de combinarla con una opción que escriba estado.
+
+```bash
+git push --tags -u origin tema-portada
+git branch -vv
+```
+
+La opción no recibe un valor separado en la forma mostrada por la ayuda corta. Los argumentos que aparecen después pertenecen a `git push` o a otra opción. La salida permite comparar la rama local con su upstream. Ejecuta la comprobación inmediatamente después para que ningún comando intermedio cambie el estado que estás observando.
+
+### `--follow-tags`
+
+Selecciona o modifica referencias dentro del alcance de la orden.
+
+La opción limita o amplía el conjunto sobre el que se ejecuta actualizar referencias de un repositorio remoto y enviar sus objetos. Comprueba la selección con una forma de lectura antes de combinarla con una opción que escriba estado.
+
+```bash
+git push --follow-tags -u origin tema-portada
+git branch -vv
+```
+
+La opción no recibe un valor separado en la forma mostrada por la ayuda corta. Los argumentos que aparecen después pertenecen a `git push` o a otra opción. La salida permite comparar la rama local con su upstream. Ejecuta la comprobación inmediatamente después para que ningún comando intermedio cambie el estado que estás observando.
+
+### `--atomic`
+
+Exige que el conjunto se aplique completo o no se aplique.
+
+La opción añade, retira o consulta una comprobación previa. Ejecuta primero la forma que no escribe cuando exista y conserva el código de terminación como parte del resultado.
+
+```bash
+git push --atomic -u origin tema-portada
+git branch -vv
+```
+
+La opción no recibe un valor separado en la forma mostrada por la ayuda corta. Los argumentos que aparecen después pertenecen a `git push` o a otra opción. La salida permite comparar la rama local con su upstream. Ejecuta la comprobación inmediatamente después para que ningún comando intermedio cambie el estado que estás observando.
+
+### `-n` y `--dry-run`
+
+Calcula el alcance y muestra lo que ocurriría sin aplicar el cambio.  La misma línea de ayuda también acepta `-n`. Esas formas seleccionan el mismo comportamiento; cambia la escritura del argumento, no el efecto.
+
+Estas escrituras son alias: seleccionan el mismo comportamiento. Se documentan juntas para no duplicar la regla, pero cada una conserva su propia invocación reproducible.
+
+La opción añade, retira o consulta una comprobación previa. Ejecuta primero la forma que no escribe cuando exista y conserva el código de terminación como parte del resultado.
+
+#### Ejemplo con `-n`
+
+```bash
+git push -n -u origin tema-portada
+git branch -vv
+```
+
+Esta forma no recibe un valor separado; los argumentos posteriores pertenecen a `git push` o a otra opción. La salida permite comparar la rama local con su upstream.
+
+#### Ejemplo con `--dry-run`
+
+```bash
+git push --dry-run -u origin tema-portada
+git branch -vv
+```
+
+Esta forma no recibe un valor separado; los argumentos posteriores pertenecen a `git push` o a otra opción. La salida permite comparar la rama local con su upstream.
+
+Ejecuta una sola alternativa cada vez. Si ejecutas varias consecutivamente, el primer comando puede cambiar el estado que observa el siguiente.
+
+### `--receive-pack`
+
+Activa receive pack durante actualizar referencias de un repositorio remoto y enviar sus objetos. La opción afecta esta invocación y no cambia la configuración de otras órdenes salvo que la propia función escriba esa configuración. En Git 2.51.1, la ayuda corta expresa el contrato como `receive pack program`. Conserva esa formulación al comparar el efecto entre versiones de Git.
+
+En `git push`, receive pack modifica la forma en que se ejecuta actualizar referencias de un repositorio remoto y enviar sus objetos. Mantén iguales los demás argumentos para atribuir el cambio observado a esta opción.
+
+```bash
+git push --receive-pack=valor -u origin tema-portada
+git branch -vv
+```
+
+El ejemplo usa `valor` como valor. Sustitúyelo por un valor del tipo que muestra la sintaxis de tu versión. Un valor numérico conserva su unidad y un nombre de referencia debe resolver antes de ejecutar la orden. La salida permite comparar la rama local con su upstream. Ejecuta la comprobación inmediatamente después para que ningún comando intermedio cambie el estado que estás observando.
+
+### `--repo`
+
+Activa repo durante actualizar referencias de un repositorio remoto y enviar sus objetos. La opción afecta esta invocación y no cambia la configuración de otras órdenes salvo que la propia función escriba esa configuración. En Git 2.51.1, la ayuda corta expresa el contrato como `repository`. Conserva esa formulación al comparar el efecto entre versiones de Git.
+
+En `git push`, repo modifica la forma en que se ejecuta actualizar referencias de un repositorio remoto y enviar sus objetos. Mantén iguales los demás argumentos para atribuir el cambio observado a esta opción.
+
+```bash
+git push --repo=valor -u origin tema-portada
+git branch -vv
+```
+
+El ejemplo usa `valor` como valor. Sustitúyelo por un valor del tipo que muestra la sintaxis de tu versión. Un valor numérico conserva su unidad y un nombre de referencia debe resolver antes de ejecutar la orden. La salida permite comparar la rama local con su upstream. Ejecuta la comprobación inmediatamente después para que ningún comando intermedio cambie el estado que estás observando.
+
+### `-f` y `--force`
+
+Omite una protección concreta; úsala solo después de verificar el estado objetivo.  La misma línea de ayuda también acepta `-f`. Esas formas seleccionan el mismo comportamiento; cambia la escritura del argumento, no el efecto.
+
+Estas escrituras son alias: seleccionan el mismo comportamiento. Se documentan juntas para no duplicar la regla, pero cada una conserva su propia invocación reproducible.
+
+La opción controla omitir la protección. Registra el estado de las referencias y conserva los cambios sin commit antes de usarla, porque actualizar referencias de un repositorio remoto y enviar sus objetos puede retirar o reemplazar datos dentro del alcance seleccionado.
+
+#### Ejemplo con `-f`
+
+```bash
+git push -f -u origin tema-portada
+git branch -vv
+```
+
+Esta forma no recibe un valor separado; los argumentos posteriores pertenecen a `git push` o a otra opción. La salida permite comparar la rama local con su upstream.
+
+#### Ejemplo con `--force`
+
+```bash
+git push --force -u origin tema-portada
+git branch -vv
+```
+
+Esta forma no recibe un valor separado; los argumentos posteriores pertenecen a `git push` o a otra opción. La salida permite comparar la rama local con su upstream.
+
+Ejecuta una sola alternativa cada vez. Si ejecutas varias consecutivamente, el primer comando puede cambiar el estado que observa el siguiente.
+
+### `-d` y `--delete`
+
+Elimina el elemento seleccionado.  La misma línea de ayuda también acepta `-d`. Esas formas seleccionan el mismo comportamiento; cambia la escritura del argumento, no el efecto.
+
+Estas escrituras son alias: seleccionan el mismo comportamiento. Se documentan juntas para no duplicar la regla, pero cada una conserva su propia invocación reproducible.
+
+La opción controla eliminar. Registra el estado de las referencias y conserva los cambios sin commit antes de usarla, porque actualizar referencias de un repositorio remoto y enviar sus objetos puede retirar o reemplazar datos dentro del alcance seleccionado.
+
+#### Ejemplo con `-d`
+
+```bash
+git push -d -u origin tema-portada
+git branch -vv
+```
+
+Esta forma no recibe un valor separado; los argumentos posteriores pertenecen a `git push` o a otra opción. La salida permite comparar la rama local con su upstream.
+
+#### Ejemplo con `--delete`
+
+```bash
+git push --delete -u origin tema-portada
+git branch -vv
+```
+
+Esta forma no recibe un valor separado; los argumentos posteriores pertenecen a `git push` o a otra opción. La salida permite comparar la rama local con su upstream.
+
+Ejecuta una sola alternativa cada vez. Si ejecutas varias consecutivamente, el primer comando puede cambiar el estado que observa el siguiente.
+
+### `--prune`
+
+Retira entradas que ya no cumplen la condición documentada.
+
+La opción controla podar. Registra el estado de las referencias y conserva los cambios sin commit antes de usarla, porque actualizar referencias de un repositorio remoto y enviar sus objetos puede retirar o reemplazar datos dentro del alcance seleccionado.
+
+```bash
+git push --prune -u origin tema-portada
+git branch -vv
+```
+
+La opción no recibe un valor separado en la forma mostrada por la ayuda corta. Los argumentos que aparecen después pertenecen a `git push` o a otra opción. La salida permite comparar la rama local con su upstream. Ejecuta la comprobación inmediatamente después para que ningún comando intermedio cambie el estado que estás observando.
+
+### `-q` y `--quiet`
+
+Reduce mensajes que no representan errores.  La misma línea de ayuda también acepta `-q`. Esas formas seleccionan el mismo comportamiento; cambia la escritura del argumento, no el efecto.
+
+Estas escrituras son alias: seleccionan el mismo comportamiento. Se documentan juntas para no duplicar la regla, pero cada una conserva su propia invocación reproducible.
+
+La opción cambia la representación o el canal del resultado. Úsala cuando una persona o un script necesite campos, separadores o cantidad de mensajes definidos. El contenido mostrado puede cambiar aunque el repositorio permanezca igual.
+
+#### Ejemplo con `-q`
+
+```bash
+git push -q -u origin tema-portada
+git branch -vv
+```
+
+Esta forma no recibe un valor separado; los argumentos posteriores pertenecen a `git push` o a otra opción. La salida permite comparar la rama local con su upstream.
+
+#### Ejemplo con `--quiet`
+
+```bash
+git push --quiet -u origin tema-portada
+git branch -vv
+```
+
+Esta forma no recibe un valor separado; los argumentos posteriores pertenecen a `git push` o a otra opción. La salida permite comparar la rama local con su upstream.
+
+Ejecuta una sola alternativa cada vez. Si ejecutas varias consecutivamente, el primer comando puede cambiar el estado que observa el siguiente.
+
+### `-v` y `--verbose`
+
+Aumenta el detalle enviado a la salida.  La misma línea de ayuda también acepta `-v`. Esas formas seleccionan el mismo comportamiento; cambia la escritura del argumento, no el efecto.
+
+Estas escrituras son alias: seleccionan el mismo comportamiento. Se documentan juntas para no duplicar la regla, pero cada una conserva su propia invocación reproducible.
+
+La opción cambia la representación o el canal del resultado. Úsala cuando una persona o un script necesite campos, separadores o cantidad de mensajes definidos. El contenido mostrado puede cambiar aunque el repositorio permanezca igual.
+
+#### Ejemplo con `-v`
+
+```bash
+git push -v -u origin tema-portada
+git branch -vv
+```
+
+Esta forma no recibe un valor separado; los argumentos posteriores pertenecen a `git push` o a otra opción. La salida permite comparar la rama local con su upstream.
+
+#### Ejemplo con `--verbose`
+
+```bash
+git push --verbose -u origin tema-portada
+git branch -vv
+```
+
+Esta forma no recibe un valor separado; los argumentos posteriores pertenecen a `git push` o a otra opción. La salida permite comparar la rama local con su upstream.
+
+Ejecuta una sola alternativa cada vez. Si ejecutas varias consecutivamente, el primer comando puede cambiar el estado que observa el siguiente.
+
+### `-u` y `--set-upstream`
+
+Configura la asociación upstream después de actualizar la referencia remota. En Git 2.51.1, la ayuda corta expresa el contrato como `set upstream for git pull/status`. Conserva esa formulación al comparar el efecto entre versiones de Git. La misma línea de ayuda también acepta `-u`. Esas formas seleccionan el mismo comportamiento; cambia la escritura del argumento, no el efecto.
+
+Estas escrituras son alias: seleccionan el mismo comportamiento. Se documentan juntas para no duplicar la regla, pero cada una conserva su propia invocación reproducible.
+
+La opción cambia la representación o el canal del resultado. Úsala cuando una persona o un script necesite campos, separadores o cantidad de mensajes definidos. El contenido mostrado puede cambiar aunque el repositorio permanezca igual.
+
+#### Ejemplo con `-u`
+
+```bash
+git push -u origin tema-portada
+git branch -vv
+```
+
+Esta forma no recibe un valor separado; los argumentos posteriores pertenecen a `git push` o a otra opción. La salida permite comparar la rama local con su upstream.
+
+#### Ejemplo con `--set-upstream`
+
+```bash
+git push --set-upstream origin tema-portada
+git branch -vv
+```
+
+Esta forma no recibe un valor separado; los argumentos posteriores pertenecen a `git push` o a otra opción. La salida permite comparar la rama local con su upstream.
+
+Ejecuta una sola alternativa cada vez. Si ejecutas varias consecutivamente, el primer comando puede cambiar el estado que observa el siguiente.
+
+### `-o` y `--push-option`
+
+Activa push option durante actualizar referencias de un repositorio remoto y enviar sus objetos. La opción afecta esta invocación y no cambia la configuración de otras órdenes salvo que la propia función escriba esa configuración. En Git 2.51.1, la ayuda corta expresa el contrato como `option to transmit`. Conserva esa formulación al comparar el efecto entre versiones de Git. La misma línea de ayuda también acepta `-o`. Esas formas seleccionan el mismo comportamiento; cambia la escritura del argumento, no el efecto.
+
+Estas escrituras son alias: seleccionan el mismo comportamiento. Se documentan juntas para no duplicar la regla, pero cada una conserva su propia invocación reproducible.
+
+En `git push`, push option modifica la forma en que se ejecuta actualizar referencias de un repositorio remoto y enviar sus objetos. Mantén iguales los demás argumentos para atribuir el cambio observado a esta opción.
+
+#### Ejemplo con `-o`
+
+```bash
+git push -o valor -u origin tema-portada
+git branch -vv
+```
+
+En esta forma, `valor` es un valor de ejemplo. Sustitúyelo por un valor que cumpla el tipo y el alcance indicados por la sintaxis. La salida permite comparar la rama local con su upstream.
+
+#### Ejemplo con `--push-option`
+
+```bash
+git push --push-option=valor -u origin tema-portada
+git branch -vv
+```
+
+En esta forma, `valor` es un valor de ejemplo. Sustitúyelo por un valor que cumpla el tipo y el alcance indicados por la sintaxis. La salida permite comparar la rama local con su upstream.
+
+Ejecuta una sola alternativa cada vez. Si ejecutas varias consecutivamente, el primer comando puede cambiar el estado que observa el siguiente.
+
+### `--signed`
+
+Activa firmado durante actualizar referencias de un repositorio remoto y enviar sus objetos. La opción afecta esta invocación y no cambia la configuración de otras órdenes salvo que la propia función escriba esa configuración. En Git 2.51.1, la ayuda corta expresa el contrato como `GPG sign the push`. Conserva esa formulación al comparar el efecto entre versiones de Git.
+
+En `git push`, firmado modifica la forma en que se ejecuta actualizar referencias de un repositorio remoto y enviar sus objetos. Mantén iguales los demás argumentos para atribuir el cambio observado a esta opción.
+
+```bash
+git push --signed=valor -u origin tema-portada
+git branch -vv
+```
+
+El ejemplo usa `valor` como valor. Sustitúyelo por un valor del tipo que muestra la sintaxis de tu versión. Un valor numérico conserva su unidad y un nombre de referencia debe resolver antes de ejecutar la orden. La salida permite comparar la rama local con su upstream. Ejecuta la comprobación inmediatamente después para que ningún comando intermedio cambie el estado que estás observando.
+
+### `--porcelain`
+
+Produce un contrato de salida destinado a scripts.
+
+La opción cambia la representación o el canal del resultado. Úsala cuando una persona o un script necesite campos, separadores o cantidad de mensajes definidos. El contenido mostrado puede cambiar aunque el repositorio permanezca igual.
+
+```bash
+git push --porcelain -u origin tema-portada
+git branch -vv
+```
+
+La opción no recibe un valor separado en la forma mostrada por la ayuda corta. Los argumentos que aparecen después pertenecen a `git push` o a otra opción. La salida permite comparar la rama local con su upstream. Ejecuta la comprobación inmediatamente después para que ningún comando intermedio cambie el estado que estás observando.
+
+### `--force-with-lease`
+
+Omite una protección concreta de la orden; requiere verificar origen y destino.
+
+La opción controla omitir la protección with lease. Registra el estado de las referencias y conserva los cambios sin commit antes de usarla, porque actualizar referencias de un repositorio remoto y enviar sus objetos puede retirar o reemplazar datos dentro del alcance seleccionado.
+
+```bash
+git push --force-with-lease=main -u origin tema-portada
+git branch -vv
+```
+
+El ejemplo usa `main` como valor. Sustitúyelo por un valor del tipo que muestra la sintaxis de tu versión. Un valor numérico conserva su unidad y un nombre de referencia debe resolver antes de ejecutar la orden. La salida permite comparar la rama local con su upstream. Ejecuta la comprobación inmediatamente después para que ningún comando intermedio cambie el estado que estás observando.
+
+### `--force-if-includes`
+
+Omite una protección concreta de la orden; requiere verificar origen y destino.
+
+La opción controla omitir la protección if includes. Registra el estado de las referencias y conserva los cambios sin commit antes de usarla, porque actualizar referencias de un repositorio remoto y enviar sus objetos puede retirar o reemplazar datos dentro del alcance seleccionado.
+
+```bash
+git push --force-if-includes -u origin tema-portada
+git branch -vv
+```
+
+La opción no recibe un valor separado en la forma mostrada por la ayuda corta. Los argumentos que aparecen después pertenecen a `git push` o a otra opción. La salida permite comparar la rama local con su upstream. Ejecuta la comprobación inmediatamente después para que ningún comando intermedio cambie el estado que estás observando.
+
+### `--recurse-submodules`
+
+Propaga la operación a submódulos dentro del alcance.
+
+La opción añade, retira o consulta una comprobación previa. Ejecuta primero la forma que no escribe cuando exista y conserva el código de terminación como parte del resultado.
+
+```bash
+git push --recurse-submodules=valor -u origin tema-portada
+git branch -vv
+```
+
+El ejemplo usa `valor` como valor. Sustitúyelo por un valor del tipo que muestra la sintaxis de tu versión. Un valor numérico conserva su unidad y un nombre de referencia debe resolver antes de ejecutar la orden. La salida permite comparar la rama local con su upstream. Ejecuta la comprobación inmediatamente después para que ningún comando intermedio cambie el estado que estás observando.
+
+### `--thin`
+
+Define thin para esta ejecución de `git push`. En Git 2.51.1, la ayuda corta expresa el contrato como `use thin pack`. Conserva esa formulación al comparar el efecto entre versiones de Git.
+
+En `git push`, thin modifica la forma en que se ejecuta actualizar referencias de un repositorio remoto y enviar sus objetos. Mantén iguales los demás argumentos para atribuir el cambio observado a esta opción.
+
+```bash
+git push --thin -u origin tema-portada
+git branch -vv
+```
+
+La opción no recibe un valor separado en la forma mostrada por la ayuda corta. Los argumentos que aparecen después pertenecen a `git push` o a otra opción. La salida permite comparar la rama local con su upstream. Ejecuta la comprobación inmediatamente después para que ningún comando intermedio cambie el estado que estás observando.
+
+### `--exec`
+
+Activa exec durante actualizar referencias de un repositorio remoto y enviar sus objetos. La opción afecta esta invocación y no cambia la configuración de otras órdenes salvo que la propia función escriba esa configuración. En Git 2.51.1, la ayuda corta expresa el contrato como `receive pack program`. Conserva esa formulación al comparar el efecto entre versiones de Git.
+
+En `git push`, exec modifica la forma en que se ejecuta actualizar referencias de un repositorio remoto y enviar sus objetos. Mantén iguales los demás argumentos para atribuir el cambio observado a esta opción.
+
+```bash
+git push --exec=valor -u origin tema-portada
+git branch -vv
+```
+
+El ejemplo usa `valor` como valor. Sustitúyelo por un valor del tipo que muestra la sintaxis de tu versión. Un valor numérico conserva su unidad y un nombre de referencia debe resolver antes de ejecutar la orden. La salida permite comparar la rama local con su upstream. Ejecuta la comprobación inmediatamente después para que ningún comando intermedio cambie el estado que estás observando.
+
+### `--progress`
+
+Muestra progreso aunque la salida no sea un terminal.
+
+La opción controla progreso. Registra el estado de las referencias y conserva los cambios sin commit antes de usarla, porque actualizar referencias de un repositorio remoto y enviar sus objetos puede retirar o reemplazar datos dentro del alcance seleccionado.
+
+```bash
+git push --progress -u origin tema-portada
+git branch -vv
+```
+
+La opción no recibe un valor separado en la forma mostrada por la ayuda corta. Los argumentos que aparecen después pertenecen a `git push` o a otra opción. La salida permite comparar la rama local con su upstream. Ejecuta la comprobación inmediatamente después para que ningún comando intermedio cambie el estado que estás observando.
+
+### `--no-verify`
+
+Desactiva el comportamiento `verify` para esta invocación.
+
+La opción añade, retira o consulta una comprobación previa. Ejecuta primero la forma que no escribe cuando exista y conserva el código de terminación como parte del resultado.
+
+```bash
+git push --no-verify -u origin tema-portada
+git branch -vv
+```
+
+La opción no recibe un valor separado en la forma mostrada por la ayuda corta. Los argumentos que aparecen después pertenecen a `git push` o a otra opción. La salida permite comparar la rama local con su upstream. Ejecuta la comprobación inmediatamente después para que ningún comando intermedio cambie el estado que estás observando.
+
+### `--verify`
+
+Exige que el nombre o estructura cumpla el contrato antes de continuar.
+
+La opción añade, retira o consulta una comprobación previa. Ejecuta primero la forma que no escribe cuando exista y conserva el código de terminación como parte del resultado.
+
+```bash
+git push --verify -u origin tema-portada
+git branch -vv
+```
+
+La opción no recibe un valor separado en la forma mostrada por la ayuda corta. Los argumentos que aparecen después pertenecen a `git push` o a otra opción. La salida permite comparar la rama local con su upstream. Ejecuta la comprobación inmediatamente después para que ningún comando intermedio cambie el estado que estás observando.
+
+### `-4` y `--ipv4`
+
+Limita actualizar referencias de un repositorio remoto y enviar sus objetos al alcance identificado por ipv4. En Git 2.51.1, la ayuda corta expresa el contrato como `use IPv4 addresses only`. Conserva esa formulación al comparar el efecto entre versiones de Git. La misma línea de ayuda también acepta `-4`. Esas formas seleccionan el mismo comportamiento; cambia la escritura del argumento, no el efecto.
+
+Estas escrituras son alias: seleccionan el mismo comportamiento. Se documentan juntas para no duplicar la regla, pero cada una conserva su propia invocación reproducible.
+
+En `git push`, ipv4 modifica la forma en que se ejecuta actualizar referencias de un repositorio remoto y enviar sus objetos. Mantén iguales los demás argumentos para atribuir el cambio observado a esta opción.
+
+#### Ejemplo con `-4`
+
+```bash
+git push -4 -u origin tema-portada
+git branch -vv
+```
+
+Esta forma no recibe un valor separado; los argumentos posteriores pertenecen a `git push` o a otra opción. La salida permite comparar la rama local con su upstream.
+
+#### Ejemplo con `--ipv4`
+
+```bash
+git push --ipv4 -u origin tema-portada
+git branch -vv
+```
+
+Esta forma no recibe un valor separado; los argumentos posteriores pertenecen a `git push` o a otra opción. La salida permite comparar la rama local con su upstream.
+
+Ejecuta una sola alternativa cada vez. Si ejecutas varias consecutivamente, el primer comando puede cambiar el estado que observa el siguiente.
+
+### `-6` y `--ipv6`
+
+Limita actualizar referencias de un repositorio remoto y enviar sus objetos al alcance identificado por ipv6. En Git 2.51.1, la ayuda corta expresa el contrato como `use IPv6 addresses only`. Conserva esa formulación al comparar el efecto entre versiones de Git. La misma línea de ayuda también acepta `-6`. Esas formas seleccionan el mismo comportamiento; cambia la escritura del argumento, no el efecto.
+
+Estas escrituras son alias: seleccionan el mismo comportamiento. Se documentan juntas para no duplicar la regla, pero cada una conserva su propia invocación reproducible.
+
+En `git push`, ipv6 modifica la forma en que se ejecuta actualizar referencias de un repositorio remoto y enviar sus objetos. Mantén iguales los demás argumentos para atribuir el cambio observado a esta opción.
+
+#### Ejemplo con `-6`
+
+```bash
+git push -6 -u origin tema-portada
+git branch -vv
+```
+
+Esta forma no recibe un valor separado; los argumentos posteriores pertenecen a `git push` o a otra opción. La salida permite comparar la rama local con su upstream.
+
+#### Ejemplo con `--ipv6`
+
+```bash
+git push --ipv6 -u origin tema-portada
+git branch -vv
+```
+
+Esta forma no recibe un valor separado; los argumentos posteriores pertenecen a `git push` o a otra opción. La salida permite comparar la rama local con su upstream.
+
+Ejecuta una sola alternativa cada vez. Si ejecutas varias consecutivamente, el primer comando puede cambiar el estado que observa el siguiente.
+
+### `--no-all`
+
+Desactiva para esta invocación el comportamiento que habilita `--all`. Mantén iguales los demás argumentos y compara el resultado con la forma positiva para comprobar la diferencia.
+
+La opción limita o amplía el conjunto sobre el que se ejecuta actualizar referencias de un repositorio remoto y enviar sus objetos. Comprueba la selección con una forma de lectura antes de combinarla con una opción que escriba estado.
+
+```bash
+git push --no-all -u origin tema-portada
+git branch -vv
+```
+
+La opción no recibe un valor separado en la forma mostrada por la ayuda corta. Los argumentos que aparecen después pertenecen a `git push` o a otra opción. La salida permite comparar la rama local con su upstream. Ejecuta la comprobación inmediatamente después para que ningún comando intermedio cambie el estado que estás observando.
+
+### `--no-branches`
+
+Desactiva para esta invocación el comportamiento que habilita `--branches`. Mantén iguales los demás argumentos y compara el resultado con la forma positiva para comprobar la diferencia.
+
+La opción limita o amplía el conjunto sobre el que se ejecuta actualizar referencias de un repositorio remoto y enviar sus objetos. Comprueba la selección con una forma de lectura antes de combinarla con una opción que escriba estado.
+
+```bash
+git push --no-branches -u origin tema-portada
+git branch -vv
+```
+
+La opción no recibe un valor separado en la forma mostrada por la ayuda corta. Los argumentos que aparecen después pertenecen a `git push` o a otra opción. La salida permite comparar la rama local con su upstream. Ejecuta la comprobación inmediatamente después para que ningún comando intermedio cambie el estado que estás observando.
+
+### `--no-mirror`
+
+Desactiva para esta invocación el comportamiento que habilita `--mirror`. Mantén iguales los demás argumentos y compara el resultado con la forma positiva para comprobar la diferencia.
+
+La opción limita o amplía el conjunto sobre el que se ejecuta actualizar referencias de un repositorio remoto y enviar sus objetos. Comprueba la selección con una forma de lectura antes de combinarla con una opción que escriba estado.
+
+```bash
+git push --no-mirror -u origin tema-portada
+git branch -vv
+```
+
+La opción no recibe un valor separado en la forma mostrada por la ayuda corta. Los argumentos que aparecen después pertenecen a `git push` o a otra opción. La salida permite comparar la rama local con su upstream. Ejecuta la comprobación inmediatamente después para que ningún comando intermedio cambie el estado que estás observando.
+
+### `--no-tags`
+
+Desactiva para esta invocación el comportamiento que habilita `--tags`. Mantén iguales los demás argumentos y compara el resultado con la forma positiva para comprobar la diferencia.
+
+La opción limita o amplía el conjunto sobre el que se ejecuta actualizar referencias de un repositorio remoto y enviar sus objetos. Comprueba la selección con una forma de lectura antes de combinarla con una opción que escriba estado.
+
+```bash
+git push --no-tags -u origin tema-portada
+git branch -vv
+```
+
+La opción no recibe un valor separado en la forma mostrada por la ayuda corta. Los argumentos que aparecen después pertenecen a `git push` o a otra opción. La salida permite comparar la rama local con su upstream. Ejecuta la comprobación inmediatamente después para que ningún comando intermedio cambie el estado que estás observando.
+
+### `--no-follow-tags`
+
+Desactiva para esta invocación el comportamiento que habilita `--follow-tags`. Mantén iguales los demás argumentos y compara el resultado con la forma positiva para comprobar la diferencia.
+
+La opción limita o amplía el conjunto sobre el que se ejecuta actualizar referencias de un repositorio remoto y enviar sus objetos. Comprueba la selección con una forma de lectura antes de combinarla con una opción que escriba estado.
+
+```bash
+git push --no-follow-tags -u origin tema-portada
+git branch -vv
+```
+
+La opción no recibe un valor separado en la forma mostrada por la ayuda corta. Los argumentos que aparecen después pertenecen a `git push` o a otra opción. La salida permite comparar la rama local con su upstream. Ejecuta la comprobación inmediatamente después para que ningún comando intermedio cambie el estado que estás observando.
+
+### `--no-atomic`
+
+Desactiva para esta invocación el comportamiento que habilita `--atomic`. Mantén iguales los demás argumentos y compara el resultado con la forma positiva para comprobar la diferencia.
+
+La opción añade, retira o consulta una comprobación previa. Ejecuta primero la forma que no escribe cuando exista y conserva el código de terminación como parte del resultado.
+
+```bash
+git push --no-atomic -u origin tema-portada
+git branch -vv
+```
+
+La opción no recibe un valor separado en la forma mostrada por la ayuda corta. Los argumentos que aparecen después pertenecen a `git push` o a otra opción. La salida permite comparar la rama local con su upstream. Ejecuta la comprobación inmediatamente después para que ningún comando intermedio cambie el estado que estás observando.
+
+### `--no-dry-run`
+
+Desactiva para esta invocación el comportamiento que habilita `--dry-run`. Mantén iguales los demás argumentos y compara el resultado con la forma positiva para comprobar la diferencia.
+
+La opción añade, retira o consulta una comprobación previa. Ejecuta primero la forma que no escribe cuando exista y conserva el código de terminación como parte del resultado.
+
+```bash
+git push --no-dry-run -u origin tema-portada
+git branch -vv
+```
+
+La opción no recibe un valor separado en la forma mostrada por la ayuda corta. Los argumentos que aparecen después pertenecen a `git push` o a otra opción. La salida permite comparar la rama local con su upstream. Ejecuta la comprobación inmediatamente después para que ningún comando intermedio cambie el estado que estás observando.
+
+### `--no-receive-pack`
+
+Desactiva para esta invocación el comportamiento que habilita `--receive-pack`. Mantén iguales los demás argumentos y compara el resultado con la forma positiva para comprobar la diferencia.
+
+En `git push`, desactivar receive pack modifica la forma en que se ejecuta actualizar referencias de un repositorio remoto y enviar sus objetos. Mantén iguales los demás argumentos para atribuir el cambio observado a esta opción.
+
+```bash
+git push --no-receive-pack -u origin tema-portada
+git branch -vv
+```
+
+La opción no recibe un valor separado en la forma mostrada por la ayuda corta. Los argumentos que aparecen después pertenecen a `git push` o a otra opción. La salida permite comparar la rama local con su upstream. Ejecuta la comprobación inmediatamente después para que ningún comando intermedio cambie el estado que estás observando.
+
+### `--no-repo`
+
+Desactiva para esta invocación el comportamiento que habilita `--repo`. Mantén iguales los demás argumentos y compara el resultado con la forma positiva para comprobar la diferencia.
+
+En `git push`, desactivar repo modifica la forma en que se ejecuta actualizar referencias de un repositorio remoto y enviar sus objetos. Mantén iguales los demás argumentos para atribuir el cambio observado a esta opción.
+
+```bash
+git push --no-repo -u origin tema-portada
+git branch -vv
+```
+
+La opción no recibe un valor separado en la forma mostrada por la ayuda corta. Los argumentos que aparecen después pertenecen a `git push` o a otra opción. La salida permite comparar la rama local con su upstream. Ejecuta la comprobación inmediatamente después para que ningún comando intermedio cambie el estado que estás observando.
+
+### `--no-force`
+
+Desactiva para esta invocación el comportamiento que habilita `--force`. Mantén iguales los demás argumentos y compara el resultado con la forma positiva para comprobar la diferencia.
+
+La opción controla desactivar omitir la protección. Registra el estado de las referencias y conserva los cambios sin commit antes de usarla, porque actualizar referencias de un repositorio remoto y enviar sus objetos puede retirar o reemplazar datos dentro del alcance seleccionado.
+
+```bash
+git push --no-force -u origin tema-portada
+git branch -vv
+```
+
+La opción no recibe un valor separado en la forma mostrada por la ayuda corta. Los argumentos que aparecen después pertenecen a `git push` o a otra opción. La salida permite comparar la rama local con su upstream. Ejecuta la comprobación inmediatamente después para que ningún comando intermedio cambie el estado que estás observando.
+
+### `--no-delete`
+
+Desactiva para esta invocación el comportamiento que habilita `--delete`. Mantén iguales los demás argumentos y compara el resultado con la forma positiva para comprobar la diferencia.
+
+La opción controla desactivar eliminar. Registra el estado de las referencias y conserva los cambios sin commit antes de usarla, porque actualizar referencias de un repositorio remoto y enviar sus objetos puede retirar o reemplazar datos dentro del alcance seleccionado.
+
+```bash
+git push --no-delete -u origin tema-portada
+git branch -vv
+```
+
+La opción no recibe un valor separado en la forma mostrada por la ayuda corta. Los argumentos que aparecen después pertenecen a `git push` o a otra opción. La salida permite comparar la rama local con su upstream. Ejecuta la comprobación inmediatamente después para que ningún comando intermedio cambie el estado que estás observando.
+
+### `--no-prune`
+
+Desactiva para esta invocación el comportamiento que habilita `--prune`. Mantén iguales los demás argumentos y compara el resultado con la forma positiva para comprobar la diferencia.
+
+La opción controla desactivar podar. Registra el estado de las referencias y conserva los cambios sin commit antes de usarla, porque actualizar referencias de un repositorio remoto y enviar sus objetos puede retirar o reemplazar datos dentro del alcance seleccionado.
+
+```bash
+git push --no-prune -u origin tema-portada
+git branch -vv
+```
+
+La opción no recibe un valor separado en la forma mostrada por la ayuda corta. Los argumentos que aparecen después pertenecen a `git push` o a otra opción. La salida permite comparar la rama local con su upstream. Ejecuta la comprobación inmediatamente después para que ningún comando intermedio cambie el estado que estás observando.
+
+### `--no-quiet`
+
+Desactiva para esta invocación el comportamiento que habilita `--quiet`. Mantén iguales los demás argumentos y compara el resultado con la forma positiva para comprobar la diferencia.
+
+La opción cambia la representación o el canal del resultado. Úsala cuando una persona o un script necesite campos, separadores o cantidad de mensajes definidos. El contenido mostrado puede cambiar aunque el repositorio permanezca igual.
+
+```bash
+git push --no-quiet -u origin tema-portada
+git branch -vv
+```
+
+La opción no recibe un valor separado en la forma mostrada por la ayuda corta. Los argumentos que aparecen después pertenecen a `git push` o a otra opción. La salida permite comparar la rama local con su upstream. Ejecuta la comprobación inmediatamente después para que ningún comando intermedio cambie el estado que estás observando.
+
+### `--no-verbose`
+
+Desactiva para esta invocación el comportamiento que habilita `--verbose`. Mantén iguales los demás argumentos y compara el resultado con la forma positiva para comprobar la diferencia.
+
+La opción cambia la representación o el canal del resultado. Úsala cuando una persona o un script necesite campos, separadores o cantidad de mensajes definidos. El contenido mostrado puede cambiar aunque el repositorio permanezca igual.
+
+```bash
+git push --no-verbose -u origin tema-portada
+git branch -vv
+```
+
+La opción no recibe un valor separado en la forma mostrada por la ayuda corta. Los argumentos que aparecen después pertenecen a `git push` o a otra opción. La salida permite comparar la rama local con su upstream. Ejecuta la comprobación inmediatamente después para que ningún comando intermedio cambie el estado que estás observando.
+
+### `--no-set-upstream`
+
+Desactiva para esta invocación el comportamiento que habilita `--set-upstream`. Mantén iguales los demás argumentos y compara el resultado con la forma positiva para comprobar la diferencia.
+
+La opción cambia la representación o el canal del resultado. Úsala cuando una persona o un script necesite campos, separadores o cantidad de mensajes definidos. El contenido mostrado puede cambiar aunque el repositorio permanezca igual.
+
+```bash
+git push --no-set-upstream origin tema-portada
+git branch -vv
+```
+
+La opción no recibe un valor separado en la forma mostrada por la ayuda corta. Los argumentos que aparecen después pertenecen a `git push` o a otra opción. La salida permite comparar la rama local con su upstream. Ejecuta la comprobación inmediatamente después para que ningún comando intermedio cambie el estado que estás observando.
+
+### `--no-push-option`
+
+Desactiva para esta invocación el comportamiento que habilita `--push-option`. Mantén iguales los demás argumentos y compara el resultado con la forma positiva para comprobar la diferencia.
+
+En `git push`, desactivar push option modifica la forma en que se ejecuta actualizar referencias de un repositorio remoto y enviar sus objetos. Mantén iguales los demás argumentos para atribuir el cambio observado a esta opción.
+
+```bash
+git push --no-push-option -u origin tema-portada
+git branch -vv
+```
+
+La opción no recibe un valor separado en la forma mostrada por la ayuda corta. Los argumentos que aparecen después pertenecen a `git push` o a otra opción. La salida permite comparar la rama local con su upstream. Ejecuta la comprobación inmediatamente después para que ningún comando intermedio cambie el estado que estás observando.
+
+### `--no-signed`
+
+Desactiva para esta invocación el comportamiento que habilita `--signed`. Mantén iguales los demás argumentos y compara el resultado con la forma positiva para comprobar la diferencia.
+
+En `git push`, desactivar firmado modifica la forma en que se ejecuta actualizar referencias de un repositorio remoto y enviar sus objetos. Mantén iguales los demás argumentos para atribuir el cambio observado a esta opción.
+
+```bash
+git push --no-signed -u origin tema-portada
+git branch -vv
+```
+
+La opción no recibe un valor separado en la forma mostrada por la ayuda corta. Los argumentos que aparecen después pertenecen a `git push` o a otra opción. La salida permite comparar la rama local con su upstream. Ejecuta la comprobación inmediatamente después para que ningún comando intermedio cambie el estado que estás observando.
+
+### `--no-porcelain`
+
+Desactiva para esta invocación el comportamiento que habilita `--porcelain`. Mantén iguales los demás argumentos y compara el resultado con la forma positiva para comprobar la diferencia.
+
+La opción cambia la representación o el canal del resultado. Úsala cuando una persona o un script necesite campos, separadores o cantidad de mensajes definidos. El contenido mostrado puede cambiar aunque el repositorio permanezca igual.
+
+```bash
+git push --no-porcelain -u origin tema-portada
+git branch -vv
+```
+
+La opción no recibe un valor separado en la forma mostrada por la ayuda corta. Los argumentos que aparecen después pertenecen a `git push` o a otra opción. La salida permite comparar la rama local con su upstream. Ejecuta la comprobación inmediatamente después para que ningún comando intermedio cambie el estado que estás observando.
+
+### `--no-force-with-lease`
+
+Desactiva para esta invocación el comportamiento que habilita `--force-with-lease`. Mantén iguales los demás argumentos y compara el resultado con la forma positiva para comprobar la diferencia.
+
+La opción controla desactivar omitir la protección with lease. Registra el estado de las referencias y conserva los cambios sin commit antes de usarla, porque actualizar referencias de un repositorio remoto y enviar sus objetos puede retirar o reemplazar datos dentro del alcance seleccionado.
+
+```bash
+git push --no-force-with-lease -u origin tema-portada
+git branch -vv
+```
+
+La opción no recibe un valor separado en la forma mostrada por la ayuda corta. Los argumentos que aparecen después pertenecen a `git push` o a otra opción. La salida permite comparar la rama local con su upstream. Ejecuta la comprobación inmediatamente después para que ningún comando intermedio cambie el estado que estás observando.
+
+### `--no-force-if-includes`
+
+Desactiva para esta invocación el comportamiento que habilita `--force-if-includes`. Mantén iguales los demás argumentos y compara el resultado con la forma positiva para comprobar la diferencia.
+
+La opción controla desactivar omitir la protección if includes. Registra el estado de las referencias y conserva los cambios sin commit antes de usarla, porque actualizar referencias de un repositorio remoto y enviar sus objetos puede retirar o reemplazar datos dentro del alcance seleccionado.
+
+```bash
+git push --no-force-if-includes -u origin tema-portada
+git branch -vv
+```
+
+La opción no recibe un valor separado en la forma mostrada por la ayuda corta. Los argumentos que aparecen después pertenecen a `git push` o a otra opción. La salida permite comparar la rama local con su upstream. Ejecuta la comprobación inmediatamente después para que ningún comando intermedio cambie el estado que estás observando.
+
+### `--no-recurse-submodules`
+
+Desactiva para esta invocación el comportamiento que habilita `--recurse-submodules`. Mantén iguales los demás argumentos y compara el resultado con la forma positiva para comprobar la diferencia.
+
+La opción añade, retira o consulta una comprobación previa. Ejecuta primero la forma que no escribe cuando exista y conserva el código de terminación como parte del resultado.
+
+```bash
+git push --no-recurse-submodules -u origin tema-portada
+git branch -vv
+```
+
+La opción no recibe un valor separado en la forma mostrada por la ayuda corta. Los argumentos que aparecen después pertenecen a `git push` o a otra opción. La salida permite comparar la rama local con su upstream. Ejecuta la comprobación inmediatamente después para que ningún comando intermedio cambie el estado que estás observando.
+
+### `--no-thin`
+
+Desactiva para esta invocación el comportamiento que habilita `--thin`. Mantén iguales los demás argumentos y compara el resultado con la forma positiva para comprobar la diferencia.
+
+En `git push`, desactivar thin modifica la forma en que se ejecuta actualizar referencias de un repositorio remoto y enviar sus objetos. Mantén iguales los demás argumentos para atribuir el cambio observado a esta opción.
+
+```bash
+git push --no-thin -u origin tema-portada
+git branch -vv
+```
+
+La opción no recibe un valor separado en la forma mostrada por la ayuda corta. Los argumentos que aparecen después pertenecen a `git push` o a otra opción. La salida permite comparar la rama local con su upstream. Ejecuta la comprobación inmediatamente después para que ningún comando intermedio cambie el estado que estás observando.
+
+### `--no-exec`
+
+Desactiva para esta invocación el comportamiento que habilita `--exec`. Mantén iguales los demás argumentos y compara el resultado con la forma positiva para comprobar la diferencia.
+
+En `git push`, desactivar exec modifica la forma en que se ejecuta actualizar referencias de un repositorio remoto y enviar sus objetos. Mantén iguales los demás argumentos para atribuir el cambio observado a esta opción.
+
+```bash
+git push --no-exec -u origin tema-portada
+git branch -vv
+```
+
+La opción no recibe un valor separado en la forma mostrada por la ayuda corta. Los argumentos que aparecen después pertenecen a `git push` o a otra opción. La salida permite comparar la rama local con su upstream. Ejecuta la comprobación inmediatamente después para que ningún comando intermedio cambie el estado que estás observando.
+
+### `--no-progress`
+
+Desactiva para esta invocación el comportamiento que habilita `--progress`. Mantén iguales los demás argumentos y compara el resultado con la forma positiva para comprobar la diferencia.
+
+La opción controla desactivar progreso. Registra el estado de las referencias y conserva los cambios sin commit antes de usarla, porque actualizar referencias de un repositorio remoto y enviar sus objetos puede retirar o reemplazar datos dentro del alcance seleccionado.
+
+```bash
+git push --no-progress -u origin tema-portada
+git branch -vv
+```
+
+La opción no recibe un valor separado en la forma mostrada por la ayuda corta. Los argumentos que aparecen después pertenecen a `git push` o a otra opción. La salida permite comparar la rama local con su upstream. Ejecuta la comprobación inmediatamente después para que ningún comando intermedio cambie el estado que estás observando.
 
 ## Errores y diagnóstico
 
-| Señal | Causa que debes comprobar | Acción |
-| --- | --- | --- |
-| El refspec no coincide | La parte de origen no resuelve una referencia | Comprueba la referencia local y escribe el refspec completo. |
-| La actualización se rechaza | El destino perdería commits o una política lo impide | Integra primero o usa una protección con lease tras verificar el remoto. |
-| La rama no tiene upstream | No existe asociación entre rama local y remota | Configura el upstream y confirma con `git branch -vv`. |
+### El refspec no coincide
 
-Si una operación deja archivos de estado dentro de `.git`, usa `git status` y la acción de continuar, omitir o abortar definida por esa operación. No borres esos archivos para simular una cancelación.
+Comprueba esta causa: La parte de origen no resuelve una referencia. Comprueba la referencia local y escribe el refspec completo.
 
-## Automatización
+### La actualización se rechaza
 
-1. Declara la versión mínima de Git que necesita el script.
-2. Resuelve la raíz del repositorio y evita depender del directorio actual.
-3. Separa opciones y rutas con `--`.
-4. Captura stdout, stderr y el código de terminación.
-5. Usa formatos de máquina o terminación NUL para nombres de archivo.
-6. Ejecuta primero sobre el laboratorio y añade un caso sin coincidencias.
+Comprueba esta causa: El destino perdería commits o una política lo impide. Integra primero o usa una protección con lease tras verificar el remoto.
 
-## Seguridad y recuperación
+### La rama no tiene upstream
+
+Comprueba esta causa: No existe asociación entre rama local y remota. Configura el upstream y confirma con `git branch -vv`.
+
+## Automatización y recuperación
 
 Persistencia: Puede persistir el estado implicado por esta operación: actualizar referencias de un repositorio remoto y enviar sus objetos. Las opciones pueden limitar o ampliar ese efecto. Antes de una operación que mueva o elimine referencias, registra sus hashes con `git show-ref`. Antes de cambiar archivos, conserva `git diff` y `git diff --cached`. Para objetos y commits que dejaron de estar referenciados, consulta el reflog antes de ejecutar mantenimiento que pueda eliminarlos.
-
-## Práctica guiada
 
 Usa dos clones locales del mismo repositorio. Observa por separado los objetos descargados, las ramas remotas y la rama actual.
 

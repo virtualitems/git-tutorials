@@ -2,51 +2,40 @@
 title: "git remote"
 source: "https://git-scm.com/docs/git-remote"
 section: "sharing-and-updating-projects"
-status: "expanded"
+status: "option-expanded"
 ---
 
 # `git remote`
 
 Este caso usa `git remote` para crear y administrar nombres para repositorios remotos. Los nombres de archivo, revisiones, ramas y direcciones del ejemplo representan valores que debes sustituir por los de tu repositorio.
 
-## Alcance y responsabilidad
+## Responsabilidad y efecto
 
 git remote anuncia, descarga o actualiza objetos y referencias entre repositorios. Recibe como entrada el repositorio, las referencias y el sentido de la transferencia. La operación consiste en crear y administrar nombres para repositorios remotos.
 
-La página distingue lectura, escritura y resultado:
+Puede persistir el estado implicado por esta operación: crear y administrar nombres para repositorios remotos. Las opciones pueden limitar o ampliar ese efecto.
 
-| Elemento | Relación con la función | Comprobación |
-| --- | --- | --- |
-| Entrada | el repositorio, las referencias y el sentido de la transferencia. | Registra los argumentos y resuelve revisiones antes de ejecutar. |
-| Efecto principal | crear y administrar nombres para repositorios remotos. | Comprueba el resultado con una orden de lectura. |
-| Persistencia | Puede persistir el estado implicado por esta operación: crear y administrar nombres para repositorios remotos. Las opciones pueden limitar o ampliar ese efecto. | Compara el estado antes y después. |
-| Resultado | La orden comunica datos por stdout y diagnósticos por stderr. | Captura también el código de terminación. |
-| Fuente de verdad | El repositorio y la configuración efectiva determinan el resultado. | Usa `git remote -v`, `git branch -vv`, `git ls-remote` y el log de las referencias. |
+## Preparación
 
-## Requisitos y laboratorio
+Los ejemplos que necesitan un repositorio parten del [laboratorio base de `git init`](../getting-and-creating-projects/init.md#laboratorio-base). La posición de opciones, revisiones y rutas sigue las [convenciones de la interfaz de Git](../guides/gitcli.md#convenciones-de-la-cli). Los nombres como `HEAD`, `main`, `HEAD~2` y `A..B` se explican en [revisiones y rangos](../guides/gitrevisions.md#revisiones-y-rangos). La relación entre URL, remoto y refspec se desarrolla en [`git remote`](../sharing-and-updating-projects/remote.md#remotos-y-refspecs). Antes de ejecutar una forma que escriba datos, registra `git status --short` y las referencias que puedan cambiar.
 
-Usa un repositorio bare local como remoto. Permite probar fetch, pull y push sin credenciales ni red.
+## Remotos y refspecs
+
+Un remoto asigna un nombre, como `origin`, a una o más URL y a reglas de descarga. La URL elige transporte y ubicación. Un refspec asigna una referencia de origen a una referencia de destino.
 
 ```bash
-lab_dir="$(mktemp -d)"
-git init "$lab_dir/proyecto"
-git -C "$lab_dir/proyecto" config user.name "Persona de prueba"
-git -C "$lab_dir/proyecto" config user.email "prueba@example.test"
-printf 'línea base\n' > "$lab_dir/proyecto/archivo.txt"
-git -C "$lab_dir/proyecto" add archivo.txt
-git -C "$lab_dir/proyecto" commit -m "base"
-cd "$lab_dir/proyecto"
+git remote add origin https://example.test/proyecto.git
+git remote -v
+git config --get-all remote.origin.fetch
 ```
 
-Antes de ejecutar el ejemplo, confirma la raíz con `git rev-parse --show-toplevel` cuando exista un repositorio. Registra `git status --short` y las referencias que puedan cambiar.
+La segunda orden muestra las URL de fetch y push. La tercera muestra el refspec de descarga. Comprueba estos valores antes de ejecutar fetch, pull o push.
 
-## Modelo de funcionamiento
+## Cómo funciona
 
 La transferencia copia objetos y actualiza referencias. Descargar, integrar y publicar son operaciones separadas aunque algunos comandos las encadenen.
 
 Distingue las referencias de seguimiento remoto de la rama actual. Descargar una referencia no integra por sí mismo sus commits.
-
-Para comprobar el resultado: las referencias locales y remotas permiten separar descarga, integración y publicación. La verificación debe observar un estado distinto del canal que produjo el cambio.
 
 ## Ejemplo mínimo
 
@@ -55,16 +44,9 @@ git remote add origin https://example.test/equipo/biblioteca.git
 git remote -v
 ```
 
-Ejecuta el bloque en orden. Conserva los nombres del laboratorio hasta confirmar el resultado. Sustituye rutas, revisiones o URL solo después de identificar su tipo y alcance.
+La invocación `git remote add origin https://example.test/equipo/biblioteca.git` ejecuta esta operación: crear y administrar nombres para repositorios remotos. Después, las referencias locales y remotas permiten separar descarga, integración y publicación. Conserva stdout, stderr y el código de terminación cuando el ejemplo forme parte de un script.
 
-### Resultado esperado
-
-- La entrada queda limitada a: el repositorio, las referencias y el sentido de la transferencia.
-- La operación observable es: crear y administrar nombres para repositorios remotos.
-- La comprobación se realiza mediante: las referencias locales y remotas permiten separar descarga, integración y publicación.
-- stdout contiene datos o confirmaciones; stderr contiene diagnósticos. Captura ambos canales cuando automatices.
-
-## Sintaxis
+## Sintaxis y formas de invocación
 
 ```text
 git remote [-v | --verbose]
@@ -93,79 +75,333 @@ git remote [-v | --verbose]
 
 Los corchetes indican elementos opcionales; `<valor>` exige sustitución; los puntos suspensivos permiten repetición; `|` separa formas excluyentes. Usa `git remote -h` para consultar la sintaxis que corresponde a la instalación donde ejecutarás la orden.
 
-## Casos de uso
+## Flujos de uso
 
-| Caso | Objetivo | Criterio de verificación |
-| --- | --- | --- |
-| Caso base | crear y administrar nombres para repositorios remotos | Ejecuta el ejemplo mínimo y registra el estado antes y después. |
-| Alcance explícito | Aplicar git remote a una referencia, rango o ruta identificada. | Resuelve cada argumento antes de ejecutar y usa `--` para rutas. |
-| Simulación | Calcular el efecto sin escribir el estado principal. | Compara la simulación con la selección prevista. |
-| Validación | Comprobar el resultado de git remote con una orden de lectura independiente. | No uses la misma salida como única prueba del cambio. |
+### Caso base
 
+crear y administrar nombres para repositorios remotos. Usa el [ejemplo mínimo](#ejemplo-mínimo) como punto de partida. Ejecuta el ejemplo mínimo y registra el estado antes y después.
 
-## Opciones y variaciones
+### Alcance explícito
 
-La tabla agrupa las opciones visibles en la sintaxis y en la ayuda corta. Una opción puede tener un significado propio cuando la página lo define; ejecuta la ayuda de tu versión antes de usarla en automatización.
+Aplicar git remote a una referencia, rango o ruta identificada. Usa el [ejemplo mínimo](#ejemplo-mínimo) como punto de partida. Resuelve cada argumento antes de ejecutar y usa `--` para rutas.
 
-| Opción | Efecto que debes controlar |
-| --- | --- |
-| `-v` | Activa la forma corta de salida con detalle o muestra versión según la orden. |
-| `--verbose` | Aumenta el detalle enviado a la salida. |
-| `-t` | Activa el modo `-t`; los argumentos y restricciones aparecen en la sintaxis y en la fuente oficial. |
-| `-m` | Activa el modo `-m`; los argumentos y restricciones aparecen en la sintaxis y en la fuente oficial. |
-| `-f` | Activa la forma corta de la operación forzada. |
-| `--tags` | Incluye o selecciona etiquetas según la operación. |
-| `--mirror` | Activa el modo `--mirror`; los argumentos y restricciones aparecen en la sintaxis y en la fuente oficial. |
-| `--progress` | Muestra progreso aunque la salida no sea un terminal. |
-| `--no-tags` | Desactiva el comportamiento `tags` para esta invocación. |
-| `-a` | Activa la forma corta de selección total o una opción propia de la orden. |
-| `--auto` | Activa el modo `--auto`; los argumentos y restricciones aparecen en la sintaxis y en la fuente oficial. |
-| `-d` | Activa la forma corta de eliminación o una opción propia de la orden. |
-| `--delete` | Elimina el elemento seleccionado. |
-| `-n` | Activa la forma corta documentada por la sintaxis; en muchas órdenes corresponde a simulación o límite numérico. |
-| `--dry-run` | Calcula el alcance y muestra lo que ocurriría sin aplicar el cambio. |
-| `-p` | Activa la forma corta del modo patch o de una opción propia de la orden. |
-| `--prune` | Retira entradas que ya no cumplen la condición documentada. |
-| `--add` | Permite crear o escribir el elemento seleccionado. |
-| `--push` | Activa el modo `--push`; los argumentos y restricciones aparecen en la sintaxis y en la fuente oficial. |
-| `--all` | Amplía la selección a todos los elementos del alcance definido. |
+### Simulación
 
-## Selección de entradas
+Calcular el efecto sin escribir el estado principal. Usa el [ejemplo mínimo](#ejemplo-mínimo) como punto de partida. Compara la simulación con la selección prevista.
 
-Resuelve por separado origen, destino y política de actualización. Una URL identifica un transporte; un refspec asigna referencias; un filtro limita objetos. Registra cada valor sin incluir credenciales.
+### Validación
 
-Comprueba cada entrada con una orden de lectura antes de una escritura. Para listas de rutas generadas por otro proceso, prefiere una interfaz terminada en NUL cuando esté disponible.
+Comprobar el resultado de git remote con una orden de lectura independiente. Usa el [ejemplo mínimo](#ejemplo-mínimo) como punto de partida. No uses la misma salida como única prueba del cambio.
 
-## Salida y códigos de terminación
+## Opciones
 
-Un código 0 indica que la operación terminó bajo el contrato solicitado. Trata cualquier código distinto de cero según la función; no deduzcas el estado solo a partir de que stdout esté vacío.
+Cada apartado usa una opción en una invocación concreta. Las opciones equivalentes comparten la explicación, pero cada alias tiene su propio ejemplo. Ejecuta una opción por vez antes de combinarlas.
 
-No analices mensajes destinados a personas si existe un formato de máquina. Declara los campos, desactiva color y conserva stderr para diagnóstico.
+### `-v` y `--verbose`
+
+Aumenta el detalle enviado a la salida.  La misma línea de ayuda también acepta `-v`. Esas formas seleccionan el mismo comportamiento; cambia la escritura del argumento, no el efecto.
+
+Estas escrituras son alias: seleccionan el mismo comportamiento. Se documentan juntas para no duplicar la regla, pero cada una conserva su propia invocación reproducible.
+
+La opción cambia la representación o el canal del resultado. Úsala cuando una persona o un script necesite campos, separadores o cantidad de mensajes definidos. El contenido mostrado puede cambiar aunque el repositorio permanezca igual.
+
+#### Ejemplo con `-v`
+
+```bash
+git remote -v add origin https://example.test/equipo/biblioteca.git
+git branch -vv
+```
+
+Esta forma no recibe un valor separado; los argumentos posteriores pertenecen a `git remote` o a otra opción. La salida permite comparar la rama local con su upstream.
+
+#### Ejemplo con `--verbose`
+
+```bash
+git remote --verbose add origin https://example.test/equipo/biblioteca.git
+git branch -vv
+```
+
+Esta forma no recibe un valor separado; los argumentos posteriores pertenecen a `git remote` o a otra opción. La salida permite comparar la rama local con su upstream.
+
+Ejecuta una sola alternativa cada vez. Si ejecutas varias consecutivamente, el primer comando puede cambiar el estado que observa el siguiente.
+
+### `-t`
+
+Activa t durante crear y administrar nombres para repositorios remotos. La opción afecta esta invocación y no cambia la configuración de otras órdenes salvo que la propia función escriba esa configuración.
+
+En `git remote`, t modifica la forma en que se ejecuta crear y administrar nombres para repositorios remotos. Mantén iguales los demás argumentos para atribuir el cambio observado a esta opción.
+
+```bash
+git remote -t add origin https://example.test/equipo/biblioteca.git
+git branch -vv
+```
+
+La opción no recibe un valor separado en la forma mostrada por la ayuda corta. Los argumentos que aparecen después pertenecen a `git remote` o a otra opción. La salida permite comparar la rama local con su upstream. Ejecuta la comprobación inmediatamente después para que ningún comando intermedio cambie el estado que estás observando.
+
+### `-m`
+
+Activa m durante crear y administrar nombres para repositorios remotos. La opción afecta esta invocación y no cambia la configuración de otras órdenes salvo que la propia función escriba esa configuración.
+
+En `git remote`, m modifica la forma en que se ejecuta crear y administrar nombres para repositorios remotos. Mantén iguales los demás argumentos para atribuir el cambio observado a esta opción.
+
+```bash
+git remote -m add origin https://example.test/equipo/biblioteca.git
+git branch -vv
+```
+
+La opción no recibe un valor separado en la forma mostrada por la ayuda corta. Los argumentos que aparecen después pertenecen a `git remote` o a otra opción. La salida permite comparar la rama local con su upstream. Ejecuta la comprobación inmediatamente después para que ningún comando intermedio cambie el estado que estás observando.
+
+### `-f`
+
+Activa f durante crear y administrar nombres para repositorios remotos. La opción afecta esta invocación y no cambia la configuración de otras órdenes salvo que la propia función escriba esa configuración.
+
+En `git remote`, f modifica la forma en que se ejecuta crear y administrar nombres para repositorios remotos. Mantén iguales los demás argumentos para atribuir el cambio observado a esta opción.
+
+```bash
+git remote -f add origin https://example.test/equipo/biblioteca.git
+git branch -vv
+```
+
+La opción no recibe un valor separado en la forma mostrada por la ayuda corta. Los argumentos que aparecen después pertenecen a `git remote` o a otra opción. La salida permite comparar la rama local con su upstream. Ejecuta la comprobación inmediatamente después para que ningún comando intermedio cambie el estado que estás observando.
+
+### `--tags`
+
+Incluye o selecciona etiquetas según la operación.
+
+La opción limita o amplía el conjunto sobre el que se ejecuta crear y administrar nombres para repositorios remotos. Comprueba la selección con una forma de lectura antes de combinarla con una opción que escriba estado.
+
+```bash
+git remote --tags add origin https://example.test/equipo/biblioteca.git
+git branch -vv
+```
+
+La opción no recibe un valor separado en la forma mostrada por la ayuda corta. Los argumentos que aparecen después pertenecen a `git remote` o a otra opción. La salida permite comparar la rama local con su upstream. Ejecuta la comprobación inmediatamente después para que ningún comando intermedio cambie el estado que estás observando.
+
+### `--mirror`
+
+Activa espejo durante crear y administrar nombres para repositorios remotos. La opción afecta esta invocación y no cambia la configuración de otras órdenes salvo que la propia función escriba esa configuración.
+
+En `git remote`, espejo modifica la forma en que se ejecuta crear y administrar nombres para repositorios remotos. Mantén iguales los demás argumentos para atribuir el cambio observado a esta opción.
+
+```bash
+git remote --mirror add origin https://example.test/equipo/biblioteca.git
+git branch -vv
+```
+
+La opción no recibe un valor separado en la forma mostrada por la ayuda corta. Los argumentos que aparecen después pertenecen a `git remote` o a otra opción. La salida permite comparar la rama local con su upstream. Ejecuta la comprobación inmediatamente después para que ningún comando intermedio cambie el estado que estás observando.
+
+### `--progress`
+
+Muestra progreso aunque la salida no sea un terminal.
+
+En `git remote`, progreso modifica la forma en que se ejecuta crear y administrar nombres para repositorios remotos. Mantén iguales los demás argumentos para atribuir el cambio observado a esta opción.
+
+```bash
+git remote --progress add origin https://example.test/equipo/biblioteca.git
+git branch -vv
+```
+
+La opción no recibe un valor separado en la forma mostrada por la ayuda corta. Los argumentos que aparecen después pertenecen a `git remote` o a otra opción. La salida permite comparar la rama local con su upstream. Ejecuta la comprobación inmediatamente después para que ningún comando intermedio cambie el estado que estás observando.
+
+### `--no-tags`
+
+Desactiva el comportamiento `tags` para esta invocación.
+
+La opción limita o amplía el conjunto sobre el que se ejecuta crear y administrar nombres para repositorios remotos. Comprueba la selección con una forma de lectura antes de combinarla con una opción que escriba estado.
+
+```bash
+git remote --no-tags add origin https://example.test/equipo/biblioteca.git
+git branch -vv
+```
+
+La opción no recibe un valor separado en la forma mostrada por la ayuda corta. Los argumentos que aparecen después pertenecen a `git remote` o a otra opción. La salida permite comparar la rama local con su upstream. Ejecuta la comprobación inmediatamente después para que ningún comando intermedio cambie el estado que estás observando.
+
+### `-a`
+
+Activa a durante crear y administrar nombres para repositorios remotos. La opción afecta esta invocación y no cambia la configuración de otras órdenes salvo que la propia función escriba esa configuración.
+
+En `git remote`, a modifica la forma en que se ejecuta crear y administrar nombres para repositorios remotos. Mantén iguales los demás argumentos para atribuir el cambio observado a esta opción.
+
+```bash
+git remote -a add origin https://example.test/equipo/biblioteca.git
+git branch -vv
+```
+
+La opción no recibe un valor separado en la forma mostrada por la ayuda corta. Los argumentos que aparecen después pertenecen a `git remote` o a otra opción. La salida permite comparar la rama local con su upstream. Ejecuta la comprobación inmediatamente después para que ningún comando intermedio cambie el estado que estás observando.
+
+### `--auto`
+
+Activa auto durante crear y administrar nombres para repositorios remotos. La opción afecta esta invocación y no cambia la configuración de otras órdenes salvo que la propia función escriba esa configuración.
+
+En `git remote`, auto modifica la forma en que se ejecuta crear y administrar nombres para repositorios remotos. Mantén iguales los demás argumentos para atribuir el cambio observado a esta opción.
+
+```bash
+git remote --auto add origin https://example.test/equipo/biblioteca.git
+git branch -vv
+```
+
+La opción no recibe un valor separado en la forma mostrada por la ayuda corta. Los argumentos que aparecen después pertenecen a `git remote` o a otra opción. La salida permite comparar la rama local con su upstream. Ejecuta la comprobación inmediatamente después para que ningún comando intermedio cambie el estado que estás observando.
+
+### `-d`
+
+Activa d durante crear y administrar nombres para repositorios remotos. La opción afecta esta invocación y no cambia la configuración de otras órdenes salvo que la propia función escriba esa configuración.
+
+En `git remote`, d modifica la forma en que se ejecuta crear y administrar nombres para repositorios remotos. Mantén iguales los demás argumentos para atribuir el cambio observado a esta opción.
+
+```bash
+git remote -d add origin https://example.test/equipo/biblioteca.git
+git branch -vv
+```
+
+La opción no recibe un valor separado en la forma mostrada por la ayuda corta. Los argumentos que aparecen después pertenecen a `git remote` o a otra opción. La salida permite comparar la rama local con su upstream. Ejecuta la comprobación inmediatamente después para que ningún comando intermedio cambie el estado que estás observando.
+
+### `--delete`
+
+Elimina el elemento seleccionado.
+
+La opción controla eliminar. Registra el estado de las referencias y conserva los cambios sin commit antes de usarla, porque crear y administrar nombres para repositorios remotos puede retirar o reemplazar datos dentro del alcance seleccionado.
+
+```bash
+git remote --delete add origin https://example.test/equipo/biblioteca.git
+git branch -vv
+```
+
+La opción no recibe un valor separado en la forma mostrada por la ayuda corta. Los argumentos que aparecen después pertenecen a `git remote` o a otra opción. La salida permite comparar la rama local con su upstream. Ejecuta la comprobación inmediatamente después para que ningún comando intermedio cambie el estado que estás observando.
+
+### `-n`
+
+Activa n durante crear y administrar nombres para repositorios remotos. La opción afecta esta invocación y no cambia la configuración de otras órdenes salvo que la propia función escriba esa configuración.
+
+En `git remote`, n modifica la forma en que se ejecuta crear y administrar nombres para repositorios remotos. Mantén iguales los demás argumentos para atribuir el cambio observado a esta opción.
+
+```bash
+git remote -n add origin https://example.test/equipo/biblioteca.git
+git branch -vv
+```
+
+La opción no recibe un valor separado en la forma mostrada por la ayuda corta. Los argumentos que aparecen después pertenecen a `git remote` o a otra opción. La salida permite comparar la rama local con su upstream. Ejecuta la comprobación inmediatamente después para que ningún comando intermedio cambie el estado que estás observando.
+
+### `--dry-run`
+
+Calcula el alcance y muestra lo que ocurriría sin aplicar el cambio.
+
+La opción añade, retira o consulta una comprobación previa. Ejecuta primero la forma que no escribe cuando exista y conserva el código de terminación como parte del resultado.
+
+```bash
+git remote --dry-run add origin https://example.test/equipo/biblioteca.git
+git branch -vv
+```
+
+La opción no recibe un valor separado en la forma mostrada por la ayuda corta. Los argumentos que aparecen después pertenecen a `git remote` o a otra opción. La salida permite comparar la rama local con su upstream. Ejecuta la comprobación inmediatamente después para que ningún comando intermedio cambie el estado que estás observando.
+
+### `-p`
+
+Activa p durante crear y administrar nombres para repositorios remotos. La opción afecta esta invocación y no cambia la configuración de otras órdenes salvo que la propia función escriba esa configuración.
+
+En `git remote`, p modifica la forma en que se ejecuta crear y administrar nombres para repositorios remotos. Mantén iguales los demás argumentos para atribuir el cambio observado a esta opción.
+
+```bash
+git remote -p add origin https://example.test/equipo/biblioteca.git
+git branch -vv
+```
+
+La opción no recibe un valor separado en la forma mostrada por la ayuda corta. Los argumentos que aparecen después pertenecen a `git remote` o a otra opción. La salida permite comparar la rama local con su upstream. Ejecuta la comprobación inmediatamente después para que ningún comando intermedio cambie el estado que estás observando.
+
+### `--prune`
+
+Retira entradas que ya no cumplen la condición documentada.
+
+La opción controla podar. Registra el estado de las referencias y conserva los cambios sin commit antes de usarla, porque crear y administrar nombres para repositorios remotos puede retirar o reemplazar datos dentro del alcance seleccionado.
+
+```bash
+git remote --prune add origin https://example.test/equipo/biblioteca.git
+git branch -vv
+```
+
+La opción no recibe un valor separado en la forma mostrada por la ayuda corta. Los argumentos que aparecen después pertenecen a `git remote` o a otra opción. La salida permite comparar la rama local con su upstream. Ejecuta la comprobación inmediatamente después para que ningún comando intermedio cambie el estado que estás observando.
+
+### `--add`
+
+Permite crear o escribir el elemento seleccionado.
+
+En `git remote`, add modifica la forma en que se ejecuta crear y administrar nombres para repositorios remotos. Mantén iguales los demás argumentos para atribuir el cambio observado a esta opción.
+
+```bash
+git remote --add add origin https://example.test/equipo/biblioteca.git
+git branch -vv
+```
+
+La opción no recibe un valor separado en la forma mostrada por la ayuda corta. Los argumentos que aparecen después pertenecen a `git remote` o a otra opción. La salida permite comparar la rama local con su upstream. Ejecuta la comprobación inmediatamente después para que ningún comando intermedio cambie el estado que estás observando.
+
+### `--push`
+
+Activa push durante crear y administrar nombres para repositorios remotos. La opción afecta esta invocación y no cambia la configuración de otras órdenes salvo que la propia función escriba esa configuración.
+
+En `git remote`, push modifica la forma en que se ejecuta crear y administrar nombres para repositorios remotos. Mantén iguales los demás argumentos para atribuir el cambio observado a esta opción.
+
+```bash
+git remote --push add origin https://example.test/equipo/biblioteca.git
+git branch -vv
+```
+
+La opción no recibe un valor separado en la forma mostrada por la ayuda corta. Los argumentos que aparecen después pertenecen a `git remote` o a otra opción. La salida permite comparar la rama local con su upstream. Ejecuta la comprobación inmediatamente después para que ningún comando intermedio cambie el estado que estás observando.
+
+### `--all`
+
+Amplía la selección a todos los elementos del alcance definido.
+
+La opción limita o amplía el conjunto sobre el que se ejecuta crear y administrar nombres para repositorios remotos. Comprueba la selección con una forma de lectura antes de combinarla con una opción que escriba estado.
+
+```bash
+git remote --all add origin https://example.test/equipo/biblioteca.git
+git branch -vv
+```
+
+La opción no recibe un valor separado en la forma mostrada por la ayuda corta. Los argumentos que aparecen después pertenecen a `git remote` o a otra opción. La salida permite comparar la rama local con su upstream. Ejecuta la comprobación inmediatamente después para que ningún comando intermedio cambie el estado que estás observando.
+
+### `--no-verbose`
+
+Desactiva para esta invocación el comportamiento que habilita `--verbose`. Mantén iguales los demás argumentos y compara el resultado con la forma positiva para comprobar la diferencia.
+
+La opción cambia la representación o el canal del resultado. Úsala cuando una persona o un script necesite campos, separadores o cantidad de mensajes definidos. El contenido mostrado puede cambiar aunque el repositorio permanezca igual.
+
+```bash
+git remote --no-verbose add origin https://example.test/equipo/biblioteca.git
+git branch -vv
+```
+
+La opción no recibe un valor separado en la forma mostrada por la ayuda corta. Los argumentos que aparecen después pertenecen a `git remote` o a otra opción. La salida permite comparar la rama local con su upstream. Ejecuta la comprobación inmediatamente después para que ningún comando intermedio cambie el estado que estás observando.
+
+### `--no-progress`
+
+Desactiva para esta invocación el comportamiento que habilita `--progress`. Mantén iguales los demás argumentos y compara el resultado con la forma positiva para comprobar la diferencia.
+
+En `git remote`, desactivar progreso modifica la forma en que se ejecuta crear y administrar nombres para repositorios remotos. Mantén iguales los demás argumentos para atribuir el cambio observado a esta opción.
+
+```bash
+git remote --no-progress add origin https://example.test/equipo/biblioteca.git
+git branch -vv
+```
+
+La opción no recibe un valor separado en la forma mostrada por la ayuda corta. Los argumentos que aparecen después pertenecen a `git remote` o a otra opción. La salida permite comparar la rama local con su upstream. Ejecuta la comprobación inmediatamente después para que ningún comando intermedio cambie el estado que estás observando.
 
 ## Errores y diagnóstico
 
-| Señal | Causa que debes comprobar | Acción |
-| --- | --- | --- |
-| El refspec no coincide | La parte de origen no resuelve una referencia | Comprueba la referencia local y escribe el refspec completo. |
-| La actualización se rechaza | El destino perdería commits o una política lo impide | Integra primero o usa una protección con lease tras verificar el remoto. |
-| La rama no tiene upstream | No existe asociación entre rama local y remota | Configura el upstream y confirma con `git branch -vv`. |
+### El refspec no coincide
 
-Si una operación deja archivos de estado dentro de `.git`, usa `git status` y la acción de continuar, omitir o abortar definida por esa operación. No borres esos archivos para simular una cancelación.
+Comprueba esta causa: La parte de origen no resuelve una referencia. Comprueba la referencia local y escribe el refspec completo.
 
-## Automatización
+### La actualización se rechaza
 
-1. Declara la versión mínima de Git que necesita el script.
-2. Resuelve la raíz del repositorio y evita depender del directorio actual.
-3. Separa opciones y rutas con `--`.
-4. Captura stdout, stderr y el código de terminación.
-5. Usa formatos de máquina o terminación NUL para nombres de archivo.
-6. Ejecuta primero sobre el laboratorio y añade un caso sin coincidencias.
+Comprueba esta causa: El destino perdería commits o una política lo impide. Integra primero o usa una protección con lease tras verificar el remoto.
 
-## Seguridad y recuperación
+### La rama no tiene upstream
+
+Comprueba esta causa: No existe asociación entre rama local y remota. Configura el upstream y confirma con `git branch -vv`.
+
+## Automatización y recuperación
 
 Persistencia: Puede persistir el estado implicado por esta operación: crear y administrar nombres para repositorios remotos. Las opciones pueden limitar o ampliar ese efecto. Antes de una operación que mueva o elimine referencias, registra sus hashes con `git show-ref`. Antes de cambiar archivos, conserva `git diff` y `git diff --cached`. Para objetos y commits que dejaron de estar referenciados, consulta el reflog antes de ejecutar mantenimiento que pueda eliminarlos.
-
-## Práctica guiada
 
 Usa dos clones locales del mismo repositorio. Observa por separado los objetos descargados, las ramas remotas y la rama actual.
 

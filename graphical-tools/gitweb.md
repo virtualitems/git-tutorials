@@ -2,51 +2,28 @@
 title: "gitweb"
 source: "https://git-scm.com/docs/gitweb"
 section: "graphical-tools"
-status: "expanded"
+status: "option-expanded"
 ---
 
 # `gitweb`
 
 Este caso usa `gitweb` para publicar repositorios mediante una interfaz web. Los nombres de archivo, revisiones, ramas y direcciones del ejemplo representan valores que debes sustituir por los de tu repositorio.
 
-## Alcance y responsabilidad
+## Responsabilidad y efecto
 
 gitweb presenta commits, cambios o acciones mediante una interfaz de escritorio o HTTP. Recibe como entrada el repositorio y la vista u operación elegida en la interfaz. La operación consiste en publicar repositorios mediante una interfaz web.
 
-La página distingue lectura, escritura y resultado:
+Inicia o atiende un servicio. El repositorio cambia solo si el servicio y la política admiten una operación de escritura.
 
-| Elemento | Relación con la función | Comprobación |
-| --- | --- | --- |
-| Entrada | el repositorio y la vista u operación elegida en la interfaz. | Registra los argumentos y resuelve revisiones antes de ejecutar. |
-| Efecto principal | publicar repositorios mediante una interfaz web. | Comprueba el resultado con una orden de lectura. |
-| Persistencia | Inicia o atiende un servicio. El repositorio cambia solo si el servicio y la política admiten una operación de escritura. | Compara el estado antes y después. |
-| Resultado | La orden comunica datos por stdout y diagnósticos por stderr. | Captura también el código de terminación. |
-| Fuente de verdad | El repositorio y la configuración efectiva determinan el resultado. | Usa la referencia seleccionada, el diff mostrado y `git status` después de una acción. |
+## Preparación
 
-## Requisitos y laboratorio
+Los ejemplos que necesitan un repositorio parten del [laboratorio base de `git init`](../getting-and-creating-projects/init.md#laboratorio-base). Antes de ejecutar una forma que escriba datos, registra `git status --short` y las referencias que puedan cambiar.
 
-Usa un repositorio de prueba y un puerto local. No expongas la interfaz fuera de la máquina sin control de acceso.
-
-```bash
-lab_dir="$(mktemp -d)"
-git init "$lab_dir/proyecto"
-git -C "$lab_dir/proyecto" config user.name "Persona de prueba"
-git -C "$lab_dir/proyecto" config user.email "prueba@example.test"
-printf 'línea base\n' > "$lab_dir/proyecto/archivo.txt"
-git -C "$lab_dir/proyecto" add archivo.txt
-git -C "$lab_dir/proyecto" commit -m "base"
-cd "$lab_dir/proyecto"
-```
-
-Antes de ejecutar el ejemplo, confirma la raíz con `git rev-parse --show-toplevel` cuando exista un repositorio. Registra `git status --short` y las referencias que puedan cambiar.
-
-## Modelo de funcionamiento
+## Cómo funciona
 
 La interfaz presenta operaciones que también existen en el modelo de objetos, índice, referencias y commits. La vista cambia; el repositorio conserva el mismo estado.
 
 Relaciona cada acción de la interfaz con índice, commit o referencia. Usa una consulta de Git para comprobar el cambio de estado.
-
-Para comprobar el resultado: los comandos de consulta confirman el mismo estado que presenta la interfaz. La verificación debe observar un estado distinto del canal que produjo el cambio.
 
 ## Ejemplo mínimo
 
@@ -54,16 +31,9 @@ Para comprobar el resultado: los comandos de consulta confirman el mismo estado 
 GITWEB_CONFIG=/etc/gitweb.conf gitweb.cgi
 ```
 
-Ejecuta el bloque en orden. Conserva los nombres del laboratorio hasta confirmar el resultado. Sustituye rutas, revisiones o URL solo después de identificar su tipo y alcance.
+La invocación `gitweb` ejecuta esta operación: publicar repositorios mediante una interfaz web. Después, los comandos de consulta confirman el mismo estado que presenta la interfaz. Conserva stdout, stderr y el código de terminación cuando el ejemplo forme parte de un script.
 
-### Resultado esperado
-
-- La entrada queda limitada a: el repositorio y la vista u operación elegida en la interfaz.
-- La operación observable es: publicar repositorios mediante una interfaz web.
-- La comprobación se realiza mediante: los comandos de consulta confirman el mismo estado que presenta la interfaz.
-- stdout contiene datos o confirmaciones; stderr contiene diagnósticos. Captura ambos canales cuando automatices.
-
-## Sintaxis
+## Sintaxis y formas de invocación
 
 ```text
 GITWEB_CONFIG=/etc/gitweb.conf gitweb.cgi
@@ -71,52 +41,37 @@ GITWEB_CONFIG=/etc/gitweb.conf gitweb.cgi
 
 Los corchetes indican elementos opcionales; `<valor>` exige sustitución; los puntos suspensivos permiten repetición; `|` separa formas excluyentes. Usa la fuente oficial enlazada para consultar la sintaxis que corresponde a la instalación donde ejecutarás la orden.
 
-## Casos de uso
+## Flujos de uso
 
-| Caso | Objetivo | Criterio de verificación |
-| --- | --- | --- |
-| Caso base | publicar repositorios mediante una interfaz web | Ejecuta el ejemplo mínimo y registra el estado antes y después. |
-| Alcance explícito | Aplicar gitweb a una referencia, rango o ruta identificada. | Resuelve cada argumento antes de ejecutar y usa `--` para rutas. |
-| Validación | Comprobar el resultado de gitweb con una orden de lectura independiente. | No uses la misma salida como única prueba del cambio. |
+### Caso base
 
+publicar repositorios mediante una interfaz web. Usa el [ejemplo mínimo](#ejemplo-mínimo) como punto de partida. Ejecuta el ejemplo mínimo y registra el estado antes y después.
 
+### Alcance explícito
 
-## Selección de entradas
+Aplicar gitweb a una referencia, rango o ruta identificada. Usa el [ejemplo mínimo](#ejemplo-mínimo) como punto de partida. Resuelve cada argumento antes de ejecutar y usa `--` para rutas.
 
-Las revisiones se resuelven antes que los pathspecs cuando la sintaxis las espera. Usa `--` para separar opciones y rutas. Cita los globos para decidir si los expande el shell o Git.
+### Validación
 
-Comprueba cada entrada con una orden de lectura antes de una escritura. Para listas de rutas generadas por otro proceso, prefiere una interfaz terminada en NUL cuando esté disponible.
-
-## Salida y códigos de terminación
-
-Un código 0 indica que la operación terminó bajo el contrato solicitado. Trata cualquier código distinto de cero según la función; no deduzcas el estado solo a partir de que stdout esté vacío.
-
-No analices mensajes destinados a personas si existe un formato de máquina. Declara los campos, desactiva color y conserva stderr para diagnóstico.
+Comprobar el resultado de gitweb con una orden de lectura independiente. Usa el [ejemplo mínimo](#ejemplo-mínimo) como punto de partida. No uses la misma salida como única prueba del cambio.
 
 ## Errores y diagnóstico
 
-| Señal | Causa que debes comprobar | Acción |
-| --- | --- | --- |
-| La interfaz no inicia | Falta el entorno gráfico, un intérprete o un puerto | Comprueba dependencias y ejecuta desde el repositorio. |
-| No aparecen cambios | La herramienta abrió otra ruta o referencia | Confirma la raíz y la referencia mostradas. |
-| El servicio queda activo | El proceso web se ejecuta en segundo plano | Usa la orden de parada de la herramienta y verifica el puerto. |
+### La interfaz no inicia
 
-Si una operación deja archivos de estado dentro de `.git`, usa `git status` y la acción de continuar, omitir o abortar definida por esa operación. No borres esos archivos para simular una cancelación.
+Comprueba esta causa: Falta el entorno gráfico, un intérprete o un puerto. Comprueba dependencias y ejecuta desde el repositorio.
 
-## Automatización
+### No aparecen cambios
 
-1. Declara la versión mínima de Git que necesita el script.
-2. Resuelve la raíz del repositorio y evita depender del directorio actual.
-3. Separa opciones y rutas con `--`.
-4. Captura stdout, stderr y el código de terminación.
-5. Usa formatos de máquina o terminación NUL para nombres de archivo.
-6. Ejecuta primero sobre el laboratorio y añade un caso sin coincidencias.
+Comprueba esta causa: La herramienta abrió otra ruta o referencia. Confirma la raíz y la referencia mostradas.
 
-## Seguridad y recuperación
+### El servicio queda activo
+
+Comprueba esta causa: El proceso web se ejecuta en segundo plano. Usa la orden de parada de la herramienta y verifica el puerto.
+
+## Automatización y recuperación
 
 Persistencia: Inicia o atiende un servicio. El repositorio cambia solo si el servicio y la política admiten una operación de escritura. Antes de una operación que mueva o elimine referencias, registra sus hashes con `git show-ref`. Antes de cambiar archivos, conserva `git diff` y `git diff --cached`. Para objetos y commits que dejaron de estar referenciados, consulta el reflog antes de ejecutar mantenimiento que pueda eliminarlos.
-
-## Práctica guiada
 
 Realiza una operación en la interfaz y verifica el resultado con `git status`, `git log` o `git show`.
 

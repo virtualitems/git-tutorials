@@ -2,51 +2,28 @@
 title: "git"
 source: "https://git-scm.com/docs/git"
 section: "setup-and-config"
-status: "expanded"
+status: "option-expanded"
 ---
 
 # `git`
 
 Este caso usa `git` para invocar Git, elegir el repositorio y aplicar opciones globales. Los nombres de archivo, revisiones, ramas y direcciones del ejemplo representan valores que debes sustituir por los de tu repositorio.
 
-## Alcance y responsabilidad
+## Responsabilidad y efecto
 
 git define cómo Git localiza configuración, ejecutables, repositorios y diagnósticos. Recibe como entrada el ámbito, la clave o el dato del entorno indicado por la orden. La operación consiste en invocar Git, elegir el repositorio y aplicar opciones globales.
 
-La página distingue lectura, escritura y resultado:
+No modifica el repositorio en su forma de consulta. Puede iniciar un visor o escribir un archivo si se solicita de forma explícita.
 
-| Elemento | Relación con la función | Comprobación |
-| --- | --- | --- |
-| Entrada | el ámbito, la clave o el dato del entorno indicado por la orden. | Registra los argumentos y resuelve revisiones antes de ejecutar. |
-| Efecto principal | invocar Git, elegir el repositorio y aplicar opciones globales. | Comprueba el resultado con una orden de lectura. |
-| Persistencia | No modifica el repositorio en su forma de consulta. Puede iniciar un visor o escribir un archivo si se solicita de forma explícita. | Compara el estado antes y después. |
-| Resultado | La orden comunica datos por stdout y diagnósticos por stderr. | Captura también el código de terminación. |
-| Fuente de verdad | El repositorio y la configuración efectiva determinan el resultado. | Usa `git config --show-origin --list`, `git version` o el archivo generado. |
+## Preparación
 
-## Requisitos y laboratorio
+Los ejemplos que necesitan un repositorio parten del [laboratorio base de `git init`](../getting-and-creating-projects/init.md#laboratorio-base). La posición de opciones, revisiones y rutas sigue las [convenciones de la interfaz de Git](../guides/gitcli.md#convenciones-de-la-cli). La selección de rutas se explica en [pathspecs y separación con `--`](../guides/gitcli.md#pathspecs). Antes de ejecutar una forma que escriba datos, registra `git status --short` y las referencias que puedan cambiar.
 
-Crea un repositorio de prueba y aplica cambios de configuración con `--local`. Así evitas modificar la configuración global.
-
-```bash
-lab_dir="$(mktemp -d)"
-git init "$lab_dir/proyecto"
-git -C "$lab_dir/proyecto" config user.name "Persona de prueba"
-git -C "$lab_dir/proyecto" config user.email "prueba@example.test"
-printf 'línea base\n' > "$lab_dir/proyecto/archivo.txt"
-git -C "$lab_dir/proyecto" add archivo.txt
-git -C "$lab_dir/proyecto" commit -m "base"
-cd "$lab_dir/proyecto"
-```
-
-Antes de ejecutar el ejemplo, confirma la raíz con `git rev-parse --show-toplevel` cuando exista un repositorio. Registra `git status --short` y las referencias que puedan cambiar.
-
-## Modelo de funcionamiento
+## Cómo funciona
 
 Git combina opciones de sistema, usuario, repositorio, área de trabajo y línea de comandos. La opción con mayor precedencia determina el valor que usa la operación.
 
 Separa el valor solicitado del ámbito donde Git lo busca. Una misma clave puede producir otro resultado en un repositorio o con una opción de línea de comandos.
-
-Para comprobar el resultado: una consulta posterior muestra el valor efectivo o la información generada. La verificación debe observar un estado distinto del canal que produjo el cambio.
 
 ## Ejemplo mínimo
 
@@ -55,16 +32,9 @@ git -C ../biblioteca status
 git -c color.ui=false log --oneline -3
 ```
 
-Ejecuta el bloque en orden. Conserva los nombres del laboratorio hasta confirmar el resultado. Sustituye rutas, revisiones o URL solo después de identificar su tipo y alcance.
+La invocación `git -C ../biblioteca status` ejecuta esta operación: invocar Git, elegir el repositorio y aplicar opciones globales. Después, una consulta posterior muestra el valor efectivo o la información generada. Conserva stdout, stderr y el código de terminación cuando el ejemplo forme parte de un script.
 
-### Resultado esperado
-
-- La entrada queda limitada a: el ámbito, la clave o el dato del entorno indicado por la orden.
-- La operación observable es: invocar Git, elegir el repositorio y aplicar opciones globales.
-- La comprobación se realiza mediante: una consulta posterior muestra el valor efectivo o la información generada.
-- stdout contiene datos o confirmaciones; stderr contiene diagnósticos. Captura ambos canales cuando automatices.
-
-## Sintaxis
+## Sintaxis y formas de invocación
 
 ```text
 git [-v | --version] [-h | --help] [-C <path>] [-c <name>=<value>]
@@ -86,83 +56,366 @@ git [-v | --version] [-h | --help] [-C <path>] [-c <name>=<value>]
 
 Los corchetes indican elementos opcionales; `<valor>` exige sustitución; los puntos suspensivos permiten repetición; `|` separa formas excluyentes. Usa `git -h` para consultar la sintaxis que corresponde a la instalación donde ejecutarás la orden.
 
-## Casos de uso
+## Flujos de uso
 
-| Caso | Objetivo | Criterio de verificación |
-| --- | --- | --- |
-| Caso base | invocar Git, elegir el repositorio y aplicar opciones globales | Ejecuta el ejemplo mínimo y registra el estado antes y después. |
-| Alcance explícito | Aplicar git a una referencia, rango o ruta identificada. | Resuelve cada argumento antes de ejecutar y usa `--` para rutas. |
-| Validación | Comprobar el resultado de git con una orden de lectura independiente. | No uses la misma salida como única prueba del cambio. |
+### Caso base
 
+invocar Git, elegir el repositorio y aplicar opciones globales. Usa el [ejemplo mínimo](#ejemplo-mínimo) como punto de partida. Ejecuta el ejemplo mínimo y registra el estado antes y después.
 
-## Opciones y variaciones
+### Alcance explícito
 
-La tabla agrupa las opciones visibles en la sintaxis y en la ayuda corta. Una opción puede tener un significado propio cuando la página lo define; ejecuta la ayuda de tu versión antes de usarla en automatización.
+Aplicar git a una referencia, rango o ruta identificada. Usa el [ejemplo mínimo](#ejemplo-mínimo) como punto de partida. Resuelve cada argumento antes de ejecutar y usa `--` para rutas.
 
-| Opción | Efecto que debes controlar |
-| --- | --- |
-| `-v` | Activa la forma corta de salida con detalle o muestra versión según la orden. |
-| `--version` | Muestra la versión y termina. |
-| `-h` | Muestra ayuda corta cuando la orden admite esta convención. |
-| `--help` | Muestra la ayuda correspondiente a la versión instalada. |
-| `-C` | Ejecuta Git como si se hubiera iniciado en el directorio indicado. |
-| `-c` | Aplica una clave de configuración solo a esta invocación. |
-| `--exec-path` | Activa el modo `--exec-path`; los argumentos y restricciones aparecen en la sintaxis y en la fuente oficial. |
-| `--html-path` | Activa el modo `--html-path`; los argumentos y restricciones aparecen en la sintaxis y en la fuente oficial. |
-| `--man-path` | Activa el modo `--man-path`; los argumentos y restricciones aparecen en la sintaxis y en la fuente oficial. |
-| `--info-path` | Activa el modo `--info-path`; los argumentos y restricciones aparecen en la sintaxis y en la fuente oficial. |
-| `-p` | Activa la forma corta del modo patch o de una opción propia de la orden. |
-| `--paginate` | Envía la salida por el paginador configurado. |
-| `-P` | Activa el modo `-P`; los argumentos y restricciones aparecen en la sintaxis y en la fuente oficial. |
-| `--no-pager` | Escribe la salida sin paginador. |
-| `--no-replace-objects` | Ignora referencias de reemplazo durante la lectura de objetos. |
-| `--no-lazy-fetch` | Desactiva el comportamiento `lazy-fetch` para esta invocación. |
-| `--no-optional-locks` | Desactiva el comportamiento `optional-locks` para esta invocación. |
-| `--no-advice` | Desactiva el comportamiento `advice` para esta invocación. |
-| `--bare` | Opera sin un área de trabajo asociada. |
-| `--git-dir` | Define de forma explícita la ruta del directorio Git. |
-| `--work-tree` | Define de forma explícita la raíz del área de trabajo. |
-| `--namespace` | Selecciona el namespace de referencias para la invocación. |
-| `--config-env` | Toma un valor de configuración desde una variable de entorno. |
-| `-a` | Activa la forma corta de selección total o una opción propia de la orden. |
-| `-g` | Activa el modo `-g`; los argumentos y restricciones aparecen en la sintaxis y en la fuente oficial. |
+### Validación
 
-## Selección de entradas
+Comprobar el resultado de git con una orden de lectura independiente. Usa el [ejemplo mínimo](#ejemplo-mínimo) como punto de partida. No uses la misma salida como única prueba del cambio.
 
-Las revisiones se resuelven antes que los pathspecs cuando la sintaxis las espera. Usa `--` para separar opciones y rutas. Cita los globos para decidir si los expande el shell o Git.
+## Opciones
 
-Comprueba cada entrada con una orden de lectura antes de una escritura. Para listas de rutas generadas por otro proceso, prefiere una interfaz terminada en NUL cuando esté disponible.
+Cada apartado usa una opción en una invocación concreta. Las opciones equivalentes comparten la explicación, pero cada alias tiene su propio ejemplo. Ejecuta una opción por vez antes de combinarlas.
 
-## Salida y códigos de terminación
+### `-v`
 
-Un código 0 indica que la operación terminó bajo el contrato solicitado. Trata cualquier código distinto de cero según la función; no deduzcas el estado solo a partir de que stdout esté vacío.
+Activa v durante invocar Git, elegir el repositorio y aplicar opciones globales. La opción afecta esta invocación y no cambia la configuración de otras órdenes salvo que la propia función escriba esa configuración.
 
-No analices mensajes destinados a personas si existe un formato de máquina. Declara los campos, desactiva color y conserva stderr para diagnóstico.
+La opción limita o amplía el conjunto sobre el que se ejecuta invocar Git, elegir el repositorio y aplicar opciones globales. Comprueba la selección con una forma de lectura antes de combinarla con una opción que escriba estado.
+
+```bash
+git -v -C ../biblioteca status
+printf 'exit=%s\n' "$?"
+```
+
+La opción no recibe un valor separado en la forma mostrada por la ayuda corta. Los argumentos que aparecen después pertenecen a `git` o a otra opción. El código de terminación distingue una ejecución aceptada de un error y, en algunos comandos de consulta, de una respuesta negativa. Ejecuta la comprobación inmediatamente después para que ningún comando intermedio cambie el estado que estás observando.
+
+### `--version`
+
+Muestra la versión y termina.
+
+En `git`, versión modifica la forma en que se ejecuta invocar Git, elegir el repositorio y aplicar opciones globales. Mantén iguales los demás argumentos para atribuir el cambio observado a esta opción.
+
+```bash
+git --version
+printf 'exit=%s\n' "$?"
+```
+
+La opción no recibe un valor separado en la forma mostrada por la ayuda corta. Los argumentos que aparecen después pertenecen a `git` o a otra opción. El código de terminación distingue una ejecución aceptada de un error y, en algunos comandos de consulta, de una respuesta negativa. Ejecuta la comprobación inmediatamente después para que ningún comando intermedio cambie el estado que estás observando.
+
+### `-h`
+
+Muestra ayuda corta cuando la orden admite esta convención.
+
+En `git`, h modifica la forma en que se ejecuta invocar Git, elegir el repositorio y aplicar opciones globales. Mantén iguales los demás argumentos para atribuir el cambio observado a esta opción.
+
+```bash
+git -h
+printf 'exit=%s\n' "$?"
+```
+
+La opción no recibe un valor separado en la forma mostrada por la ayuda corta. Los argumentos que aparecen después pertenecen a `git` o a otra opción. El código de terminación distingue una ejecución aceptada de un error y, en algunos comandos de consulta, de una respuesta negativa. Ejecuta la comprobación inmediatamente después para que ningún comando intermedio cambie el estado que estás observando.
+
+### `--help`
+
+Muestra la ayuda correspondiente a la versión instalada.
+
+En `git`, ayuda modifica la forma en que se ejecuta invocar Git, elegir el repositorio y aplicar opciones globales. Mantén iguales los demás argumentos para atribuir el cambio observado a esta opción.
+
+```bash
+git --help
+printf 'exit=%s\n' "$?"
+```
+
+La opción no recibe un valor separado en la forma mostrada por la ayuda corta. Los argumentos que aparecen después pertenecen a `git` o a otra opción. El código de terminación distingue una ejecución aceptada de un error y, en algunos comandos de consulta, de una respuesta negativa. Ejecuta la comprobación inmediatamente después para que ningún comando intermedio cambie el estado que estás observando.
+
+### `-C`
+
+Ejecuta Git como si se hubiera iniciado en el directorio indicado.
+
+En `git`, C modifica la forma en que se ejecuta invocar Git, elegir el repositorio y aplicar opciones globales. Mantén iguales los demás argumentos para atribuir el cambio observado a esta opción.
+
+```bash
+git -C ../biblioteca status
+printf 'exit=%s\n' "$?"
+```
+
+La opción no recibe un valor separado en la forma mostrada por la ayuda corta. Los argumentos que aparecen después pertenecen a `git` o a otra opción. El código de terminación distingue una ejecución aceptada de un error y, en algunos comandos de consulta, de una respuesta negativa. Ejecuta la comprobación inmediatamente después para que ningún comando intermedio cambie el estado que estás observando.
+
+### `-c`
+
+Aplica una clave de configuración solo a esta invocación.
+
+En `git`, c modifica la forma en que se ejecuta invocar Git, elegir el repositorio y aplicar opciones globales. Mantén iguales los demás argumentos para atribuir el cambio observado a esta opción.
+
+```bash
+git -c -C ../biblioteca status
+printf 'exit=%s\n' "$?"
+```
+
+La opción no recibe un valor separado en la forma mostrada por la ayuda corta. Los argumentos que aparecen después pertenecen a `git` o a otra opción. El código de terminación distingue una ejecución aceptada de un error y, en algunos comandos de consulta, de una respuesta negativa. Ejecuta la comprobación inmediatamente después para que ningún comando intermedio cambie el estado que estás observando.
+
+### `--exec-path`
+
+Activa exec ruta durante invocar Git, elegir el repositorio y aplicar opciones globales. La opción afecta esta invocación y no cambia la configuración de otras órdenes salvo que la propia función escriba esa configuración.
+
+En `git`, exec ruta modifica la forma en que se ejecuta invocar Git, elegir el repositorio y aplicar opciones globales. Mantén iguales los demás argumentos para atribuir el cambio observado a esta opción.
+
+```bash
+git --exec-path -C ../biblioteca status
+printf 'exit=%s\n' "$?"
+```
+
+La opción no recibe un valor separado en la forma mostrada por la ayuda corta. Los argumentos que aparecen después pertenecen a `git` o a otra opción. El código de terminación distingue una ejecución aceptada de un error y, en algunos comandos de consulta, de una respuesta negativa. Ejecuta la comprobación inmediatamente después para que ningún comando intermedio cambie el estado que estás observando.
+
+### `--html-path`
+
+Activa html ruta durante invocar Git, elegir el repositorio y aplicar opciones globales. La opción afecta esta invocación y no cambia la configuración de otras órdenes salvo que la propia función escriba esa configuración.
+
+En `git`, html ruta modifica la forma en que se ejecuta invocar Git, elegir el repositorio y aplicar opciones globales. Mantén iguales los demás argumentos para atribuir el cambio observado a esta opción.
+
+```bash
+git --html-path -C ../biblioteca status
+printf 'exit=%s\n' "$?"
+```
+
+La opción no recibe un valor separado en la forma mostrada por la ayuda corta. Los argumentos que aparecen después pertenecen a `git` o a otra opción. El código de terminación distingue una ejecución aceptada de un error y, en algunos comandos de consulta, de una respuesta negativa. Ejecuta la comprobación inmediatamente después para que ningún comando intermedio cambie el estado que estás observando.
+
+### `--man-path`
+
+Activa man ruta durante invocar Git, elegir el repositorio y aplicar opciones globales. La opción afecta esta invocación y no cambia la configuración de otras órdenes salvo que la propia función escriba esa configuración.
+
+En `git`, man ruta modifica la forma en que se ejecuta invocar Git, elegir el repositorio y aplicar opciones globales. Mantén iguales los demás argumentos para atribuir el cambio observado a esta opción.
+
+```bash
+git --man-path -C ../biblioteca status
+printf 'exit=%s\n' "$?"
+```
+
+La opción no recibe un valor separado en la forma mostrada por la ayuda corta. Los argumentos que aparecen después pertenecen a `git` o a otra opción. El código de terminación distingue una ejecución aceptada de un error y, en algunos comandos de consulta, de una respuesta negativa. Ejecuta la comprobación inmediatamente después para que ningún comando intermedio cambie el estado que estás observando.
+
+### `--info-path`
+
+Activa info ruta durante invocar Git, elegir el repositorio y aplicar opciones globales. La opción afecta esta invocación y no cambia la configuración de otras órdenes salvo que la propia función escriba esa configuración.
+
+En `git`, info ruta modifica la forma en que se ejecuta invocar Git, elegir el repositorio y aplicar opciones globales. Mantén iguales los demás argumentos para atribuir el cambio observado a esta opción.
+
+```bash
+git --info-path -C ../biblioteca status
+printf 'exit=%s\n' "$?"
+```
+
+La opción no recibe un valor separado en la forma mostrada por la ayuda corta. Los argumentos que aparecen después pertenecen a `git` o a otra opción. El código de terminación distingue una ejecución aceptada de un error y, en algunos comandos de consulta, de una respuesta negativa. Ejecuta la comprobación inmediatamente después para que ningún comando intermedio cambie el estado que estás observando.
+
+### `-p`
+
+Activa p durante invocar Git, elegir el repositorio y aplicar opciones globales. La opción afecta esta invocación y no cambia la configuración de otras órdenes salvo que la propia función escriba esa configuración.
+
+En `git`, p modifica la forma en que se ejecuta invocar Git, elegir el repositorio y aplicar opciones globales. Mantén iguales los demás argumentos para atribuir el cambio observado a esta opción.
+
+```bash
+git -p -C ../biblioteca status
+printf 'exit=%s\n' "$?"
+```
+
+La opción no recibe un valor separado en la forma mostrada por la ayuda corta. Los argumentos que aparecen después pertenecen a `git` o a otra opción. El código de terminación distingue una ejecución aceptada de un error y, en algunos comandos de consulta, de una respuesta negativa. Ejecuta la comprobación inmediatamente después para que ningún comando intermedio cambie el estado que estás observando.
+
+### `--paginate`
+
+Envía la salida por el paginador configurado.
+
+En `git`, paginate modifica la forma en que se ejecuta invocar Git, elegir el repositorio y aplicar opciones globales. Mantén iguales los demás argumentos para atribuir el cambio observado a esta opción.
+
+```bash
+git --paginate -C ../biblioteca status
+printf 'exit=%s\n' "$?"
+```
+
+La opción no recibe un valor separado en la forma mostrada por la ayuda corta. Los argumentos que aparecen después pertenecen a `git` o a otra opción. El código de terminación distingue una ejecución aceptada de un error y, en algunos comandos de consulta, de una respuesta negativa. Ejecuta la comprobación inmediatamente después para que ningún comando intermedio cambie el estado que estás observando.
+
+### `-P`
+
+Activa P durante invocar Git, elegir el repositorio y aplicar opciones globales. La opción afecta esta invocación y no cambia la configuración de otras órdenes salvo que la propia función escriba esa configuración.
+
+En `git`, P modifica la forma en que se ejecuta invocar Git, elegir el repositorio y aplicar opciones globales. Mantén iguales los demás argumentos para atribuir el cambio observado a esta opción.
+
+```bash
+git -P -C ../biblioteca status
+printf 'exit=%s\n' "$?"
+```
+
+La opción no recibe un valor separado en la forma mostrada por la ayuda corta. Los argumentos que aparecen después pertenecen a `git` o a otra opción. El código de terminación distingue una ejecución aceptada de un error y, en algunos comandos de consulta, de una respuesta negativa. Ejecuta la comprobación inmediatamente después para que ningún comando intermedio cambie el estado que estás observando.
+
+### `--no-pager`
+
+Escribe la salida sin paginador.
+
+En `git`, desactivar pager modifica la forma en que se ejecuta invocar Git, elegir el repositorio y aplicar opciones globales. Mantén iguales los demás argumentos para atribuir el cambio observado a esta opción.
+
+```bash
+git --no-pager -C ../biblioteca status
+printf 'exit=%s\n' "$?"
+```
+
+La opción no recibe un valor separado en la forma mostrada por la ayuda corta. Los argumentos que aparecen después pertenecen a `git` o a otra opción. El código de terminación distingue una ejecución aceptada de un error y, en algunos comandos de consulta, de una respuesta negativa. Ejecuta la comprobación inmediatamente después para que ningún comando intermedio cambie el estado que estás observando.
+
+### `--no-replace-objects`
+
+Ignora referencias de reemplazo durante la lectura de objetos.
+
+En `git`, desactivar replace objetos modifica la forma en que se ejecuta invocar Git, elegir el repositorio y aplicar opciones globales. Mantén iguales los demás argumentos para atribuir el cambio observado a esta opción.
+
+```bash
+git --no-replace-objects -C ../biblioteca status
+printf 'exit=%s\n' "$?"
+```
+
+La opción no recibe un valor separado en la forma mostrada por la ayuda corta. Los argumentos que aparecen después pertenecen a `git` o a otra opción. El código de terminación distingue una ejecución aceptada de un error y, en algunos comandos de consulta, de una respuesta negativa. Ejecuta la comprobación inmediatamente después para que ningún comando intermedio cambie el estado que estás observando.
+
+### `--no-lazy-fetch`
+
+Desactiva el comportamiento `lazy-fetch` para esta invocación.
+
+En `git`, desactivar lazy fetch modifica la forma en que se ejecuta invocar Git, elegir el repositorio y aplicar opciones globales. Mantén iguales los demás argumentos para atribuir el cambio observado a esta opción.
+
+```bash
+git --no-lazy-fetch -C ../biblioteca status
+printf 'exit=%s\n' "$?"
+```
+
+La opción no recibe un valor separado en la forma mostrada por la ayuda corta. Los argumentos que aparecen después pertenecen a `git` o a otra opción. El código de terminación distingue una ejecución aceptada de un error y, en algunos comandos de consulta, de una respuesta negativa. Ejecuta la comprobación inmediatamente después para que ningún comando intermedio cambie el estado que estás observando.
+
+### `--no-optional-locks`
+
+Desactiva el comportamiento `optional-locks` para esta invocación.
+
+En `git`, desactivar optional locks modifica la forma en que se ejecuta invocar Git, elegir el repositorio y aplicar opciones globales. Mantén iguales los demás argumentos para atribuir el cambio observado a esta opción.
+
+```bash
+git --no-optional-locks -C ../biblioteca status
+printf 'exit=%s\n' "$?"
+```
+
+La opción no recibe un valor separado en la forma mostrada por la ayuda corta. Los argumentos que aparecen después pertenecen a `git` o a otra opción. El código de terminación distingue una ejecución aceptada de un error y, en algunos comandos de consulta, de una respuesta negativa. Ejecuta la comprobación inmediatamente después para que ningún comando intermedio cambie el estado que estás observando.
+
+### `--no-advice`
+
+Desactiva el comportamiento `advice` para esta invocación.
+
+En `git`, desactivar advice modifica la forma en que se ejecuta invocar Git, elegir el repositorio y aplicar opciones globales. Mantén iguales los demás argumentos para atribuir el cambio observado a esta opción.
+
+```bash
+git --no-advice -C ../biblioteca status
+printf 'exit=%s\n' "$?"
+```
+
+La opción no recibe un valor separado en la forma mostrada por la ayuda corta. Los argumentos que aparecen después pertenecen a `git` o a otra opción. El código de terminación distingue una ejecución aceptada de un error y, en algunos comandos de consulta, de una respuesta negativa. Ejecuta la comprobación inmediatamente después para que ningún comando intermedio cambie el estado que estás observando.
+
+### `--bare`
+
+Opera sin un área de trabajo asociada.
+
+En `git`, repositorio bare modifica la forma en que se ejecuta invocar Git, elegir el repositorio y aplicar opciones globales. Mantén iguales los demás argumentos para atribuir el cambio observado a esta opción.
+
+```bash
+git --bare -C ../biblioteca status
+printf 'exit=%s\n' "$?"
+```
+
+La opción no recibe un valor separado en la forma mostrada por la ayuda corta. Los argumentos que aparecen después pertenecen a `git` o a otra opción. El código de terminación distingue una ejecución aceptada de un error y, en algunos comandos de consulta, de una respuesta negativa. Ejecuta la comprobación inmediatamente después para que ningún comando intermedio cambie el estado que estás observando.
+
+### `--git-dir`
+
+Define de forma explícita la ruta del directorio Git.
+
+En `git`, git dir modifica la forma en que se ejecuta invocar Git, elegir el repositorio y aplicar opciones globales. Mantén iguales los demás argumentos para atribuir el cambio observado a esta opción.
+
+```bash
+git --git-dir -C ../biblioteca status
+printf 'exit=%s\n' "$?"
+```
+
+La opción no recibe un valor separado en la forma mostrada por la ayuda corta. Los argumentos que aparecen después pertenecen a `git` o a otra opción. El código de terminación distingue una ejecución aceptada de un error y, en algunos comandos de consulta, de una respuesta negativa. Ejecuta la comprobación inmediatamente después para que ningún comando intermedio cambie el estado que estás observando.
+
+### `--work-tree`
+
+Define de forma explícita la raíz del área de trabajo.
+
+En `git`, work tree modifica la forma en que se ejecuta invocar Git, elegir el repositorio y aplicar opciones globales. Mantén iguales los demás argumentos para atribuir el cambio observado a esta opción.
+
+```bash
+git --work-tree -C ../biblioteca status
+printf 'exit=%s\n' "$?"
+```
+
+La opción no recibe un valor separado en la forma mostrada por la ayuda corta. Los argumentos que aparecen después pertenecen a `git` o a otra opción. El código de terminación distingue una ejecución aceptada de un error y, en algunos comandos de consulta, de una respuesta negativa. Ejecuta la comprobación inmediatamente después para que ningún comando intermedio cambie el estado que estás observando.
+
+### `--namespace`
+
+Selecciona el namespace de referencias para la invocación.
+
+En `git`, namespace modifica la forma en que se ejecuta invocar Git, elegir el repositorio y aplicar opciones globales. Mantén iguales los demás argumentos para atribuir el cambio observado a esta opción.
+
+```bash
+git --namespace -C ../biblioteca status
+printf 'exit=%s\n' "$?"
+```
+
+La opción no recibe un valor separado en la forma mostrada por la ayuda corta. Los argumentos que aparecen después pertenecen a `git` o a otra opción. El código de terminación distingue una ejecución aceptada de un error y, en algunos comandos de consulta, de una respuesta negativa. Ejecuta la comprobación inmediatamente después para que ningún comando intermedio cambie el estado que estás observando.
+
+### `--config-env`
+
+Toma un valor de configuración desde una variable de entorno.
+
+En `git`, config env modifica la forma en que se ejecuta invocar Git, elegir el repositorio y aplicar opciones globales. Mantén iguales los demás argumentos para atribuir el cambio observado a esta opción.
+
+```bash
+git --config-env -C ../biblioteca status
+printf 'exit=%s\n' "$?"
+```
+
+La opción no recibe un valor separado en la forma mostrada por la ayuda corta. Los argumentos que aparecen después pertenecen a `git` o a otra opción. El código de terminación distingue una ejecución aceptada de un error y, en algunos comandos de consulta, de una respuesta negativa. Ejecuta la comprobación inmediatamente después para que ningún comando intermedio cambie el estado que estás observando.
+
+### `-a`
+
+Activa a durante invocar Git, elegir el repositorio y aplicar opciones globales. La opción afecta esta invocación y no cambia la configuración de otras órdenes salvo que la propia función escriba esa configuración.
+
+En `git`, a modifica la forma en que se ejecuta invocar Git, elegir el repositorio y aplicar opciones globales. Mantén iguales los demás argumentos para atribuir el cambio observado a esta opción.
+
+```bash
+git -a -C ../biblioteca status
+printf 'exit=%s\n' "$?"
+```
+
+La opción no recibe un valor separado en la forma mostrada por la ayuda corta. Los argumentos que aparecen después pertenecen a `git` o a otra opción. El código de terminación distingue una ejecución aceptada de un error y, en algunos comandos de consulta, de una respuesta negativa. Ejecuta la comprobación inmediatamente después para que ningún comando intermedio cambie el estado que estás observando.
+
+### `-g`
+
+Activa g durante invocar Git, elegir el repositorio y aplicar opciones globales. La opción afecta esta invocación y no cambia la configuración de otras órdenes salvo que la propia función escriba esa configuración.
+
+En `git`, g modifica la forma en que se ejecuta invocar Git, elegir el repositorio y aplicar opciones globales. Mantén iguales los demás argumentos para atribuir el cambio observado a esta opción.
+
+```bash
+git -g -C ../biblioteca status
+printf 'exit=%s\n' "$?"
+```
+
+La opción no recibe un valor separado en la forma mostrada por la ayuda corta. Los argumentos que aparecen después pertenecen a `git` o a otra opción. El código de terminación distingue una ejecución aceptada de un error y, en algunos comandos de consulta, de una respuesta negativa. Ejecuta la comprobación inmediatamente después para que ningún comando intermedio cambie el estado que estás observando.
 
 ## Errores y diagnóstico
 
-| Señal | Causa que debes comprobar | Acción |
-| --- | --- | --- |
-| El valor aplicado no coincide | Otra capa de configuración tiene precedencia | Ejecuta `git config --show-origin --get-all <clave>`. |
-| Git no localiza el repositorio | `--git-dir`, `--work-tree` o el directorio actual apuntan a otra ruta | Ejecuta `git rev-parse --show-toplevel`. |
-| La orden no existe | La versión instalada no incluye la función | Comprueba `git --version` y `git help -a`. |
+### El valor aplicado no coincide
 
-Si una operación deja archivos de estado dentro de `.git`, usa `git status` y la acción de continuar, omitir o abortar definida por esa operación. No borres esos archivos para simular una cancelación.
+Comprueba esta causa: Otra capa de configuración tiene precedencia. Ejecuta `git config --show-origin --get-all <clave>`.
 
-## Automatización
+### Git no localiza el repositorio
 
-1. Declara la versión mínima de Git que necesita el script.
-2. Resuelve la raíz del repositorio y evita depender del directorio actual.
-3. Separa opciones y rutas con `--`.
-4. Captura stdout, stderr y el código de terminación.
-5. Usa formatos de máquina o terminación NUL para nombres de archivo.
-6. Ejecuta primero sobre el laboratorio y añade un caso sin coincidencias.
+Comprueba esta causa: `--git-dir`, `--work-tree` o el directorio actual apuntan a otra ruta. Ejecuta `git rev-parse --show-toplevel`.
 
-## Seguridad y recuperación
+### La orden no existe
+
+Comprueba esta causa: La versión instalada no incluye la función. Comprueba `git --version` y `git help -a`.
+
+## Automatización y recuperación
 
 Persistencia: No modifica el repositorio en su forma de consulta. Puede iniciar un visor o escribir un archivo si se solicita de forma explícita. Antes de una operación que mueva o elimine referencias, registra sus hashes con `git show-ref`. Antes de cambiar archivos, conserva `git diff` y `git diff --cached`. Para objetos y commits que dejaron de estar referenciados, consulta el reflog antes de ejecutar mantenimiento que pueda eliminarlos.
-
-## Práctica guiada
 
 Ejecuta el ejemplo en un repositorio temporal y usa `git config --show-origin --list` o el comando de consulta correspondiente para identificar el origen del resultado.
 

@@ -2,51 +2,28 @@
 title: "git commit-graph"
 source: "https://git-scm.com/docs/git-commit-graph"
 section: "plumbing-write"
-status: "expanded"
+status: "option-expanded"
 ---
 
 # `git commit-graph`
 
 Este caso usa `git commit-graph` para escribir y verificar el archivo que acelera recorridos de commits. Los nombres de archivo, revisiones, ramas y direcciones del ejemplo representan valores que debes sustituir por los de tu repositorio.
 
-## Alcance y responsabilidad
+## Responsabilidad y efecto
 
 git commit-graph crea objetos, índices, packs o referencias mediante contratos de bajo nivel. Recibe como entrada identificadores, entradas del índice o referencias validadas por el script. La operación consiste en escribir y verificar el archivo que acelera recorridos de commits.
 
-La página distingue lectura, escritura y resultado:
+Puede persistir el estado implicado por esta operación: escribir y verificar el archivo que acelera recorridos de commits. Las opciones pueden limitar o ampliar ese efecto.
 
-| Elemento | Relación con la función | Comprobación |
-| --- | --- | --- |
-| Entrada | identificadores, entradas del índice o referencias validadas por el script. | Registra los argumentos y resuelve revisiones antes de ejecutar. |
-| Efecto principal | escribir y verificar el archivo que acelera recorridos de commits. | Comprueba el resultado con una orden de lectura. |
-| Persistencia | Puede persistir el estado implicado por esta operación: escribir y verificar el archivo que acelera recorridos de commits. Las opciones pueden limitar o ampliar ese efecto. | Compara el estado antes y después. |
-| Resultado | La orden comunica datos por stdout y diagnósticos por stderr. | Captura también el código de terminación. |
-| Fuente de verdad | El repositorio y la configuración efectiva determinan el resultado. | Usa `git fsck`, `git cat-file`, `git ls-tree`, `git show-ref` y el hash devuelto. |
+## Preparación
 
-## Requisitos y laboratorio
+Los ejemplos que necesitan un repositorio parten del [laboratorio base de `git init`](../getting-and-creating-projects/init.md#laboratorio-base). La posición de opciones, revisiones y rutas sigue las [convenciones de la interfaz de Git](../guides/gitcli.md#convenciones-de-la-cli). Los nombres como `HEAD`, `main`, `HEAD~2` y `A..B` se explican en [revisiones y rangos](../guides/gitrevisions.md#revisiones-y-rangos). Antes de ejecutar una forma que escriba datos, registra `git status --short` y las referencias que puedan cambiar.
 
-Usa un repositorio sin datos de valor. Guarda los hashes producidos y crea referencias solo con actualización condicional.
-
-```bash
-lab_dir="$(mktemp -d)"
-git init "$lab_dir/proyecto"
-git -C "$lab_dir/proyecto" config user.name "Persona de prueba"
-git -C "$lab_dir/proyecto" config user.email "prueba@example.test"
-printf 'línea base\n' > "$lab_dir/proyecto/archivo.txt"
-git -C "$lab_dir/proyecto" add archivo.txt
-git -C "$lab_dir/proyecto" commit -m "base"
-cd "$lab_dir/proyecto"
-```
-
-Antes de ejecutar el ejemplo, confirma la raíz con `git rev-parse --show-toplevel` cuando exista un repositorio. Registra `git status --short` y las referencias que puedan cambiar.
-
-## Modelo de funcionamiento
+## Cómo funciona
 
 Los comandos de plomería operan sobre índice, objetos o referencias sin aplicar todas las decisiones de los comandos de usuario. Un script debe validar entradas y estado antes de escribir.
 
 Valida el identificador anterior y el tipo de objeto antes de escribir. Esa comprobación evita actualizar el repositorio desde un estado que otro proceso ya cambió.
-
-Para comprobar el resultado: `git cat-file`, `git ls-files --stage` o `git show-ref` comprueban el dato escrito. La verificación debe observar un estado distinto del canal que produjo el cambio.
 
 ## Ejemplo mínimo
 
@@ -55,16 +32,9 @@ git commit-graph write --reachable
 git commit-graph verify
 ```
 
-Ejecuta el bloque en orden. Conserva los nombres del laboratorio hasta confirmar el resultado. Sustituye rutas, revisiones o URL solo después de identificar su tipo y alcance.
+La invocación `git commit-graph write --reachable` ejecuta esta operación: escribir y verificar el archivo que acelera recorridos de commits. Después, `git cat-file`, `git ls-files --stage` o `git show-ref` comprueban el dato escrito. Conserva stdout, stderr y el código de terminación cuando el ejemplo forme parte de un script.
 
-### Resultado esperado
-
-- La entrada queda limitada a: identificadores, entradas del índice o referencias validadas por el script.
-- La operación observable es: escribir y verificar el archivo que acelera recorridos de commits.
-- La comprobación se realiza mediante: `git cat-file`, `git ls-files --stage` o `git show-ref` comprueban el dato escrito.
-- stdout contiene datos o confirmaciones; stderr contiene diagnósticos. Captura ambos canales cuando automatices.
-
-## Sintaxis
+## Sintaxis y formas de invocación
 
 ```text
 git commit-graph verify [--object-dir <dir>] [--shallow] [--[no-]progress]
@@ -85,68 +55,210 @@ git commit-graph verify [--object-dir <dir>] [--shallow] [--[no-]progress]
 
 Los corchetes indican elementos opcionales; `<valor>` exige sustitución; los puntos suspensivos permiten repetición; `|` separa formas excluyentes. Usa `git commit-graph -h` para consultar la sintaxis que corresponde a la instalación donde ejecutarás la orden.
 
-## Casos de uso
+## Flujos de uso
 
-| Caso | Objetivo | Criterio de verificación |
-| --- | --- | --- |
-| Caso base | escribir y verificar el archivo que acelera recorridos de commits | Ejecuta el ejemplo mínimo y registra el estado antes y después. |
-| Alcance explícito | Aplicar git commit-graph a una referencia, rango o ruta identificada. | Resuelve cada argumento antes de ejecutar y usa `--` para rutas. |
-| Validación | Comprobar el resultado de git commit-graph con una orden de lectura independiente. | No uses la misma salida como única prueba del cambio. |
+### Caso base
 
+escribir y verificar el archivo que acelera recorridos de commits. Usa el [ejemplo mínimo](#ejemplo-mínimo) como punto de partida. Ejecuta el ejemplo mínimo y registra el estado antes y después.
 
-## Opciones y variaciones
+### Alcance explícito
 
-La tabla agrupa las opciones visibles en la sintaxis y en la ayuda corta. Una opción puede tener un significado propio cuando la página lo define; ejecuta la ayuda de tu versión antes de usarla en automatización.
+Aplicar git commit-graph a una referencia, rango o ruta identificada. Usa el [ejemplo mínimo](#ejemplo-mínimo) como punto de partida. Resuelve cada argumento antes de ejecutar y usa `--` para rutas.
 
-| Opción | Efecto que debes controlar |
-| --- | --- |
-| `--object-dir` | Selecciona la representación o tratamiento de identificadores de objeto. |
-| `--shallow` | Activa el modo `--shallow`; los argumentos y restricciones aparecen en la sintaxis y en la fuente oficial. |
-| `--progress` | Muestra progreso aunque la salida no sea un terminal. |
-| `--append` | Activa el modo `--append`; los argumentos y restricciones aparecen en la sintaxis y en la fuente oficial. |
-| `--split` | Activa el modo `--split`; los argumentos y restricciones aparecen en la sintaxis y en la fuente oficial. |
-| `--reachable` | Activa el modo `--reachable`; los argumentos y restricciones aparecen en la sintaxis y en la fuente oficial. |
-| `--stdin-packs` | Activa el modo `--stdin-packs`; los argumentos y restricciones aparecen en la sintaxis y en la fuente oficial. |
-| `--stdin-commits` | Activa el modo `--stdin-commits`; los argumentos y restricciones aparecen en la sintaxis y en la fuente oficial. |
-| `--changed-paths` | Activa el modo `--changed-paths`; los argumentos y restricciones aparecen en la sintaxis y en la fuente oficial. |
-| `--max-new-filters` | Establece un límite numérico para la selección o el recorrido. |
+### Validación
 
-## Selección de entradas
+Comprobar el resultado de git commit-graph con una orden de lectura independiente. Usa el [ejemplo mínimo](#ejemplo-mínimo) como punto de partida. No uses la misma salida como única prueba del cambio.
 
-Distingue identificadores de objeto, referencias y rutas. Resuelve revisiones con `git rev-parse --verify`; inspecciona tipo y tamaño con `git cat-file`; usa actualización condicional al escribir referencias.
+## Opciones
 
-Comprueba cada entrada con una orden de lectura antes de una escritura. Para listas de rutas generadas por otro proceso, prefiere una interfaz terminada en NUL cuando esté disponible.
+Cada apartado usa una opción en una invocación concreta. Las opciones equivalentes comparten la explicación, pero cada alias tiene su propio ejemplo. Ejecuta una opción por vez antes de combinarlas.
 
-## Salida y códigos de terminación
+### `--object-dir`
 
-Un código 0 indica que la operación terminó bajo el contrato solicitado. Trata cualquier código distinto de cero según la función; no deduzcas el estado solo a partir de que stdout esté vacío.
+Selecciona la representación o tratamiento de identificadores de objeto.
 
-No analices mensajes destinados a personas si existe un formato de máquina. Declara los campos, desactiva color y conserva stderr para diagnóstico.
+En `git commit-graph`, objeto dir modifica la forma en que se ejecuta escribir y verificar el archivo que acelera recorridos de commits. Mantén iguales los demás argumentos para atribuir el cambio observado a esta opción.
+
+```bash
+git commit-graph --object-dir=docs write --reachable
+git fsck --no-progress
+```
+
+El ejemplo usa `docs` como valor. Sustitúyelo por un valor del tipo que muestra la sintaxis de tu versión. Un valor numérico conserva su unidad y un nombre de referencia debe resolver antes de ejecutar la orden. La comprobación detecta objetos o enlaces que no cumplen el formato esperado. Ejecuta la comprobación inmediatamente después para que ningún comando intermedio cambie el estado que estás observando.
+
+### `--shallow`
+
+Activa historial shallow durante escribir y verificar el archivo que acelera recorridos de commits. La opción afecta esta invocación y no cambia la configuración de otras órdenes salvo que la propia función escriba esa configuración.
+
+La opción limita o amplía el conjunto sobre el que se ejecuta escribir y verificar el archivo que acelera recorridos de commits. Comprueba la selección con una forma de lectura antes de combinarla con una opción que escriba estado.
+
+```bash
+git commit-graph --shallow write --reachable
+git fsck --no-progress
+```
+
+La opción no recibe un valor separado en la forma mostrada por la ayuda corta. Los argumentos que aparecen después pertenecen a `git commit-graph` o a otra opción. La comprobación detecta objetos o enlaces que no cumplen el formato esperado. Ejecuta la comprobación inmediatamente después para que ningún comando intermedio cambie el estado que estás observando.
+
+### `--progress`
+
+Muestra progreso aunque la salida no sea un terminal.
+
+En `git commit-graph`, progreso modifica la forma en que se ejecuta escribir y verificar el archivo que acelera recorridos de commits. Mantén iguales los demás argumentos para atribuir el cambio observado a esta opción.
+
+```bash
+git commit-graph --progress write --reachable
+git fsck --no-progress
+```
+
+La opción no recibe un valor separado en la forma mostrada por la ayuda corta. Los argumentos que aparecen después pertenecen a `git commit-graph` o a otra opción. La comprobación detecta objetos o enlaces que no cumplen el formato esperado. Ejecuta la comprobación inmediatamente después para que ningún comando intermedio cambie el estado que estás observando.
+
+### `--append`
+
+Activa append durante escribir y verificar el archivo que acelera recorridos de commits. La opción afecta esta invocación y no cambia la configuración de otras órdenes salvo que la propia función escriba esa configuración.
+
+En `git commit-graph`, append modifica la forma en que se ejecuta escribir y verificar el archivo que acelera recorridos de commits. Mantén iguales los demás argumentos para atribuir el cambio observado a esta opción.
+
+```bash
+git commit-graph --append write --reachable
+git fsck --no-progress
+```
+
+La opción no recibe un valor separado en la forma mostrada por la ayuda corta. Los argumentos que aparecen después pertenecen a `git commit-graph` o a otra opción. La comprobación detecta objetos o enlaces que no cumplen el formato esperado. Ejecuta la comprobación inmediatamente después para que ningún comando intermedio cambie el estado que estás observando.
+
+### `--split`
+
+Activa split durante escribir y verificar el archivo que acelera recorridos de commits. La opción afecta esta invocación y no cambia la configuración de otras órdenes salvo que la propia función escriba esa configuración.
+
+En `git commit-graph`, split modifica la forma en que se ejecuta escribir y verificar el archivo que acelera recorridos de commits. Mantén iguales los demás argumentos para atribuir el cambio observado a esta opción.
+
+```bash
+git commit-graph --split write --reachable
+git fsck --no-progress
+```
+
+La opción no recibe un valor separado en la forma mostrada por la ayuda corta. Los argumentos que aparecen después pertenecen a `git commit-graph` o a otra opción. La comprobación detecta objetos o enlaces que no cumplen el formato esperado. Ejecuta la comprobación inmediatamente después para que ningún comando intermedio cambie el estado que estás observando.
+
+### `--reachable`
+
+Activa reachable durante escribir y verificar el archivo que acelera recorridos de commits. La opción afecta esta invocación y no cambia la configuración de otras órdenes salvo que la propia función escriba esa configuración.
+
+En `git commit-graph`, reachable modifica la forma en que se ejecuta escribir y verificar el archivo que acelera recorridos de commits. Mantén iguales los demás argumentos para atribuir el cambio observado a esta opción.
+
+```bash
+git commit-graph --reachable write
+git fsck --no-progress
+```
+
+La opción no recibe un valor separado en la forma mostrada por la ayuda corta. Los argumentos que aparecen después pertenecen a `git commit-graph` o a otra opción. La comprobación detecta objetos o enlaces que no cumplen el formato esperado. Ejecuta la comprobación inmediatamente después para que ningún comando intermedio cambie el estado que estás observando.
+
+### `--stdin-packs`
+
+Activa entrada estándar packs durante escribir y verificar el archivo que acelera recorridos de commits. La opción afecta esta invocación y no cambia la configuración de otras órdenes salvo que la propia función escriba esa configuración.
+
+La opción cambia cómo `git commit-graph` recibe datos. Define el separador, la codificación y la ruta de entrada antes de ejecutarla. Los nombres con espacios o saltos de línea requieren una interfaz terminada en NUL cuando el comando la ofrece.
+
+```bash
+git commit-graph --stdin-packs write --reachable
+git fsck --no-progress
+```
+
+La opción no recibe un valor separado en la forma mostrada por la ayuda corta. Los argumentos que aparecen después pertenecen a `git commit-graph` o a otra opción. La comprobación detecta objetos o enlaces que no cumplen el formato esperado. Ejecuta la comprobación inmediatamente después para que ningún comando intermedio cambie el estado que estás observando.
+
+### `--stdin-commits`
+
+Activa entrada estándar commits durante escribir y verificar el archivo que acelera recorridos de commits. La opción afecta esta invocación y no cambia la configuración de otras órdenes salvo que la propia función escriba esa configuración.
+
+La opción cambia cómo `git commit-graph` recibe datos. Define el separador, la codificación y la ruta de entrada antes de ejecutarla. Los nombres con espacios o saltos de línea requieren una interfaz terminada en NUL cuando el comando la ofrece.
+
+```bash
+git commit-graph --stdin-commits write --reachable
+git fsck --no-progress
+```
+
+La opción no recibe un valor separado en la forma mostrada por la ayuda corta. Los argumentos que aparecen después pertenecen a `git commit-graph` o a otra opción. La comprobación detecta objetos o enlaces que no cumplen el formato esperado. Ejecuta la comprobación inmediatamente después para que ningún comando intermedio cambie el estado que estás observando.
+
+### `--changed-paths`
+
+Activa changed paths durante escribir y verificar el archivo que acelera recorridos de commits. La opción afecta esta invocación y no cambia la configuración de otras órdenes salvo que la propia función escriba esa configuración.
+
+En `git commit-graph`, changed paths modifica la forma en que se ejecuta escribir y verificar el archivo que acelera recorridos de commits. Mantén iguales los demás argumentos para atribuir el cambio observado a esta opción.
+
+```bash
+git commit-graph --changed-paths write --reachable
+git fsck --no-progress
+```
+
+La opción no recibe un valor separado en la forma mostrada por la ayuda corta. Los argumentos que aparecen después pertenecen a `git commit-graph` o a otra opción. La comprobación detecta objetos o enlaces que no cumplen el formato esperado. Ejecuta la comprobación inmediatamente después para que ningún comando intermedio cambie el estado que estás observando.
+
+### `--max-new-filters`
+
+Establece un límite numérico para la selección o el recorrido.
+
+La opción limita o amplía el conjunto sobre el que se ejecuta escribir y verificar el archivo que acelera recorridos de commits. Comprueba la selección con una forma de lectura antes de combinarla con una opción que escriba estado.
+
+```bash
+git commit-graph --max-new-filters write --reachable
+git fsck --no-progress
+```
+
+La opción no recibe un valor separado en la forma mostrada por la ayuda corta. Los argumentos que aparecen después pertenecen a `git commit-graph` o a otra opción. La comprobación detecta objetos o enlaces que no cumplen el formato esperado. Ejecuta la comprobación inmediatamente después para que ningún comando intermedio cambie el estado que estás observando.
+
+### `--no-object-dir`
+
+Desactiva para esta invocación el comportamiento que habilita `--object-dir`. Mantén iguales los demás argumentos y compara el resultado con la forma positiva para comprobar la diferencia.
+
+En `git commit-graph`, desactivar objeto dir modifica la forma en que se ejecuta escribir y verificar el archivo que acelera recorridos de commits. Mantén iguales los demás argumentos para atribuir el cambio observado a esta opción.
+
+```bash
+git commit-graph --no-object-dir write --reachable
+git fsck --no-progress
+```
+
+La opción no recibe un valor separado en la forma mostrada por la ayuda corta. Los argumentos que aparecen después pertenecen a `git commit-graph` o a otra opción. La comprobación detecta objetos o enlaces que no cumplen el formato esperado. Ejecuta la comprobación inmediatamente después para que ningún comando intermedio cambie el estado que estás observando.
+
+### `--no-progress`
+
+Desactiva para esta invocación el comportamiento que habilita `--progress`. Mantén iguales los demás argumentos y compara el resultado con la forma positiva para comprobar la diferencia.
+
+En `git commit-graph`, desactivar progreso modifica la forma en que se ejecuta escribir y verificar el archivo que acelera recorridos de commits. Mantén iguales los demás argumentos para atribuir el cambio observado a esta opción.
+
+```bash
+git commit-graph --no-progress write --reachable
+git fsck --no-progress
+```
+
+La opción no recibe un valor separado en la forma mostrada por la ayuda corta. Los argumentos que aparecen después pertenecen a `git commit-graph` o a otra opción. La comprobación detecta objetos o enlaces que no cumplen el formato esperado. Ejecuta la comprobación inmediatamente después para que ningún comando intermedio cambie el estado que estás observando.
+
+### `--no-max-new-filters`
+
+Desactiva para esta invocación el comportamiento que habilita `--max-new-filters`. Mantén iguales los demás argumentos y compara el resultado con la forma positiva para comprobar la diferencia.
+
+La opción limita o amplía el conjunto sobre el que se ejecuta escribir y verificar el archivo que acelera recorridos de commits. Comprueba la selección con una forma de lectura antes de combinarla con una opción que escriba estado.
+
+```bash
+git commit-graph --no-max-new-filters write --reachable
+git fsck --no-progress
+```
+
+La opción no recibe un valor separado en la forma mostrada por la ayuda corta. Los argumentos que aparecen después pertenecen a `git commit-graph` o a otra opción. La comprobación detecta objetos o enlaces que no cumplen el formato esperado. Ejecuta la comprobación inmediatamente después para que ningún comando intermedio cambie el estado que estás observando.
 
 ## Errores y diagnóstico
 
-| Señal | Causa que debes comprobar | Acción |
-| --- | --- | --- |
-| El hash no coincide | Los bytes, el tipo o la longitud difieren | Compara la entrada byte por byte y no normalices el contenido. |
-| La referencia no se actualiza | El valor anterior no coincide con la condición | Lee el valor actual y repite con una condición nueva. |
-| El índice queda sin resolver | Una entrada tiene etapas de conflicto | Inspecciona `git ls-files --stage` antes de escribir un árbol. |
+### El hash no coincide
 
-Si una operación deja archivos de estado dentro de `.git`, usa `git status` y la acción de continuar, omitir o abortar definida por esa operación. No borres esos archivos para simular una cancelación.
+Comprueba esta causa: Los bytes, el tipo o la longitud difieren. Compara la entrada byte por byte y no normalices el contenido.
 
-## Automatización
+### La referencia no se actualiza
 
-1. Declara la versión mínima de Git que necesita el script.
-2. Resuelve la raíz del repositorio y evita depender del directorio actual.
-3. Separa opciones y rutas con `--`.
-4. Captura stdout, stderr y el código de terminación.
-5. Usa formatos de máquina o terminación NUL para nombres de archivo.
-6. Ejecuta primero sobre el laboratorio y añade un caso sin coincidencias.
+Comprueba esta causa: El valor anterior no coincide con la condición. Lee el valor actual y repite con una condición nueva.
 
-## Seguridad y recuperación
+### El índice queda sin resolver
+
+Comprueba esta causa: Una entrada tiene etapas de conflicto. Inspecciona `git ls-files --stage` antes de escribir un árbol.
+
+## Automatización y recuperación
 
 Persistencia: Puede persistir el estado implicado por esta operación: escribir y verificar el archivo que acelera recorridos de commits. Las opciones pueden limitar o ampliar ese efecto. Antes de una operación que mueva o elimine referencias, registra sus hashes con `git show-ref`. Antes de cambiar archivos, conserva `git diff` y `git diff --cached`. Para objetos y commits que dejaron de estar referenciados, consulta el reflog antes de ejecutar mantenimiento que pueda eliminarlos.
-
-## Práctica guiada
 
 Usa un repositorio temporal y guarda los identificadores antes de escribir. Verifica cada objeto con `git cat-file` y cada referencia con `git show-ref`.
 

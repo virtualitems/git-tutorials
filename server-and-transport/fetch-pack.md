@@ -2,51 +2,28 @@
 title: "git fetch-pack"
 source: "https://git-scm.com/docs/git-fetch-pack"
 section: "server-and-transport"
-status: "expanded"
+status: "option-expanded"
 ---
 
 # `git fetch-pack`
 
 Este caso usa `git fetch-pack` para solicitar a otro repositorio los objetos que faltan. Las rutas, cuentas y direcciones del ejemplo pertenecen a un entorno de prueba. Define autenticación y permisos antes de adaptar el servicio.
 
-## Alcance y responsabilidad
+## Responsabilidad y efecto
 
 git fetch-pack expone repositorios o participa en negociación y transferencia de objetos. Recibe como entrada la ruta del repositorio, el servicio y los parámetros de transporte. La operación consiste en solicitar a otro repositorio los objetos que faltan.
 
-La página distingue lectura, escritura y resultado:
+Puede persistir el estado implicado por esta operación: solicitar a otro repositorio los objetos que faltan. Las opciones pueden limitar o ampliar ese efecto.
 
-| Elemento | Relación con la función | Comprobación |
-| --- | --- | --- |
-| Entrada | la ruta del repositorio, el servicio y los parámetros de transporte. | Registra los argumentos y resuelve revisiones antes de ejecutar. |
-| Efecto principal | solicitar a otro repositorio los objetos que faltan. | Comprueba el resultado con una orden de lectura. |
-| Persistencia | Puede persistir el estado implicado por esta operación: solicitar a otro repositorio los objetos que faltan. Las opciones pueden limitar o ampliar ese efecto. | Compara el estado antes y después. |
-| Resultado | La orden comunica datos por stdout y diagnósticos por stderr. | Captura también el código de terminación. |
-| Fuente de verdad | El repositorio y la configuración efectiva determinan el resultado. | Usa referencias anunciadas, logs del servicio, permisos y una transferencia desde un cliente de prueba. |
+## Preparación
 
-## Requisitos y laboratorio
+Los ejemplos que necesitan un repositorio parten del [laboratorio base de `git init`](../getting-and-creating-projects/init.md#laboratorio-base). La posición de opciones, revisiones y rutas sigue las [convenciones de la interfaz de Git](../guides/gitcli.md#convenciones-de-la-cli). Los nombres como `HEAD`, `main`, `HEAD~2` y `A..B` se explican en [revisiones y rangos](../guides/gitrevisions.md#revisiones-y-rangos). La relación entre URL, remoto y refspec se desarrolla en [`git remote`](../sharing-and-updating-projects/remote.md#remotos-y-refspecs). Antes de ejecutar una forma que escriba datos, registra `git status --short` y las referencias que puedan cambiar.
 
-Vincula el servicio a localhost y usa un repositorio bare sin datos de producción.
-
-```bash
-lab_dir="$(mktemp -d)"
-git init "$lab_dir/proyecto"
-git -C "$lab_dir/proyecto" config user.name "Persona de prueba"
-git -C "$lab_dir/proyecto" config user.email "prueba@example.test"
-printf 'línea base\n' > "$lab_dir/proyecto/archivo.txt"
-git -C "$lab_dir/proyecto" add archivo.txt
-git -C "$lab_dir/proyecto" commit -m "base"
-cd "$lab_dir/proyecto"
-```
-
-Antes de ejecutar el ejemplo, confirma la raíz con `git rev-parse --show-toplevel` cuando exista un repositorio. Registra `git status --short` y las referencias que puedan cambiar.
-
-## Modelo de funcionamiento
+## Cómo funciona
 
 El cliente anuncia lo que tiene y solicita lo que necesita. El servidor negocia, empaqueta objetos y acepta o rechaza cambios de referencias según su configuración.
 
 Separa negociación de objetos, transferencia y actualización de referencias. Los permisos del servicio pueden aceptar una fase y rechazar otra.
-
-Para comprobar el resultado: los registros y referencias confirman qué objetos se transfirieron y qué actualizaciones se aceptaron. La verificación debe observar un estado distinto del canal que produjo el cambio.
 
 ## Ejemplo mínimo
 
@@ -54,16 +31,9 @@ Para comprobar el resultado: los registros y referencias confirman qué objetos 
 git fetch-pack https://example.test/equipo/biblioteca.git refs/heads/main
 ```
 
-Ejecuta el bloque en orden. Conserva los nombres del laboratorio hasta confirmar el resultado. Sustituye rutas, revisiones o URL solo después de identificar su tipo y alcance.
+La invocación `git fetch-pack https://example.test/equipo/biblioteca.git refs/heads/main` ejecuta esta operación: solicitar a otro repositorio los objetos que faltan. Después, los registros y referencias confirman qué objetos se transfirieron y qué actualizaciones se aceptaron. Conserva stdout, stderr y el código de terminación cuando el ejemplo forme parte de un script.
 
-### Resultado esperado
-
-- La entrada queda limitada a: la ruta del repositorio, el servicio y los parámetros de transporte.
-- La operación observable es: solicitar a otro repositorio los objetos que faltan.
-- La comprobación se realiza mediante: los registros y referencias confirman qué objetos se transfirieron y qué actualizaciones se aceptaron.
-- stdout contiene datos o confirmaciones; stderr contiene diagnósticos. Captura ambos canales cuando automatices.
-
-## Sintaxis
+## Sintaxis y formas de invocación
 
 ```text
 git fetch-pack [--all] [--quiet|-q] [--keep|-k] [--thin] [--include-tag]
@@ -80,71 +50,210 @@ git fetch-pack [--all] [--stdin] [--quiet | -q] [--keep | -k] [--thin] [--includ
 
 Los corchetes indican elementos opcionales; `<valor>` exige sustitución; los puntos suspensivos permiten repetición; `|` separa formas excluyentes. Usa `git fetch-pack -h` para consultar la sintaxis que corresponde a la instalación donde ejecutarás la orden.
 
-## Casos de uso
+## Flujos de uso
 
-| Caso | Objetivo | Criterio de verificación |
-| --- | --- | --- |
-| Caso base | solicitar a otro repositorio los objetos que faltan | Ejecuta el ejemplo mínimo y registra el estado antes y después. |
-| Alcance explícito | Aplicar git fetch-pack a una referencia, rango o ruta identificada. | Resuelve cada argumento antes de ejecutar y usa `--` para rutas. |
-| Validación | Comprobar el resultado de git fetch-pack con una orden de lectura independiente. | No uses la misma salida como única prueba del cambio. |
+### Caso base
 
+solicitar a otro repositorio los objetos que faltan. Usa el [ejemplo mínimo](#ejemplo-mínimo) como punto de partida. Ejecuta el ejemplo mínimo y registra el estado antes y después.
 
-## Opciones y variaciones
+### Alcance explícito
 
-La tabla agrupa las opciones visibles en la sintaxis y en la ayuda corta. Una opción puede tener un significado propio cuando la página lo define; ejecuta la ayuda de tu versión antes de usarla en automatización.
+Aplicar git fetch-pack a una referencia, rango o ruta identificada. Usa el [ejemplo mínimo](#ejemplo-mínimo) como punto de partida. Resuelve cada argumento antes de ejecutar y usa `--` para rutas.
 
-| Opción | Efecto que debes controlar |
-| --- | --- |
-| `--all` | Amplía la selección a todos los elementos del alcance definido. |
-| `--quiet` | Reduce mensajes que no representan errores. |
-| `-q` | Activa la forma corta del modo sin mensajes. |
-| `--keep` | Activa el modo `--keep`; los argumentos y restricciones aparecen en la sintaxis y en la fuente oficial. |
-| `-k` | Activa el modo `-k`; los argumentos y restricciones aparecen en la sintaxis y en la fuente oficial. |
-| `--thin` | Activa el modo `--thin`; los argumentos y restricciones aparecen en la sintaxis y en la fuente oficial. |
-| `--include-tag` | Selecciona o modifica referencias dentro del alcance de la orden. |
-| `--upload-pack` | Activa el modo `--upload-pack`; los argumentos y restricciones aparecen en la sintaxis y en la fuente oficial. |
-| `--depth` | Establece un límite numérico para la selección o el recorrido. |
-| `--no-progress` | Desactiva la presentación de progreso. |
-| `-v` | Activa la forma corta de salida con detalle o muestra versión según la orden. |
-| `--stdin` | Lee registros o nombres desde la entrada estándar. |
-| `--diag-url` | Activa el modo `--diag-url`; los argumentos y restricciones aparecen en la sintaxis y en la fuente oficial. |
+### Validación
 
-## Selección de entradas
+Comprobar el resultado de git fetch-pack con una orden de lectura independiente. Usa el [ejemplo mínimo](#ejemplo-mínimo) como punto de partida. No uses la misma salida como única prueba del cambio.
 
-Resuelve por separado origen, destino y política de actualización. Una URL identifica un transporte; un refspec asigna referencias; un filtro limita objetos. Registra cada valor sin incluir credenciales.
+## Opciones
 
-Comprueba cada entrada con una orden de lectura antes de una escritura. Para listas de rutas generadas por otro proceso, prefiere una interfaz terminada en NUL cuando esté disponible.
+Cada apartado usa una opción en una invocación concreta. Las opciones equivalentes comparten la explicación, pero cada alias tiene su propio ejemplo. Ejecuta una opción por vez antes de combinarlas.
 
-## Salida y códigos de terminación
+### `--all`
 
-Un código 0 indica que la operación terminó bajo el contrato solicitado. Trata cualquier código distinto de cero según la función; no deduzcas el estado solo a partir de que stdout esté vacío.
+Amplía la selección a todos los elementos del alcance definido.
 
-No analices mensajes destinados a personas si existe un formato de máquina. Declara los campos, desactiva color y conserva stderr para diagnóstico.
+La opción limita o amplía el conjunto sobre el que se ejecuta solicitar a otro repositorio los objetos que faltan. Comprueba la selección con una forma de lectura antes de combinarla con una opción que escriba estado.
+
+```bash
+git fetch-pack --all https://example.test/equipo/biblioteca.git refs/heads/main
+git show-ref
+```
+
+La opción no recibe un valor separado en la forma mostrada por la ayuda corta. Los argumentos que aparecen después pertenecen a `git fetch-pack` o a otra opción. La lista de referencias permite identificar qué valor permaneció o cambió. Ejecuta la comprobación inmediatamente después para que ningún comando intermedio cambie el estado que estás observando.
+
+### `--quiet`
+
+Reduce mensajes que no representan errores.
+
+La opción cambia la representación o el canal del resultado. Úsala cuando una persona o un script necesite campos, separadores o cantidad de mensajes definidos. El contenido mostrado puede cambiar aunque el repositorio permanezca igual.
+
+```bash
+git fetch-pack --quiet https://example.test/equipo/biblioteca.git refs/heads/main
+git show-ref
+```
+
+La opción no recibe un valor separado en la forma mostrada por la ayuda corta. Los argumentos que aparecen después pertenecen a `git fetch-pack` o a otra opción. La lista de referencias permite identificar qué valor permaneció o cambió. Ejecuta la comprobación inmediatamente después para que ningún comando intermedio cambie el estado que estás observando.
+
+### `-q`
+
+Activa q durante solicitar a otro repositorio los objetos que faltan. La opción afecta esta invocación y no cambia la configuración de otras órdenes salvo que la propia función escriba esa configuración.
+
+En `git fetch-pack`, q modifica la forma en que se ejecuta solicitar a otro repositorio los objetos que faltan. Mantén iguales los demás argumentos para atribuir el cambio observado a esta opción.
+
+```bash
+git fetch-pack -q https://example.test/equipo/biblioteca.git refs/heads/main
+git show-ref
+```
+
+La opción no recibe un valor separado en la forma mostrada por la ayuda corta. Los argumentos que aparecen después pertenecen a `git fetch-pack` o a otra opción. La lista de referencias permite identificar qué valor permaneció o cambió. Ejecuta la comprobación inmediatamente después para que ningún comando intermedio cambie el estado que estás observando.
+
+### `--keep`
+
+Conserva el asunto del mensaje recibido según la forma que define el comando.
+
+En `git fetch-pack`, conservar modifica la forma en que se ejecuta solicitar a otro repositorio los objetos que faltan. Mantén iguales los demás argumentos para atribuir el cambio observado a esta opción.
+
+```bash
+git fetch-pack --keep https://example.test/equipo/biblioteca.git refs/heads/main
+git show-ref
+```
+
+La opción no recibe un valor separado en la forma mostrada por la ayuda corta. Los argumentos que aparecen después pertenecen a `git fetch-pack` o a otra opción. La lista de referencias permite identificar qué valor permaneció o cambió. Ejecuta la comprobación inmediatamente después para que ningún comando intermedio cambie el estado que estás observando.
+
+### `-k`
+
+Activa k durante solicitar a otro repositorio los objetos que faltan. La opción afecta esta invocación y no cambia la configuración de otras órdenes salvo que la propia función escriba esa configuración.
+
+En `git fetch-pack`, k modifica la forma en que se ejecuta solicitar a otro repositorio los objetos que faltan. Mantén iguales los demás argumentos para atribuir el cambio observado a esta opción.
+
+```bash
+git fetch-pack -k https://example.test/equipo/biblioteca.git refs/heads/main
+git show-ref
+```
+
+La opción no recibe un valor separado en la forma mostrada por la ayuda corta. Los argumentos que aparecen después pertenecen a `git fetch-pack` o a otra opción. La lista de referencias permite identificar qué valor permaneció o cambió. Ejecuta la comprobación inmediatamente después para que ningún comando intermedio cambie el estado que estás observando.
+
+### `--thin`
+
+Activa thin durante solicitar a otro repositorio los objetos que faltan. La opción afecta esta invocación y no cambia la configuración de otras órdenes salvo que la propia función escriba esa configuración.
+
+En `git fetch-pack`, thin modifica la forma en que se ejecuta solicitar a otro repositorio los objetos que faltan. Mantén iguales los demás argumentos para atribuir el cambio observado a esta opción.
+
+```bash
+git fetch-pack --thin https://example.test/equipo/biblioteca.git refs/heads/main
+git show-ref
+```
+
+La opción no recibe un valor separado en la forma mostrada por la ayuda corta. Los argumentos que aparecen después pertenecen a `git fetch-pack` o a otra opción. La lista de referencias permite identificar qué valor permaneció o cambió. Ejecuta la comprobación inmediatamente después para que ningún comando intermedio cambie el estado que estás observando.
+
+### `--include-tag`
+
+Selecciona o modifica referencias dentro del alcance de la orden.
+
+La opción limita o amplía el conjunto sobre el que se ejecuta solicitar a otro repositorio los objetos que faltan. Comprueba la selección con una forma de lectura antes de combinarla con una opción que escriba estado.
+
+```bash
+git fetch-pack --include-tag https://example.test/equipo/biblioteca.git refs/heads/main
+git show-ref
+```
+
+La opción no recibe un valor separado en la forma mostrada por la ayuda corta. Los argumentos que aparecen después pertenecen a `git fetch-pack` o a otra opción. La lista de referencias permite identificar qué valor permaneció o cambió. Ejecuta la comprobación inmediatamente después para que ningún comando intermedio cambie el estado que estás observando.
+
+### `--upload-pack`
+
+Activa upload pack durante solicitar a otro repositorio los objetos que faltan. La opción afecta esta invocación y no cambia la configuración de otras órdenes salvo que la propia función escriba esa configuración.
+
+En `git fetch-pack`, upload pack modifica la forma en que se ejecuta solicitar a otro repositorio los objetos que faltan. Mantén iguales los demás argumentos para atribuir el cambio observado a esta opción.
+
+```bash
+git fetch-pack --upload-pack https://example.test/equipo/biblioteca.git refs/heads/main
+git show-ref
+```
+
+La opción no recibe un valor separado en la forma mostrada por la ayuda corta. Los argumentos que aparecen después pertenecen a `git fetch-pack` o a otra opción. La lista de referencias permite identificar qué valor permaneció o cambió. Ejecuta la comprobación inmediatamente después para que ningún comando intermedio cambie el estado que estás observando.
+
+### `--depth`
+
+Establece un límite numérico para la selección o el recorrido.
+
+En `git fetch-pack`, profundidad modifica la forma en que se ejecuta solicitar a otro repositorio los objetos que faltan. Mantén iguales los demás argumentos para atribuir el cambio observado a esta opción.
+
+```bash
+git fetch-pack --depth https://example.test/equipo/biblioteca.git refs/heads/main
+git show-ref
+```
+
+La opción no recibe un valor separado en la forma mostrada por la ayuda corta. Los argumentos que aparecen después pertenecen a `git fetch-pack` o a otra opción. La lista de referencias permite identificar qué valor permaneció o cambió. Ejecuta la comprobación inmediatamente después para que ningún comando intermedio cambie el estado que estás observando.
+
+### `--no-progress`
+
+Desactiva la presentación de progreso.
+
+En `git fetch-pack`, desactivar progreso modifica la forma en que se ejecuta solicitar a otro repositorio los objetos que faltan. Mantén iguales los demás argumentos para atribuir el cambio observado a esta opción.
+
+```bash
+git fetch-pack --no-progress https://example.test/equipo/biblioteca.git refs/heads/main
+git show-ref
+```
+
+La opción no recibe un valor separado en la forma mostrada por la ayuda corta. Los argumentos que aparecen después pertenecen a `git fetch-pack` o a otra opción. La lista de referencias permite identificar qué valor permaneció o cambió. Ejecuta la comprobación inmediatamente después para que ningún comando intermedio cambie el estado que estás observando.
+
+### `-v`
+
+Activa v durante solicitar a otro repositorio los objetos que faltan. La opción afecta esta invocación y no cambia la configuración de otras órdenes salvo que la propia función escriba esa configuración.
+
+La opción limita o amplía el conjunto sobre el que se ejecuta solicitar a otro repositorio los objetos que faltan. Comprueba la selección con una forma de lectura antes de combinarla con una opción que escriba estado.
+
+```bash
+git fetch-pack -v https://example.test/equipo/biblioteca.git refs/heads/main
+git show-ref
+```
+
+La opción no recibe un valor separado en la forma mostrada por la ayuda corta. Los argumentos que aparecen después pertenecen a `git fetch-pack` o a otra opción. La lista de referencias permite identificar qué valor permaneció o cambió. Ejecuta la comprobación inmediatamente después para que ningún comando intermedio cambie el estado que estás observando.
+
+### `--stdin`
+
+Lee registros o nombres desde la entrada estándar.
+
+La opción cambia cómo `git fetch-pack` recibe datos. Define el separador, la codificación y la ruta de entrada antes de ejecutarla. Los nombres con espacios o saltos de línea requieren una interfaz terminada en NUL cuando el comando la ofrece.
+
+```bash
+git fetch-pack --stdin https://example.test/equipo/biblioteca.git refs/heads/main
+git show-ref
+```
+
+La opción no recibe un valor separado en la forma mostrada por la ayuda corta. Los argumentos que aparecen después pertenecen a `git fetch-pack` o a otra opción. La lista de referencias permite identificar qué valor permaneció o cambió. Ejecuta la comprobación inmediatamente después para que ningún comando intermedio cambie el estado que estás observando.
+
+### `--diag-url`
+
+Activa diag url durante solicitar a otro repositorio los objetos que faltan. La opción afecta esta invocación y no cambia la configuración de otras órdenes salvo que la propia función escriba esa configuración.
+
+En `git fetch-pack`, diag url modifica la forma en que se ejecuta solicitar a otro repositorio los objetos que faltan. Mantén iguales los demás argumentos para atribuir el cambio observado a esta opción.
+
+```bash
+git fetch-pack --diag-url https://example.test/equipo/biblioteca.git refs/heads/main
+git show-ref
+```
+
+La opción no recibe un valor separado en la forma mostrada por la ayuda corta. Los argumentos que aparecen después pertenecen a `git fetch-pack` o a otra opción. La lista de referencias permite identificar qué valor permaneció o cambió. Ejecuta la comprobación inmediatamente después para que ningún comando intermedio cambie el estado que estás observando.
 
 ## Errores y diagnóstico
 
-| Señal | Causa que debes comprobar | Acción |
-| --- | --- | --- |
-| El repositorio no se anuncia | La ruta, exportación o política no lo permite | Comprueba la raíz del servicio y los marcadores de exportación. |
-| La negociación se corta | Cliente y servidor no acuerdan capacidad o protocolo | Registra trazas sin incluir credenciales y compara versiones. |
-| La recepción se rechaza | Los permisos o hooks bloquean la referencia | Revisa la política del repositorio y el mensaje del hook. |
+### El repositorio no se anuncia
 
-Si una operación deja archivos de estado dentro de `.git`, usa `git status` y la acción de continuar, omitir o abortar definida por esa operación. No borres esos archivos para simular una cancelación.
+Comprueba esta causa: La ruta, exportación o política no lo permite. Comprueba la raíz del servicio y los marcadores de exportación.
 
-## Automatización
+### La negociación se corta
 
-1. Declara la versión mínima de Git que necesita el script.
-2. Resuelve la raíz del repositorio y evita depender del directorio actual.
-3. Separa opciones y rutas con `--`.
-4. Captura stdout, stderr y el código de terminación.
-5. Usa formatos de máquina o terminación NUL para nombres de archivo.
-6. Ejecuta primero sobre el laboratorio y añade un caso sin coincidencias.
+Comprueba esta causa: Cliente y servidor no acuerdan capacidad o protocolo. Registra trazas sin incluir credenciales y compara versiones.
 
-## Seguridad y recuperación
+### La recepción se rechaza
+
+Comprueba esta causa: Los permisos o hooks bloquean la referencia. Revisa la política del repositorio y el mensaje del hook.
+
+## Automatización y recuperación
 
 Persistencia: Puede persistir el estado implicado por esta operación: solicitar a otro repositorio los objetos que faltan. Las opciones pueden limitar o ampliar ese efecto. Antes de una operación que mueva o elimine referencias, registra sus hashes con `git show-ref`. Antes de cambiar archivos, conserva `git diff` y `git diff --cached`. Para objetos y commits que dejaron de estar referenciados, consulta el reflog antes de ejecutar mantenimiento que pueda eliminarlos.
-
-## Práctica guiada
 
 Usa repositorios locales o un contenedor de prueba. Registra solicitudes, capacidades anunciadas y cambios de referencias sin exponer el servicio a una red pública.
 

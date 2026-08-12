@@ -2,30 +2,22 @@
 title: "git init"
 source: "https://git-scm.com/docs/git-init"
 section: "getting-and-creating-projects"
-status: "expanded"
+status: "option-expanded"
 ---
 
 # `git init`
 
 Este caso usa `git init` para crear un repositorio vacío o reinicializar uno existente. Los nombres de archivo, revisiones, ramas y direcciones del ejemplo representan valores que debes sustituir por los de tu repositorio.
 
-## Alcance y responsabilidad
+## Responsabilidad y efecto
 
 git init crea la base de datos local de objetos y prepara el área de trabajo. Recibe como entrada un directorio, una URL o una selección de rutas. La operación consiste en crear un repositorio vacío o reinicializar uno existente.
 
-La página distingue lectura, escritura y resultado:
+Puede persistir el estado implicado por esta operación: crear un repositorio vacío o reinicializar uno existente. Las opciones pueden limitar o ampliar ese efecto.
 
-| Elemento | Relación con la función | Comprobación |
-| --- | --- | --- |
-| Entrada | un directorio, una URL o una selección de rutas. | Registra los argumentos y resuelve revisiones antes de ejecutar. |
-| Efecto principal | crear un repositorio vacío o reinicializar uno existente. | Comprueba el resultado con una orden de lectura. |
-| Persistencia | Puede persistir el estado implicado por esta operación: crear un repositorio vacío o reinicializar uno existente. Las opciones pueden limitar o ampliar ese efecto. | Compara el estado antes y después. |
-| Resultado | La orden comunica datos por stdout y diagnósticos por stderr. | Captura también el código de terminación. |
-| Fuente de verdad | El repositorio y la configuración efectiva determinan el resultado. | Usa `git status`, `git remote -v` y `git rev-parse --show-toplevel`. |
+## Laboratorio base
 
-## Requisitos y laboratorio
-
-Usa dos directorios bajo una ruta creada con `mktemp -d`: uno como origen y otro como destino.
+Crea este repositorio una vez. Las demás guías enlazan este apartado y continúan desde el commit `base`.
 
 ```bash
 lab_dir="$(mktemp -d)"
@@ -38,15 +30,13 @@ git -C "$lab_dir/proyecto" commit -m "base"
 cd "$lab_dir/proyecto"
 ```
 
-Antes de ejecutar el ejemplo, confirma la raíz con `git rev-parse --show-toplevel` cuando exista un repositorio. Registra `git status --short` y las referencias que puedan cambiar.
+`mktemp -d` crea una ruta que puedes eliminar cuando termines. `git init` crea el directorio Git. Las dos órdenes `git config` guardan nombre y correo solo dentro de este repositorio. `git add` copia `archivo.txt` al índice y `git commit` registra el estado que usarán los ejemplos posteriores. Comprueba el punto de partida con `git status --short`; una salida vacía indica que el área de trabajo y el índice coinciden con `HEAD`.
 
-## Modelo de funcionamiento
+## Cómo funciona
 
 Un repositorio contiene objetos y referencias. Un área de trabajo materializa un commit para que los archivos puedan editarse.
 
 Separa los datos del repositorio de los archivos materializados. Un repositorio bare conserva objetos y referencias sin área de trabajo.
-
-Para comprobar el resultado: el directorio resultante contiene el repositorio y, cuando corresponde, un área de trabajo. La verificación debe observar un estado distinto del canal que produjo el cambio.
 
 ## Ejemplo mínimo
 
@@ -57,16 +47,9 @@ git init -b main
 git status
 ```
 
-Ejecuta el bloque en orden. Conserva los nombres del laboratorio hasta confirmar el resultado. Sustituye rutas, revisiones o URL solo después de identificar su tipo y alcance.
+La invocación `git init -b main` ejecuta esta operación: crear un repositorio vacío o reinicializar uno existente. Después, el directorio resultante contiene el repositorio y, cuando corresponde, un área de trabajo. Conserva stdout, stderr y el código de terminación cuando el ejemplo forme parte de un script.
 
-### Resultado esperado
-
-- La entrada queda limitada a: un directorio, una URL o una selección de rutas.
-- La operación observable es: crear un repositorio vacío o reinicializar uno existente.
-- La comprobación se realiza mediante: el directorio resultante contiene el repositorio y, cuando corresponde, un área de trabajo.
-- stdout contiene datos o confirmaciones; stderr contiene diagnósticos. Captura ambos canales cuando automatices.
-
-## Sintaxis
+## Sintaxis y formas de invocación
 
 ```text
 git init [-q | --quiet] [--bare] [--template=<template-directory>]
@@ -87,68 +70,268 @@ git init [-q | --quiet] [--bare] [--template=<template-directory>]
 
 Los corchetes indican elementos opcionales; `<valor>` exige sustitución; los puntos suspensivos permiten repetición; `|` separa formas excluyentes. Usa `git init -h` para consultar la sintaxis que corresponde a la instalación donde ejecutarás la orden.
 
-## Casos de uso
+## Flujos de uso
 
-| Caso | Objetivo | Criterio de verificación |
-| --- | --- | --- |
-| Caso base | crear un repositorio vacío o reinicializar uno existente | Ejecuta el ejemplo mínimo y registra el estado antes y después. |
-| Alcance explícito | Aplicar git init a una referencia, rango o ruta identificada. | Resuelve cada argumento antes de ejecutar y usa `--` para rutas. |
-| Validación | Comprobar el resultado de git init con una orden de lectura independiente. | No uses la misma salida como única prueba del cambio. |
+### Caso base
 
+crear un repositorio vacío o reinicializar uno existente. Usa el [ejemplo mínimo](#ejemplo-mínimo) como punto de partida. Ejecuta el ejemplo mínimo y registra el estado antes y después.
 
-## Opciones y variaciones
+### Alcance explícito
 
-La tabla agrupa las opciones visibles en la sintaxis y en la ayuda corta. Una opción puede tener un significado propio cuando la página lo define; ejecuta la ayuda de tu versión antes de usarla en automatización.
+Aplicar git init a una referencia, rango o ruta identificada. Usa el [ejemplo mínimo](#ejemplo-mínimo) como punto de partida. Resuelve cada argumento antes de ejecutar y usa `--` para rutas.
 
-| Opción | Efecto que debes controlar |
-| --- | --- |
-| `-q` | Activa la forma corta del modo sin mensajes. |
-| `--quiet` | Reduce mensajes que no representan errores. |
-| `--bare` | Opera sin un área de trabajo asociada. |
-| `--template` | Controla campos, orden o representación del resultado. |
-| `--separate-git-dir` | Activa el modo `--separate-git-dir`; los argumentos y restricciones aparecen en la sintaxis y en la fuente oficial. |
-| `--object-format` | Controla campos, orden o representación del resultado. |
-| `--ref-format` | Controla campos, orden o representación del resultado. |
-| `-b` | Activa el modo `-b`; los argumentos y restricciones aparecen en la sintaxis y en la fuente oficial. |
-| `--initial-branch` | Selecciona o modifica referencias dentro del alcance de la orden. |
-| `--shared` | Activa el modo `--shared`; los argumentos y restricciones aparecen en la sintaxis y en la fuente oficial. |
+### Validación
 
-## Selección de entradas
+Comprobar el resultado de git init con una orden de lectura independiente. Usa el [ejemplo mínimo](#ejemplo-mínimo) como punto de partida. No uses la misma salida como única prueba del cambio.
 
-Las revisiones se resuelven antes que los pathspecs cuando la sintaxis las espera. Usa `--` para separar opciones y rutas. Cita los globos para decidir si los expande el shell o Git.
+## Opciones
 
-Comprueba cada entrada con una orden de lectura antes de una escritura. Para listas de rutas generadas por otro proceso, prefiere una interfaz terminada en NUL cuando esté disponible.
+Cada apartado usa una opción en una invocación concreta. Las opciones equivalentes comparten la explicación, pero cada alias tiene su propio ejemplo. Ejecuta una opción por vez antes de combinarlas.
 
-## Salida y códigos de terminación
+### `-q` y `--quiet`
 
-Un código 0 indica que la operación terminó bajo el contrato solicitado. Trata cualquier código distinto de cero según la función; no deduzcas el estado solo a partir de que stdout esté vacío.
+Reduce mensajes que no representan errores.  La misma línea de ayuda también acepta `-q`. Esas formas seleccionan el mismo comportamiento; cambia la escritura del argumento, no el efecto.
 
-No analices mensajes destinados a personas si existe un formato de máquina. Declara los campos, desactiva color y conserva stderr para diagnóstico.
+Estas escrituras son alias: seleccionan el mismo comportamiento. Se documentan juntas para no duplicar la regla, pero cada una conserva su propia invocación reproducible.
+
+La opción cambia la representación o el canal del resultado. Úsala cuando una persona o un script necesite campos, separadores o cantidad de mensajes definidos. El contenido mostrado puede cambiar aunque el repositorio permanezca igual.
+
+#### Ejemplo con `-q`
+
+```bash
+git init -q "$lab_dir/init-opcion"
+git -C "$lab_dir/init-opcion" rev-parse --git-dir
+```
+
+Esta forma no recibe un valor separado; los argumentos posteriores pertenecen a `git init` o a otra opción. La salida identifica el directorio que almacena el repositorio recién creado.
+
+#### Ejemplo con `--quiet`
+
+```bash
+git init --quiet "$lab_dir/init-opcion"
+git -C "$lab_dir/init-opcion" rev-parse --git-dir
+```
+
+Esta forma no recibe un valor separado; los argumentos posteriores pertenecen a `git init` o a otra opción. La salida identifica el directorio que almacena el repositorio recién creado.
+
+Ejecuta una sola alternativa cada vez. Si ejecutas varias consecutivamente, el primer comando puede cambiar el estado que observa el siguiente.
+
+### `--bare`
+
+Opera sin un área de trabajo asociada.
+
+En `git init`, repositorio bare modifica la forma en que se ejecuta crear un repositorio vacío o reinicializar uno existente. Mantén iguales los demás argumentos para atribuir el cambio observado a esta opción.
+
+```bash
+git init --bare "$lab_dir/init-opcion"
+git -C "$lab_dir/init-opcion" rev-parse --git-dir
+```
+
+La opción no recibe un valor separado en la forma mostrada por la ayuda corta. Los argumentos que aparecen después pertenecen a `git init` o a otra opción. La salida identifica el directorio que almacena el repositorio recién creado. Ejecuta la comprobación inmediatamente después para que ningún comando intermedio cambie el estado que estás observando.
+
+### `--template`
+
+Usa el directorio indicado como fuente de plantillas para crear archivos iniciales dentro del nuevo repositorio. En Git 2.51.1, la ayuda corta expresa el contrato como `directory from which templates will be used`. Conserva esa formulación al comparar el efecto entre versiones de Git.
+
+En `git init`, template modifica la forma en que se ejecuta crear un repositorio vacío o reinicializar uno existente. Mantén iguales los demás argumentos para atribuir el cambio observado a esta opción.
+
+```bash
+mkdir -p "$lab_dir/plantillas"
+printf 'plantilla del laboratorio\n' > "$lab_dir/plantillas/description"
+git init --template="$lab_dir/plantillas" "$lab_dir/init-opcion"
+git -C "$lab_dir/init-opcion" rev-parse --git-dir
+```
+
+El ejemplo usa `../plantillas` como valor. Sustitúyelo por un valor del tipo que muestra la sintaxis de tu versión. Un valor numérico conserva su unidad y un nombre de referencia debe resolver antes de ejecutar la orden. La salida identifica el directorio que almacena el repositorio recién creado. Ejecuta la comprobación inmediatamente después para que ningún comando intermedio cambie el estado que estás observando.
+
+### `--separate-git-dir`
+
+Guarda los datos del repositorio en otra ruta y deja en el área de trabajo un archivo que apunta a esa ubicación. En Git 2.51.1, la ayuda corta expresa el contrato como `separate git dir from working tree`. Conserva esa formulación al comparar el efecto entre versiones de Git.
+
+En `git init`, separate git dir modifica la forma en que se ejecuta crear un repositorio vacío o reinicializar uno existente. Mantén iguales los demás argumentos para atribuir el cambio observado a esta opción.
+
+```bash
+git init --separate-git-dir="$lab_dir/datos-git" "$lab_dir/init-opcion"
+git -C "$lab_dir/init-opcion" rev-parse --git-dir
+```
+
+El ejemplo usa `../datos-git` como valor. Sustitúyelo por un valor del tipo que muestra la sintaxis de tu versión. Un valor numérico conserva su unidad y un nombre de referencia debe resolver antes de ejecutar la orden. La salida identifica el directorio que almacena el repositorio recién creado. Ejecuta la comprobación inmediatamente después para que ningún comando intermedio cambie el estado que estás observando.
+
+### `--object-format`
+
+Selecciona el algoritmo de hash con el que el repositorio identifica objetos nuevos. En Git 2.51.1, la ayuda corta expresa el contrato como `specify the hash algorithm to use`. Conserva esa formulación al comparar el efecto entre versiones de Git.
+
+La opción cambia la representación o el canal del resultado. Úsala cuando una persona o un script necesite campos, separadores o cantidad de mensajes definidos. El contenido mostrado puede cambiar aunque el repositorio permanezca igual.
+
+```bash
+git init --object-format=sha256 "$lab_dir/init-opcion"
+git -C "$lab_dir/init-opcion" rev-parse --git-dir
+```
+
+El ejemplo usa `sha256` como valor. Sustitúyelo por un valor del tipo que muestra la sintaxis de tu versión. Un valor numérico conserva su unidad y un nombre de referencia debe resolver antes de ejecutar la orden. La salida identifica el directorio que almacena el repositorio recién creado. Ejecuta la comprobación inmediatamente después para que ningún comando intermedio cambie el estado que estás observando.
+
+### `--ref-format`
+
+Selecciona el formato de almacenamiento de referencias que usará el repositorio. En Git 2.51.1, la ayuda corta expresa el contrato como `specify the reference format to use`. Conserva esa formulación al comparar el efecto entre versiones de Git.
+
+La opción cambia la representación o el canal del resultado. Úsala cuando una persona o un script necesite campos, separadores o cantidad de mensajes definidos. El contenido mostrado puede cambiar aunque el repositorio permanezca igual.
+
+```bash
+git init --ref-format=reftable "$lab_dir/init-opcion"
+git -C "$lab_dir/init-opcion" rev-parse --git-dir
+```
+
+El ejemplo usa `reftable` como valor. Sustitúyelo por un valor del tipo que muestra la sintaxis de tu versión. Un valor numérico conserva su unidad y un nombre de referencia debe resolver antes de ejecutar la orden. La salida identifica el directorio que almacena el repositorio recién creado. Ejecuta la comprobación inmediatamente después para que ningún comando intermedio cambie el estado que estás observando.
+
+### `-b` y `--initial-branch`
+
+Selecciona o modifica referencias dentro del alcance de la orden.  La misma línea de ayuda también acepta `-b`. Esas formas seleccionan el mismo comportamiento; cambia la escritura del argumento, no el efecto.
+
+Estas escrituras son alias: seleccionan el mismo comportamiento. Se documentan juntas para no duplicar la regla, pero cada una conserva su propia invocación reproducible.
+
+La opción limita o amplía el conjunto sobre el que se ejecuta crear un repositorio vacío o reinicializar uno existente. Comprueba la selección con una forma de lectura antes de combinarla con una opción que escriba estado.
+
+#### Ejemplo con `-b`
+
+```bash
+git init -b main "$lab_dir/init-opcion"
+git -C "$lab_dir/init-opcion" rev-parse --git-dir
+```
+
+En esta forma, `main` es un valor de ejemplo. Sustitúyelo por un valor que cumpla el tipo y el alcance indicados por la sintaxis. La salida identifica el directorio que almacena el repositorio recién creado.
+
+#### Ejemplo con `--initial-branch`
+
+```bash
+git init --initial-branch=main "$lab_dir/init-opcion"
+git -C "$lab_dir/init-opcion" rev-parse --git-dir
+```
+
+En esta forma, `main` es un valor de ejemplo. Sustitúyelo por un valor que cumpla el tipo y el alcance indicados por la sintaxis. La salida identifica el directorio que almacena el repositorio recién creado.
+
+Ejecuta una sola alternativa cada vez. Si ejecutas varias consecutivamente, el primer comando puede cambiar el estado que observa el siguiente.
+
+### `--shared`
+
+Ajusta permisos y configuración para que varios usuarios del sistema operativo puedan escribir el repositorio. En Git 2.51.1, la ayuda corta expresa el contrato como `specify that the git repository is to be shared amongst several users`. Conserva esa formulación al comparar el efecto entre versiones de Git.
+
+En `git init`, shared modifica la forma en que se ejecuta crear un repositorio vacío o reinicializar uno existente. Mantén iguales los demás argumentos para atribuir el cambio observado a esta opción.
+
+```bash
+git init --shared=group "$lab_dir/init-opcion"
+git -C "$lab_dir/init-opcion" rev-parse --git-dir
+```
+
+El ejemplo usa `group` como valor. Sustitúyelo por un valor del tipo que muestra la sintaxis de tu versión. Un valor numérico conserva su unidad y un nombre de referencia debe resolver antes de ejecutar la orden. La salida identifica el directorio que almacena el repositorio recién creado. Ejecuta la comprobación inmediatamente después para que ningún comando intermedio cambie el estado que estás observando.
+
+### `--no-quiet`
+
+Desactiva para esta invocación el comportamiento que habilita `--quiet`. Mantén iguales los demás argumentos y compara el resultado con la forma positiva para comprobar la diferencia.
+
+La opción cambia la representación o el canal del resultado. Úsala cuando una persona o un script necesite campos, separadores o cantidad de mensajes definidos. El contenido mostrado puede cambiar aunque el repositorio permanezca igual.
+
+```bash
+git init --no-quiet "$lab_dir/init-opcion"
+git -C "$lab_dir/init-opcion" rev-parse --git-dir
+```
+
+La opción no recibe un valor separado en la forma mostrada por la ayuda corta. Los argumentos que aparecen después pertenecen a `git init` o a otra opción. La salida identifica el directorio que almacena el repositorio recién creado. Ejecuta la comprobación inmediatamente después para que ningún comando intermedio cambie el estado que estás observando.
+
+### `--no-bare`
+
+Desactiva para esta invocación el comportamiento que habilita `--bare`. Mantén iguales los demás argumentos y compara el resultado con la forma positiva para comprobar la diferencia.
+
+En `git init`, desactivar repositorio bare modifica la forma en que se ejecuta crear un repositorio vacío o reinicializar uno existente. Mantén iguales los demás argumentos para atribuir el cambio observado a esta opción.
+
+```bash
+git init --no-bare "$lab_dir/init-opcion"
+git -C "$lab_dir/init-opcion" rev-parse --git-dir
+```
+
+La opción no recibe un valor separado en la forma mostrada por la ayuda corta. Los argumentos que aparecen después pertenecen a `git init` o a otra opción. La salida identifica el directorio que almacena el repositorio recién creado. Ejecuta la comprobación inmediatamente después para que ningún comando intermedio cambie el estado que estás observando.
+
+### `--no-template`
+
+Desactiva para esta invocación el comportamiento que habilita `--template`. Mantén iguales los demás argumentos y compara el resultado con la forma positiva para comprobar la diferencia.
+
+En `git init`, desactivar template modifica la forma en que se ejecuta crear un repositorio vacío o reinicializar uno existente. Mantén iguales los demás argumentos para atribuir el cambio observado a esta opción.
+
+```bash
+git init --no-template "$lab_dir/init-opcion"
+git -C "$lab_dir/init-opcion" rev-parse --git-dir
+```
+
+La opción no recibe un valor separado en la forma mostrada por la ayuda corta. Los argumentos que aparecen después pertenecen a `git init` o a otra opción. La salida identifica el directorio que almacena el repositorio recién creado. Ejecuta la comprobación inmediatamente después para que ningún comando intermedio cambie el estado que estás observando.
+
+### `--no-separate-git-dir`
+
+Desactiva para esta invocación el comportamiento que habilita `--separate-git-dir`. Mantén iguales los demás argumentos y compara el resultado con la forma positiva para comprobar la diferencia.
+
+En `git init`, desactivar separate git dir modifica la forma en que se ejecuta crear un repositorio vacío o reinicializar uno existente. Mantén iguales los demás argumentos para atribuir el cambio observado a esta opción.
+
+```bash
+git init --no-separate-git-dir "$lab_dir/init-opcion"
+git -C "$lab_dir/init-opcion" rev-parse --git-dir
+```
+
+La opción no recibe un valor separado en la forma mostrada por la ayuda corta. Los argumentos que aparecen después pertenecen a `git init` o a otra opción. La salida identifica el directorio que almacena el repositorio recién creado. Ejecuta la comprobación inmediatamente después para que ningún comando intermedio cambie el estado que estás observando.
+
+### `--no-object-format`
+
+Desactiva para esta invocación el comportamiento que habilita `--object-format`. Mantén iguales los demás argumentos y compara el resultado con la forma positiva para comprobar la diferencia.
+
+La opción cambia la representación o el canal del resultado. Úsala cuando una persona o un script necesite campos, separadores o cantidad de mensajes definidos. El contenido mostrado puede cambiar aunque el repositorio permanezca igual.
+
+```bash
+git init --no-object-format "$lab_dir/init-opcion"
+git -C "$lab_dir/init-opcion" rev-parse --git-dir
+```
+
+La opción no recibe un valor separado en la forma mostrada por la ayuda corta. Los argumentos que aparecen después pertenecen a `git init` o a otra opción. La salida identifica el directorio que almacena el repositorio recién creado. Ejecuta la comprobación inmediatamente después para que ningún comando intermedio cambie el estado que estás observando.
+
+### `--no-ref-format`
+
+Desactiva para esta invocación el comportamiento que habilita `--ref-format`. Mantén iguales los demás argumentos y compara el resultado con la forma positiva para comprobar la diferencia.
+
+La opción cambia la representación o el canal del resultado. Úsala cuando una persona o un script necesite campos, separadores o cantidad de mensajes definidos. El contenido mostrado puede cambiar aunque el repositorio permanezca igual.
+
+```bash
+git init --no-ref-format "$lab_dir/init-opcion"
+git -C "$lab_dir/init-opcion" rev-parse --git-dir
+```
+
+La opción no recibe un valor separado en la forma mostrada por la ayuda corta. Los argumentos que aparecen después pertenecen a `git init` o a otra opción. La salida identifica el directorio que almacena el repositorio recién creado. Ejecuta la comprobación inmediatamente después para que ningún comando intermedio cambie el estado que estás observando.
+
+### `--no-initial-branch`
+
+Desactiva para esta invocación el comportamiento que habilita `--initial-branch`. Mantén iguales los demás argumentos y compara el resultado con la forma positiva para comprobar la diferencia.
+
+La opción limita o amplía el conjunto sobre el que se ejecuta crear un repositorio vacío o reinicializar uno existente. Comprueba la selección con una forma de lectura antes de combinarla con una opción que escriba estado.
+
+```bash
+git init --no-initial-branch "$lab_dir/init-opcion"
+git -C "$lab_dir/init-opcion" rev-parse --git-dir
+```
+
+La opción no recibe un valor separado en la forma mostrada por la ayuda corta. Los argumentos que aparecen después pertenecen a `git init` o a otra opción. La salida identifica el directorio que almacena el repositorio recién creado. Ejecuta la comprobación inmediatamente después para que ningún comando intermedio cambie el estado que estás observando.
 
 ## Errores y diagnóstico
 
-| Señal | Causa que debes comprobar | Acción |
-| --- | --- | --- |
-| El destino ya contiene archivos | La creación o clonación requiere una ruta compatible | Elige un directorio vacío o inicializa la ruta de forma explícita. |
-| No se recibe una referencia | El remoto no la anuncia o el filtro la excluye | Ejecuta `git ls-remote <url>` y revisa los filtros. |
-| Falla la autenticación | La URL o el helper de credenciales no entrega acceso | Comprueba la URL sin registrar credenciales en el historial del shell. |
+### El destino ya contiene archivos
 
-Si una operación deja archivos de estado dentro de `.git`, usa `git status` y la acción de continuar, omitir o abortar definida por esa operación. No borres esos archivos para simular una cancelación.
+Comprueba esta causa: La creación o clonación requiere una ruta compatible. Elige un directorio vacío o inicializa la ruta de forma explícita.
 
-## Automatización
+### No se recibe una referencia
 
-1. Declara la versión mínima de Git que necesita el script.
-2. Resuelve la raíz del repositorio y evita depender del directorio actual.
-3. Separa opciones y rutas con `--`.
-4. Captura stdout, stderr y el código de terminación.
-5. Usa formatos de máquina o terminación NUL para nombres de archivo.
-6. Ejecuta primero sobre el laboratorio y añade un caso sin coincidencias.
+Comprueba esta causa: El remoto no la anuncia o el filtro la excluye. Ejecuta `git ls-remote <url>` y revisa los filtros.
 
-## Seguridad y recuperación
+### Falla la autenticación
+
+Comprueba esta causa: La URL o el helper de credenciales no entrega acceso. Comprueba la URL sin registrar credenciales en el historial del shell.
+
+## Automatización y recuperación
 
 Persistencia: Puede persistir el estado implicado por esta operación: crear un repositorio vacío o reinicializar uno existente. Las opciones pueden limitar o ampliar ese efecto. Antes de una operación que mueva o elimine referencias, registra sus hashes con `git show-ref`. Antes de cambiar archivos, conserva `git diff` y `git diff --cached`. Para objetos y commits que dejaron de estar referenciados, consulta el reflog antes de ejecutar mantenimiento que pueda eliminarlos.
-
-## Práctica guiada
 
 Usa un directorio temporal. Compara el contenido antes y después, incluidos `.git`, HEAD y las ramas disponibles.
 

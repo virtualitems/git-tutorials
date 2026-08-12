@@ -2,51 +2,28 @@
 title: "git switch"
 source: "https://git-scm.com/docs/git-switch"
 section: "branching-and-merging"
-status: "expanded"
+status: "option-expanded"
 ---
 
 # `git switch`
 
 Este caso usa `git switch` para cambiar de rama o crear una rama antes de cambiar. Los nombres de archivo, revisiones, ramas y direcciones del ejemplo representan valores que debes sustituir por los de tu repositorio.
 
-## Alcance y responsabilidad
+## Responsabilidad y efecto
 
 git switch consulta o cambia referencias, `HEAD`, worktrees y estados de integración. Recibe como entrada las ramas, commits o rutas que participan en la operación. La operación consiste en cambiar de rama o crear una rama antes de cambiar.
 
-La página distingue lectura, escritura y resultado:
+Puede persistir el estado implicado por esta operación: cambiar de rama o crear una rama antes de cambiar. Las opciones pueden limitar o ampliar ese efecto.
 
-| Elemento | Relación con la función | Comprobación |
-| --- | --- | --- |
-| Entrada | las ramas, commits o rutas que participan en la operación. | Registra los argumentos y resuelve revisiones antes de ejecutar. |
-| Efecto principal | cambiar de rama o crear una rama antes de cambiar. | Comprueba el resultado con una orden de lectura. |
-| Persistencia | Puede persistir el estado implicado por esta operación: cambiar de rama o crear una rama antes de cambiar. Las opciones pueden limitar o ampliar ese efecto. | Compara el estado antes y después. |
-| Resultado | La orden comunica datos por stdout y diagnósticos por stderr. | Captura también el código de terminación. |
-| Fuente de verdad | El repositorio y la configuración efectiva determinan el resultado. | Usa `git status`, `git branch -vv`, `git log --graph --oneline --decorate --all`. |
+## Preparación
 
-## Requisitos y laboratorio
+Los ejemplos que necesitan un repositorio parten del [laboratorio base de `git init`](../getting-and-creating-projects/init.md#laboratorio-base). La posición de opciones, revisiones y rutas sigue las [convenciones de la interfaz de Git](../guides/gitcli.md#convenciones-de-la-cli). Los nombres como `HEAD`, `main`, `HEAD~2` y `A..B` se explican en [revisiones y rangos](../guides/gitrevisions.md#revisiones-y-rangos). Antes de ejecutar una forma que escriba datos, registra `git status --short` y las referencias que puedan cambiar.
 
-Crea un commit base y dos ramas con un cambio distinto. Ejecuta la operación desde la rama indicada en el ejemplo.
-
-```bash
-lab_dir="$(mktemp -d)"
-git init "$lab_dir/proyecto"
-git -C "$lab_dir/proyecto" config user.name "Persona de prueba"
-git -C "$lab_dir/proyecto" config user.email "prueba@example.test"
-printf 'línea base\n' > "$lab_dir/proyecto/archivo.txt"
-git -C "$lab_dir/proyecto" add archivo.txt
-git -C "$lab_dir/proyecto" commit -m "base"
-cd "$lab_dir/proyecto"
-```
-
-Antes de ejecutar el ejemplo, confirma la raíz con `git rev-parse --show-toplevel` cuando exista un repositorio. Registra `git status --short` y las referencias que puedan cambiar.
-
-## Modelo de funcionamiento
+## Cómo funciona
 
 Una rama es una referencia que apunta a un commit. Cambiar de rama mueve HEAD; fusionar o reorganizar historial crea o reasigna commits y referencias.
 
 Distingue los commits de los nombres que los señalan. Reescribir o fusionar puede crear commits nuevos aunque el contenido final coincida.
-
-Para comprobar el resultado: `git log --graph` y `git show-ref` muestran los commits y punteros resultantes. La verificación debe observar un estado distinto del canal que produjo el cambio.
 
 ## Ejemplo mínimo
 
@@ -55,16 +32,9 @@ git switch -c tema-portada
 git switch main
 ```
 
-Ejecuta el bloque en orden. Conserva los nombres del laboratorio hasta confirmar el resultado. Sustituye rutas, revisiones o URL solo después de identificar su tipo y alcance.
+La invocación `git switch -c tema-portada` ejecuta esta operación: cambiar de rama o crear una rama antes de cambiar. Después, `git log --graph` y `git show-ref` muestran los commits y punteros resultantes. Conserva stdout, stderr y el código de terminación cuando el ejemplo forme parte de un script.
 
-### Resultado esperado
-
-- La entrada queda limitada a: las ramas, commits o rutas que participan en la operación.
-- La operación observable es: cambiar de rama o crear una rama antes de cambiar.
-- La comprobación se realiza mediante: `git log --graph` y `git show-ref` muestran los commits y punteros resultantes.
-- stdout contiene datos o confirmaciones; stderr contiene diagnósticos. Captura ambos canales cuando automatices.
-
-## Sintaxis
+## Sintaxis y formas de invocación
 
 ```text
 git switch [<options>] [--no-guess] <branch>
@@ -81,81 +51,536 @@ git switch [<options>] [<branch>]
 
 Los corchetes indican elementos opcionales; `<valor>` exige sustitución; los puntos suspensivos permiten repetición; `|` separa formas excluyentes. Usa `git switch -h` para consultar la sintaxis que corresponde a la instalación donde ejecutarás la orden.
 
-## Casos de uso
+## Flujos de uso
 
-| Caso | Objetivo | Criterio de verificación |
-| --- | --- | --- |
-| Caso base | cambiar de rama o crear una rama antes de cambiar | Ejecuta el ejemplo mínimo y registra el estado antes y después. |
-| Alcance explícito | Aplicar git switch a una referencia, rango o ruta identificada. | Resuelve cada argumento antes de ejecutar y usa `--` para rutas. |
-| Validación | Comprobar el resultado de git switch con una orden de lectura independiente. | No uses la misma salida como única prueba del cambio. |
+### Caso base
 
+cambiar de rama o crear una rama antes de cambiar. Usa el [ejemplo mínimo](#ejemplo-mínimo) como punto de partida. Ejecuta el ejemplo mínimo y registra el estado antes y después.
 
-## Opciones y variaciones
+### Alcance explícito
 
-La tabla agrupa las opciones visibles en la sintaxis y en la ayuda corta. Una opción puede tener un significado propio cuando la página lo define; ejecuta la ayuda de tu versión antes de usarla en automatización.
+Aplicar git switch a una referencia, rango o ruta identificada. Usa el [ejemplo mínimo](#ejemplo-mínimo) como punto de partida. Resuelve cada argumento antes de ejecutar y usa `--` para rutas.
 
-| Opción | Efecto que debes controlar |
-| --- | --- |
-| `--no-guess` | Desactiva el comportamiento `guess` para esta invocación. |
-| `--detach` | Hace que `HEAD` apunte directamente a un commit. |
-| `-c` | Aplica una clave de configuración solo a esta invocación. |
-| `-C` | Ejecuta Git como si se hubiera iniciado en el directorio indicado. |
-| `--orphan` | Activa el modo `--orphan`; los argumentos y restricciones aparecen en la sintaxis y en la fuente oficial. |
-| `--create` | Permite crear o escribir el elemento seleccionado. |
-| `--force-create` | Permite crear o escribir el elemento seleccionado. |
-| `--guess` | Activa el modo `--guess`; los argumentos y restricciones aparecen en la sintaxis y en la fuente oficial. |
-| `--discard-changes` | Activa el modo `--discard-changes`; los argumentos y restricciones aparecen en la sintaxis y en la fuente oficial. |
-| `-q` | Activa la forma corta del modo sin mensajes. |
-| `--quiet` | Reduce mensajes que no representan errores. |
-| `--recurse-submodules` | Propaga la operación a submódulos dentro del alcance. |
-| `--progress` | Muestra progreso aunque la salida no sea un terminal. |
-| `-m` | Activa el modo `-m`; los argumentos y restricciones aparecen en la sintaxis y en la fuente oficial. |
-| `--merge` | Activa el modo `--merge`; los argumentos y restricciones aparecen en la sintaxis y en la fuente oficial. |
-| `--conflict` | Activa el modo `--conflict`; los argumentos y restricciones aparecen en la sintaxis y en la fuente oficial. |
-| `-d` | Activa la forma corta de eliminación o una opción propia de la orden. |
-| `-t` | Activa el modo `-t`; los argumentos y restricciones aparecen en la sintaxis y en la fuente oficial. |
-| `--track` | Crea o ajusta la asociación de seguimiento solicitada. |
-| `-f` | Activa la forma corta de la operación forzada. |
-| `--force` | Omite una protección concreta; úsala solo después de verificar el estado objetivo. |
-| `--overwrite-ignore` | Excluye elementos que cumplan la condición indicada. |
-| `--ignore-other-worktrees` | Excluye elementos que cumplan la condición indicada. |
+### Validación
 
-## Selección de entradas
+Comprobar el resultado de git switch con una orden de lectura independiente. Usa el [ejemplo mínimo](#ejemplo-mínimo) como punto de partida. No uses la misma salida como única prueba del cambio.
 
-Las revisiones se resuelven antes que los pathspecs cuando la sintaxis las espera. Usa `--` para separar opciones y rutas. Cita los globos para decidir si los expande el shell o Git.
+## Opciones
 
-Comprueba cada entrada con una orden de lectura antes de una escritura. Para listas de rutas generadas por otro proceso, prefiere una interfaz terminada en NUL cuando esté disponible.
+Cada apartado usa una opción en una invocación concreta. Las opciones equivalentes comparten la explicación, pero cada alias tiene su propio ejemplo. Ejecuta una opción por vez antes de combinarlas.
 
-## Salida y códigos de terminación
+### `--no-guess`
 
-Un código 0 indica que la operación terminó bajo el contrato solicitado. Trata cualquier código distinto de cero según la función; no deduzcas el estado solo a partir de que stdout esté vacío.
+Desactiva el comportamiento `guess` para esta invocación.
 
-No analices mensajes destinados a personas si existe un formato de máquina. Declara los campos, desactiva color y conserva stderr para diagnóstico.
+La opción limita o amplía el conjunto sobre el que se ejecuta cambiar de rama o crear una rama antes de cambiar. Comprueba la selección con una forma de lectura antes de combinarla con una opción que escriba estado.
+
+```bash
+git switch --no-guess -c tema-portada
+git status --short
+```
+
+La opción no recibe un valor separado en la forma mostrada por la ayuda corta. Los argumentos que aparecen después pertenecen a `git switch` o a otra opción. El estado muestra si cambió el área de trabajo, el índice o la operación en curso. Ejecuta la comprobación inmediatamente después para que ningún comando intermedio cambie el estado que estás observando.
+
+### `--detach` y `-d`
+
+Hace que `HEAD` apunte directamente a un commit.  La misma línea de ayuda también acepta `-d`. Esas formas seleccionan el mismo comportamiento; cambia la escritura del argumento, no el efecto.
+
+Estas escrituras son alias: seleccionan el mismo comportamiento. Se documentan juntas para no duplicar la regla, pero cada una conserva su propia invocación reproducible.
+
+En `git switch`, HEAD separado modifica la forma en que se ejecuta cambiar de rama o crear una rama antes de cambiar. Mantén iguales los demás argumentos para atribuir el cambio observado a esta opción.
+
+#### Ejemplo con `--detach`
+
+```bash
+git switch --detach -c tema-portada
+git status --short
+```
+
+Esta forma no recibe un valor separado; los argumentos posteriores pertenecen a `git switch` o a otra opción. El estado muestra si cambió el área de trabajo, el índice o la operación en curso.
+
+#### Ejemplo con `-d`
+
+```bash
+git switch -d -c tema-portada
+git status --short
+```
+
+Esta forma no recibe un valor separado; los argumentos posteriores pertenecen a `git switch` o a otra opción. El estado muestra si cambió el área de trabajo, el índice o la operación en curso.
+
+Ejecuta una sola alternativa cada vez. Si ejecutas varias consecutivamente, el primer comando puede cambiar el estado que observa el siguiente.
+
+### `-c` y `--create`
+
+Permite crear o escribir el elemento seleccionado.  La misma línea de ayuda también acepta `-c`. Esas formas seleccionan el mismo comportamiento; cambia la escritura del argumento, no el efecto.
+
+Estas escrituras son alias: seleccionan el mismo comportamiento. Se documentan juntas para no duplicar la regla, pero cada una conserva su propia invocación reproducible.
+
+La opción limita o amplía el conjunto sobre el que se ejecuta cambiar de rama o crear una rama antes de cambiar. Comprueba la selección con una forma de lectura antes de combinarla con una opción que escriba estado.
+
+#### Ejemplo con `-c`
+
+```bash
+git switch -c main
+git status --short
+```
+
+En esta forma, `main` es un valor de ejemplo. Sustitúyelo por un valor que cumpla el tipo y el alcance indicados por la sintaxis. El estado muestra si cambió el área de trabajo, el índice o la operación en curso.
+
+#### Ejemplo con `--create`
+
+```bash
+git switch --create=main
+git status --short
+```
+
+En esta forma, `main` es un valor de ejemplo. Sustitúyelo por un valor que cumpla el tipo y el alcance indicados por la sintaxis. El estado muestra si cambió el área de trabajo, el índice o la operación en curso.
+
+Ejecuta una sola alternativa cada vez. Si ejecutas varias consecutivamente, el primer comando puede cambiar el estado que observa el siguiente.
+
+### `-C` y `--force-create`
+
+Permite crear o escribir el elemento seleccionado.  La misma línea de ayuda también acepta `-C`. Esas formas seleccionan el mismo comportamiento; cambia la escritura del argumento, no el efecto.
+
+Estas escrituras son alias: seleccionan el mismo comportamiento. Se documentan juntas para no duplicar la regla, pero cada una conserva su propia invocación reproducible.
+
+La opción controla omitir la protección crear. Registra el estado de las referencias y conserva los cambios sin commit antes de usarla, porque cambiar de rama o crear una rama antes de cambiar puede retirar o reemplazar datos dentro del alcance seleccionado.
+
+#### Ejemplo con `-C`
+
+```bash
+git switch -C main -c tema-portada
+git status --short
+```
+
+En esta forma, `main` es un valor de ejemplo. Sustitúyelo por un valor que cumpla el tipo y el alcance indicados por la sintaxis. El estado muestra si cambió el área de trabajo, el índice o la operación en curso.
+
+#### Ejemplo con `--force-create`
+
+```bash
+git switch --force-create=main -c tema-portada
+git status --short
+```
+
+En esta forma, `main` es un valor de ejemplo. Sustitúyelo por un valor que cumpla el tipo y el alcance indicados por la sintaxis. El estado muestra si cambió el área de trabajo, el índice o la operación en curso.
+
+Ejecuta una sola alternativa cada vez. Si ejecutas varias consecutivamente, el primer comando puede cambiar el estado que observa el siguiente.
+
+### `--orphan`
+
+Crea o cambia a una rama sin padres en el historial existente. En Git 2.51.1, la ayuda corta expresa el contrato como `new unborn branch`. Conserva esa formulación al comparar el efecto entre versiones de Git.
+
+La opción limita o amplía el conjunto sobre el que se ejecuta cambiar de rama o crear una rama antes de cambiar. Comprueba la selección con una forma de lectura antes de combinarla con una opción que escriba estado.
+
+```bash
+git switch --orphan=main -c tema-portada
+git status --short
+```
+
+El ejemplo usa `main` como valor. Sustitúyelo por un valor del tipo que muestra la sintaxis de tu versión. Un valor numérico conserva su unidad y un nombre de referencia debe resolver antes de ejecutar la orden. El estado muestra si cambió el área de trabajo, el índice o la operación en curso. Ejecuta la comprobación inmediatamente después para que ningún comando intermedio cambie el estado que estás observando.
+
+### `--guess`
+
+Permite deducir una rama local a partir de una rama remota con el mismo nombre. En Git 2.51.1, la ayuda corta expresa el contrato como `second guess 'git switch <no-such-branch>'`. Conserva esa formulación al comparar el efecto entre versiones de Git.
+
+La opción limita o amplía el conjunto sobre el que se ejecuta cambiar de rama o crear una rama antes de cambiar. Comprueba la selección con una forma de lectura antes de combinarla con una opción que escriba estado.
+
+```bash
+git switch --guess -c tema-portada
+git status --short
+```
+
+La opción no recibe un valor separado en la forma mostrada por la ayuda corta. Los argumentos que aparecen después pertenecen a `git switch` o a otra opción. El estado muestra si cambió el área de trabajo, el índice o la operación en curso. Ejecuta la comprobación inmediatamente después para que ningún comando intermedio cambie el estado que estás observando.
+
+### `--discard-changes`
+
+Activa discard changes durante cambiar de rama o crear una rama antes de cambiar. La opción afecta esta invocación y no cambia la configuración de otras órdenes salvo que la propia función escriba esa configuración. En Git 2.51.1, la ayuda corta expresa el contrato como `throw away local modifications`. Conserva esa formulación al comparar el efecto entre versiones de Git.
+
+La opción controla discard changes. Registra el estado de las referencias y conserva los cambios sin commit antes de usarla, porque cambiar de rama o crear una rama antes de cambiar puede retirar o reemplazar datos dentro del alcance seleccionado.
+
+```bash
+git switch --discard-changes -c tema-portada
+git status --short
+```
+
+La opción no recibe un valor separado en la forma mostrada por la ayuda corta. Los argumentos que aparecen después pertenecen a `git switch` o a otra opción. El estado muestra si cambió el área de trabajo, el índice o la operación en curso. Ejecuta la comprobación inmediatamente después para que ningún comando intermedio cambie el estado que estás observando.
+
+### `-q` y `--quiet`
+
+Reduce mensajes que no representan errores.  La misma línea de ayuda también acepta `-q`. Esas formas seleccionan el mismo comportamiento; cambia la escritura del argumento, no el efecto.
+
+Estas escrituras son alias: seleccionan el mismo comportamiento. Se documentan juntas para no duplicar la regla, pero cada una conserva su propia invocación reproducible.
+
+La opción cambia la representación o el canal del resultado. Úsala cuando una persona o un script necesite campos, separadores o cantidad de mensajes definidos. El contenido mostrado puede cambiar aunque el repositorio permanezca igual.
+
+#### Ejemplo con `-q`
+
+```bash
+git switch -q -c tema-portada
+git status --short
+```
+
+Esta forma no recibe un valor separado; los argumentos posteriores pertenecen a `git switch` o a otra opción. El estado muestra si cambió el área de trabajo, el índice o la operación en curso.
+
+#### Ejemplo con `--quiet`
+
+```bash
+git switch --quiet -c tema-portada
+git status --short
+```
+
+Esta forma no recibe un valor separado; los argumentos posteriores pertenecen a `git switch` o a otra opción. El estado muestra si cambió el área de trabajo, el índice o la operación en curso.
+
+Ejecuta una sola alternativa cada vez. Si ejecutas varias consecutivamente, el primer comando puede cambiar el estado que observa el siguiente.
+
+### `--recurse-submodules`
+
+Propaga la operación a submódulos dentro del alcance.
+
+La opción añade, retira o consulta una comprobación previa. Ejecuta primero la forma que no escribe cuando exista y conserva el código de terminación como parte del resultado.
+
+```bash
+git switch --recurse-submodules=valor -c tema-portada
+git status --short
+```
+
+El ejemplo usa `valor` como valor. Sustitúyelo por un valor del tipo que muestra la sintaxis de tu versión. Un valor numérico conserva su unidad y un nombre de referencia debe resolver antes de ejecutar la orden. El estado muestra si cambió el área de trabajo, el índice o la operación en curso. Ejecuta la comprobación inmediatamente después para que ningún comando intermedio cambie el estado que estás observando.
+
+### `--progress`
+
+Muestra progreso aunque la salida no sea un terminal.
+
+La opción controla progreso. Registra el estado de las referencias y conserva los cambios sin commit antes de usarla, porque cambiar de rama o crear una rama antes de cambiar puede retirar o reemplazar datos dentro del alcance seleccionado.
+
+```bash
+git switch --progress -c tema-portada
+git status --short
+```
+
+La opción no recibe un valor separado en la forma mostrada por la ayuda corta. Los argumentos que aparecen después pertenecen a `git switch` o a otra opción. El estado muestra si cambió el área de trabajo, el índice o la operación en curso. Ejecuta la comprobación inmediatamente después para que ningún comando intermedio cambie el estado que estás observando.
+
+### `-m` y `--merge`
+
+Ejecuta merge durante cambiar de rama o crear una rama antes de cambiar. En Git 2.51.1, la ayuda corta expresa el contrato como `perform a 3-way merge with the new branch`. Conserva esa formulación al comparar el efecto entre versiones de Git. La misma línea de ayuda también acepta `-m`. Esas formas seleccionan el mismo comportamiento; cambia la escritura del argumento, no el efecto.
+
+Estas escrituras son alias: seleccionan el mismo comportamiento. Se documentan juntas para no duplicar la regla, pero cada una conserva su propia invocación reproducible.
+
+La opción limita o amplía el conjunto sobre el que se ejecuta cambiar de rama o crear una rama antes de cambiar. Comprueba la selección con una forma de lectura antes de combinarla con una opción que escriba estado.
+
+#### Ejemplo con `-m`
+
+```bash
+git switch -m -c tema-portada
+git status --short
+```
+
+Esta forma no recibe un valor separado; los argumentos posteriores pertenecen a `git switch` o a otra opción. El estado muestra si cambió el área de trabajo, el índice o la operación en curso.
+
+#### Ejemplo con `--merge`
+
+```bash
+git switch --merge -c tema-portada
+git status --short
+```
+
+Esta forma no recibe un valor separado; los argumentos posteriores pertenecen a `git switch` o a otra opción. El estado muestra si cambió el área de trabajo, el índice o la operación en curso.
+
+Ejecuta una sola alternativa cada vez. Si ejecutas varias consecutivamente, el primer comando puede cambiar el estado que observa el siguiente.
+
+### `--conflict`
+
+Selecciona el estilo de marcadores que Git escribe al materializar un conflicto. En Git 2.51.1, la ayuda corta expresa el contrato como `conflict style (merge, diff3, or zdiff3)`. Conserva esa formulación al comparar el efecto entre versiones de Git.
+
+En `git switch`, conflict modifica la forma en que se ejecuta cambiar de rama o crear una rama antes de cambiar. Mantén iguales los demás argumentos para atribuir el cambio observado a esta opción.
+
+```bash
+git switch --conflict=short -c tema-portada
+git status --short
+```
+
+El ejemplo usa `short` como valor. Sustitúyelo por un valor del tipo que muestra la sintaxis de tu versión. Un valor numérico conserva su unidad y un nombre de referencia debe resolver antes de ejecutar la orden. El estado muestra si cambió el área de trabajo, el índice o la operación en curso. Ejecuta la comprobación inmediatamente después para que ningún comando intermedio cambie el estado que estás observando.
+
+### `-t` y `--track`
+
+Crea o ajusta la asociación de seguimiento solicitada.  La misma línea de ayuda también acepta `-t`. Esas formas seleccionan el mismo comportamiento; cambia la escritura del argumento, no el efecto.
+
+Estas escrituras son alias: seleccionan el mismo comportamiento. Se documentan juntas para no duplicar la regla, pero cada una conserva su propia invocación reproducible.
+
+La opción limita o amplía el conjunto sobre el que se ejecuta cambiar de rama o crear una rama antes de cambiar. Comprueba la selección con una forma de lectura antes de combinarla con una opción que escriba estado.
+
+#### Ejemplo con `-t`
+
+```bash
+git switch -t=valor -c tema-portada
+git status --short
+```
+
+En esta forma, `valor` es un valor de ejemplo. Sustitúyelo por un valor que cumpla el tipo y el alcance indicados por la sintaxis. El estado muestra si cambió el área de trabajo, el índice o la operación en curso.
+
+#### Ejemplo con `--track`
+
+```bash
+git switch --track=valor -c tema-portada
+git status --short
+```
+
+En esta forma, `valor` es un valor de ejemplo. Sustitúyelo por un valor que cumpla el tipo y el alcance indicados por la sintaxis. El estado muestra si cambió el área de trabajo, el índice o la operación en curso.
+
+Ejecuta una sola alternativa cada vez. Si ejecutas varias consecutivamente, el primer comando puede cambiar el estado que observa el siguiente.
+
+### `-f` y `--force`
+
+Omite una protección concreta; úsala solo después de verificar el estado objetivo.  La misma línea de ayuda también acepta `-f`. Esas formas seleccionan el mismo comportamiento; cambia la escritura del argumento, no el efecto.
+
+Estas escrituras son alias: seleccionan el mismo comportamiento. Se documentan juntas para no duplicar la regla, pero cada una conserva su propia invocación reproducible.
+
+La opción controla omitir la protección. Registra el estado de las referencias y conserva los cambios sin commit antes de usarla, porque cambiar de rama o crear una rama antes de cambiar puede retirar o reemplazar datos dentro del alcance seleccionado.
+
+#### Ejemplo con `-f`
+
+```bash
+git switch -f -c tema-portada
+git status --short
+```
+
+Esta forma no recibe un valor separado; los argumentos posteriores pertenecen a `git switch` o a otra opción. El estado muestra si cambió el área de trabajo, el índice o la operación en curso.
+
+#### Ejemplo con `--force`
+
+```bash
+git switch --force -c tema-portada
+git status --short
+```
+
+Esta forma no recibe un valor separado; los argumentos posteriores pertenecen a `git switch` o a otra opción. El estado muestra si cambió el área de trabajo, el índice o la operación en curso.
+
+Ejecuta una sola alternativa cada vez. Si ejecutas varias consecutivamente, el primer comando puede cambiar el estado que observa el siguiente.
+
+### `--overwrite-ignore`
+
+Excluye elementos que cumplan la condición indicada.
+
+La opción controla overwrite ignorar. Registra el estado de las referencias y conserva los cambios sin commit antes de usarla, porque cambiar de rama o crear una rama antes de cambiar puede retirar o reemplazar datos dentro del alcance seleccionado.
+
+```bash
+git switch --overwrite-ignore -c tema-portada
+git status --short
+```
+
+La opción no recibe un valor separado en la forma mostrada por la ayuda corta. Los argumentos que aparecen después pertenecen a `git switch` o a otra opción. El estado muestra si cambió el área de trabajo, el índice o la operación en curso. Ejecuta la comprobación inmediatamente después para que ningún comando intermedio cambie el estado que estás observando.
+
+### `--ignore-other-worktrees`
+
+Excluye elementos que cumplan la condición indicada.
+
+La opción limita o amplía el conjunto sobre el que se ejecuta cambiar de rama o crear una rama antes de cambiar. Comprueba la selección con una forma de lectura antes de combinarla con una opción que escriba estado.
+
+```bash
+git switch --ignore-other-worktrees -c tema-portada
+git status --short
+```
+
+La opción no recibe un valor separado en la forma mostrada por la ayuda corta. Los argumentos que aparecen después pertenecen a `git switch` o a otra opción. El estado muestra si cambió el área de trabajo, el índice o la operación en curso. Ejecuta la comprobación inmediatamente después para que ningún comando intermedio cambie el estado que estás observando.
+
+### `--no-detach`
+
+Desactiva para esta invocación el comportamiento que habilita `--detach`. Mantén iguales los demás argumentos y compara el resultado con la forma positiva para comprobar la diferencia.
+
+En `git switch`, desactivar HEAD separado modifica la forma en que se ejecuta cambiar de rama o crear una rama antes de cambiar. Mantén iguales los demás argumentos para atribuir el cambio observado a esta opción.
+
+```bash
+git switch --no-detach -c tema-portada
+git status --short
+```
+
+La opción no recibe un valor separado en la forma mostrada por la ayuda corta. Los argumentos que aparecen después pertenecen a `git switch` o a otra opción. El estado muestra si cambió el área de trabajo, el índice o la operación en curso. Ejecuta la comprobación inmediatamente después para que ningún comando intermedio cambie el estado que estás observando.
+
+### `--no-orphan`
+
+Desactiva para esta invocación el comportamiento que habilita `--orphan`. Mantén iguales los demás argumentos y compara el resultado con la forma positiva para comprobar la diferencia.
+
+La opción limita o amplía el conjunto sobre el que se ejecuta cambiar de rama o crear una rama antes de cambiar. Comprueba la selección con una forma de lectura antes de combinarla con una opción que escriba estado.
+
+```bash
+git switch --no-orphan -c tema-portada
+git status --short
+```
+
+La opción no recibe un valor separado en la forma mostrada por la ayuda corta. Los argumentos que aparecen después pertenecen a `git switch` o a otra opción. El estado muestra si cambió el área de trabajo, el índice o la operación en curso. Ejecuta la comprobación inmediatamente después para que ningún comando intermedio cambie el estado que estás observando.
+
+### `--no-create`
+
+Desactiva para esta invocación el comportamiento que habilita `--create`. Mantén iguales los demás argumentos y compara el resultado con la forma positiva para comprobar la diferencia.
+
+La opción limita o amplía el conjunto sobre el que se ejecuta cambiar de rama o crear una rama antes de cambiar. Comprueba la selección con una forma de lectura antes de combinarla con una opción que escriba estado.
+
+```bash
+git switch --no-create
+git status --short
+```
+
+La opción no recibe un valor separado en la forma mostrada por la ayuda corta. Los argumentos que aparecen después pertenecen a `git switch` o a otra opción. El estado muestra si cambió el área de trabajo, el índice o la operación en curso. Ejecuta la comprobación inmediatamente después para que ningún comando intermedio cambie el estado que estás observando.
+
+### `--no-force-create`
+
+Desactiva para esta invocación el comportamiento que habilita `--force-create`. Mantén iguales los demás argumentos y compara el resultado con la forma positiva para comprobar la diferencia.
+
+La opción controla desactivar omitir la protección crear. Registra el estado de las referencias y conserva los cambios sin commit antes de usarla, porque cambiar de rama o crear una rama antes de cambiar puede retirar o reemplazar datos dentro del alcance seleccionado.
+
+```bash
+git switch --no-force-create -c tema-portada
+git status --short
+```
+
+La opción no recibe un valor separado en la forma mostrada por la ayuda corta. Los argumentos que aparecen después pertenecen a `git switch` o a otra opción. El estado muestra si cambió el área de trabajo, el índice o la operación en curso. Ejecuta la comprobación inmediatamente después para que ningún comando intermedio cambie el estado que estás observando.
+
+### `--no-discard-changes`
+
+Desactiva para esta invocación el comportamiento que habilita `--discard-changes`. Mantén iguales los demás argumentos y compara el resultado con la forma positiva para comprobar la diferencia.
+
+La opción controla desactivar discard changes. Registra el estado de las referencias y conserva los cambios sin commit antes de usarla, porque cambiar de rama o crear una rama antes de cambiar puede retirar o reemplazar datos dentro del alcance seleccionado.
+
+```bash
+git switch --no-discard-changes -c tema-portada
+git status --short
+```
+
+La opción no recibe un valor separado en la forma mostrada por la ayuda corta. Los argumentos que aparecen después pertenecen a `git switch` o a otra opción. El estado muestra si cambió el área de trabajo, el índice o la operación en curso. Ejecuta la comprobación inmediatamente después para que ningún comando intermedio cambie el estado que estás observando.
+
+### `--no-quiet`
+
+Desactiva para esta invocación el comportamiento que habilita `--quiet`. Mantén iguales los demás argumentos y compara el resultado con la forma positiva para comprobar la diferencia.
+
+La opción cambia la representación o el canal del resultado. Úsala cuando una persona o un script necesite campos, separadores o cantidad de mensajes definidos. El contenido mostrado puede cambiar aunque el repositorio permanezca igual.
+
+```bash
+git switch --no-quiet -c tema-portada
+git status --short
+```
+
+La opción no recibe un valor separado en la forma mostrada por la ayuda corta. Los argumentos que aparecen después pertenecen a `git switch` o a otra opción. El estado muestra si cambió el área de trabajo, el índice o la operación en curso. Ejecuta la comprobación inmediatamente después para que ningún comando intermedio cambie el estado que estás observando.
+
+### `--no-recurse-submodules`
+
+Desactiva para esta invocación el comportamiento que habilita `--recurse-submodules`. Mantén iguales los demás argumentos y compara el resultado con la forma positiva para comprobar la diferencia.
+
+La opción añade, retira o consulta una comprobación previa. Ejecuta primero la forma que no escribe cuando exista y conserva el código de terminación como parte del resultado.
+
+```bash
+git switch --no-recurse-submodules -c tema-portada
+git status --short
+```
+
+La opción no recibe un valor separado en la forma mostrada por la ayuda corta. Los argumentos que aparecen después pertenecen a `git switch` o a otra opción. El estado muestra si cambió el área de trabajo, el índice o la operación en curso. Ejecuta la comprobación inmediatamente después para que ningún comando intermedio cambie el estado que estás observando.
+
+### `--no-progress`
+
+Desactiva para esta invocación el comportamiento que habilita `--progress`. Mantén iguales los demás argumentos y compara el resultado con la forma positiva para comprobar la diferencia.
+
+La opción controla desactivar progreso. Registra el estado de las referencias y conserva los cambios sin commit antes de usarla, porque cambiar de rama o crear una rama antes de cambiar puede retirar o reemplazar datos dentro del alcance seleccionado.
+
+```bash
+git switch --no-progress -c tema-portada
+git status --short
+```
+
+La opción no recibe un valor separado en la forma mostrada por la ayuda corta. Los argumentos que aparecen después pertenecen a `git switch` o a otra opción. El estado muestra si cambió el área de trabajo, el índice o la operación en curso. Ejecuta la comprobación inmediatamente después para que ningún comando intermedio cambie el estado que estás observando.
+
+### `--no-merge`
+
+Desactiva para esta invocación el comportamiento que habilita `--merge`. Mantén iguales los demás argumentos y compara el resultado con la forma positiva para comprobar la diferencia.
+
+La opción limita o amplía el conjunto sobre el que se ejecuta cambiar de rama o crear una rama antes de cambiar. Comprueba la selección con una forma de lectura antes de combinarla con una opción que escriba estado.
+
+```bash
+git switch --no-merge -c tema-portada
+git status --short
+```
+
+La opción no recibe un valor separado en la forma mostrada por la ayuda corta. Los argumentos que aparecen después pertenecen a `git switch` o a otra opción. El estado muestra si cambió el área de trabajo, el índice o la operación en curso. Ejecuta la comprobación inmediatamente después para que ningún comando intermedio cambie el estado que estás observando.
+
+### `--no-conflict`
+
+Desactiva para esta invocación el comportamiento que habilita `--conflict`. Mantén iguales los demás argumentos y compara el resultado con la forma positiva para comprobar la diferencia.
+
+En `git switch`, desactivar conflict modifica la forma en que se ejecuta cambiar de rama o crear una rama antes de cambiar. Mantén iguales los demás argumentos para atribuir el cambio observado a esta opción.
+
+```bash
+git switch --no-conflict -c tema-portada
+git status --short
+```
+
+La opción no recibe un valor separado en la forma mostrada por la ayuda corta. Los argumentos que aparecen después pertenecen a `git switch` o a otra opción. El estado muestra si cambió el área de trabajo, el índice o la operación en curso. Ejecuta la comprobación inmediatamente después para que ningún comando intermedio cambie el estado que estás observando.
+
+### `--no-track`
+
+Desactiva para esta invocación el comportamiento que habilita `--track`. Mantén iguales los demás argumentos y compara el resultado con la forma positiva para comprobar la diferencia.
+
+La opción limita o amplía el conjunto sobre el que se ejecuta cambiar de rama o crear una rama antes de cambiar. Comprueba la selección con una forma de lectura antes de combinarla con una opción que escriba estado.
+
+```bash
+git switch --no-track -c tema-portada
+git status --short
+```
+
+La opción no recibe un valor separado en la forma mostrada por la ayuda corta. Los argumentos que aparecen después pertenecen a `git switch` o a otra opción. El estado muestra si cambió el área de trabajo, el índice o la operación en curso. Ejecuta la comprobación inmediatamente después para que ningún comando intermedio cambie el estado que estás observando.
+
+### `--no-force`
+
+Desactiva para esta invocación el comportamiento que habilita `--force`. Mantén iguales los demás argumentos y compara el resultado con la forma positiva para comprobar la diferencia.
+
+La opción controla desactivar omitir la protección. Registra el estado de las referencias y conserva los cambios sin commit antes de usarla, porque cambiar de rama o crear una rama antes de cambiar puede retirar o reemplazar datos dentro del alcance seleccionado.
+
+```bash
+git switch --no-force -c tema-portada
+git status --short
+```
+
+La opción no recibe un valor separado en la forma mostrada por la ayuda corta. Los argumentos que aparecen después pertenecen a `git switch` o a otra opción. El estado muestra si cambió el área de trabajo, el índice o la operación en curso. Ejecuta la comprobación inmediatamente después para que ningún comando intermedio cambie el estado que estás observando.
+
+### `--no-overwrite-ignore`
+
+Desactiva para esta invocación el comportamiento que habilita `--overwrite-ignore`. Mantén iguales los demás argumentos y compara el resultado con la forma positiva para comprobar la diferencia.
+
+La opción controla desactivar overwrite ignorar. Registra el estado de las referencias y conserva los cambios sin commit antes de usarla, porque cambiar de rama o crear una rama antes de cambiar puede retirar o reemplazar datos dentro del alcance seleccionado.
+
+```bash
+git switch --no-overwrite-ignore -c tema-portada
+git status --short
+```
+
+La opción no recibe un valor separado en la forma mostrada por la ayuda corta. Los argumentos que aparecen después pertenecen a `git switch` o a otra opción. El estado muestra si cambió el área de trabajo, el índice o la operación en curso. Ejecuta la comprobación inmediatamente después para que ningún comando intermedio cambie el estado que estás observando.
+
+### `--no-ignore-other-worktrees`
+
+Desactiva para esta invocación el comportamiento que habilita `--ignore-other-worktrees`. Mantén iguales los demás argumentos y compara el resultado con la forma positiva para comprobar la diferencia.
+
+La opción limita o amplía el conjunto sobre el que se ejecuta cambiar de rama o crear una rama antes de cambiar. Comprueba la selección con una forma de lectura antes de combinarla con una opción que escriba estado.
+
+```bash
+git switch --no-ignore-other-worktrees -c tema-portada
+git status --short
+```
+
+La opción no recibe un valor separado en la forma mostrada por la ayuda corta. Los argumentos que aparecen después pertenecen a `git switch` o a otra opción. El estado muestra si cambió el área de trabajo, el índice o la operación en curso. Ejecuta la comprobación inmediatamente después para que ningún comando intermedio cambie el estado que estás observando.
 
 ## Errores y diagnóstico
 
-| Señal | Causa que debes comprobar | Acción |
-| --- | --- | --- |
-| La referencia es ambigua | Un nombre coincide con más de un objeto o una ruta | Usa `--` para separar rutas y una revisión completa para el objeto. |
-| El cambio de rama se rechaza | Hay modificaciones que serían sobrescritas | Confirma el estado y decide entre commit, stash o descarte. |
-| La integración se detiene | Dos cambios afectan la misma región o ruta | Resuelve, añade los archivos y usa la orden `--continue` o `--abort` que corresponda. |
+### La referencia es ambigua
 
-Si una operación deja archivos de estado dentro de `.git`, usa `git status` y la acción de continuar, omitir o abortar definida por esa operación. No borres esos archivos para simular una cancelación.
+Comprueba esta causa: Un nombre coincide con más de un objeto o una ruta. Usa `--` para separar rutas y una revisión completa para el objeto.
 
-## Automatización
+### El cambio de rama se rechaza
 
-1. Declara la versión mínima de Git que necesita el script.
-2. Resuelve la raíz del repositorio y evita depender del directorio actual.
-3. Separa opciones y rutas con `--`.
-4. Captura stdout, stderr y el código de terminación.
-5. Usa formatos de máquina o terminación NUL para nombres de archivo.
-6. Ejecuta primero sobre el laboratorio y añade un caso sin coincidencias.
+Comprueba esta causa: Hay modificaciones que serían sobrescritas. Confirma el estado y decide entre commit, stash o descarte.
 
-## Seguridad y recuperación
+### La integración se detiene
+
+Comprueba esta causa: Dos cambios afectan la misma región o ruta. Resuelve, añade los archivos y usa la orden `--continue` o `--abort` que corresponda.
+
+## Automatización y recuperación
 
 Persistencia: Puede persistir el estado implicado por esta operación: cambiar de rama o crear una rama antes de cambiar. Las opciones pueden limitar o ampliar ese efecto. Antes de una operación que mueva o elimine referencias, registra sus hashes con `git show-ref`. Antes de cambiar archivos, conserva `git diff` y `git diff --cached`. Para objetos y commits que dejaron de estar referenciados, consulta el reflog antes de ejecutar mantenimiento que pueda eliminarlos.
-
-## Práctica guiada
 
 Dibuja los commits como nodos y las ramas como nombres móviles. Ejecuta el ejemplo y vuelve a dibujar solo los punteros que cambiaron.
 

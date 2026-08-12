@@ -2,51 +2,28 @@
 title: "git stash"
 source: "https://git-scm.com/docs/git-stash"
 section: "branching-and-merging"
-status: "expanded"
+status: "option-expanded"
 ---
 
 # `git stash`
 
 Este caso usa `git stash` para guardar cambios sin commit y recuperar un área de trabajo limpia. Los nombres de archivo, revisiones, ramas y direcciones del ejemplo representan valores que debes sustituir por los de tu repositorio.
 
-## Alcance y responsabilidad
+## Responsabilidad y efecto
 
 git stash consulta o cambia referencias, `HEAD`, worktrees y estados de integración. Recibe como entrada las ramas, commits o rutas que participan en la operación. La operación consiste en guardar cambios sin commit y recuperar un área de trabajo limpia.
 
-La página distingue lectura, escritura y resultado:
+Puede persistir el estado implicado por esta operación: guardar cambios sin commit y recuperar un área de trabajo limpia. Las opciones pueden limitar o ampliar ese efecto.
 
-| Elemento | Relación con la función | Comprobación |
-| --- | --- | --- |
-| Entrada | las ramas, commits o rutas que participan en la operación. | Registra los argumentos y resuelve revisiones antes de ejecutar. |
-| Efecto principal | guardar cambios sin commit y recuperar un área de trabajo limpia. | Comprueba el resultado con una orden de lectura. |
-| Persistencia | Puede persistir el estado implicado por esta operación: guardar cambios sin commit y recuperar un área de trabajo limpia. Las opciones pueden limitar o ampliar ese efecto. | Compara el estado antes y después. |
-| Resultado | La orden comunica datos por stdout y diagnósticos por stderr. | Captura también el código de terminación. |
-| Fuente de verdad | El repositorio y la configuración efectiva determinan el resultado. | Usa `git status`, `git branch -vv`, `git log --graph --oneline --decorate --all`. |
+## Preparación
 
-## Requisitos y laboratorio
+Los ejemplos que necesitan un repositorio parten del [laboratorio base de `git init`](../getting-and-creating-projects/init.md#laboratorio-base). La posición de opciones, revisiones y rutas sigue las [convenciones de la interfaz de Git](../guides/gitcli.md#convenciones-de-la-cli). Los nombres como `HEAD`, `main`, `HEAD~2` y `A..B` se explican en [revisiones y rangos](../guides/gitrevisions.md#revisiones-y-rangos). La selección de rutas se explica en [pathspecs y separación con `--`](../guides/gitcli.md#pathspecs). Antes de ejecutar una forma que escriba datos, registra `git status --short` y las referencias que puedan cambiar.
 
-Crea un commit base y dos ramas con un cambio distinto. Ejecuta la operación desde la rama indicada en el ejemplo.
-
-```bash
-lab_dir="$(mktemp -d)"
-git init "$lab_dir/proyecto"
-git -C "$lab_dir/proyecto" config user.name "Persona de prueba"
-git -C "$lab_dir/proyecto" config user.email "prueba@example.test"
-printf 'línea base\n' > "$lab_dir/proyecto/archivo.txt"
-git -C "$lab_dir/proyecto" add archivo.txt
-git -C "$lab_dir/proyecto" commit -m "base"
-cd "$lab_dir/proyecto"
-```
-
-Antes de ejecutar el ejemplo, confirma la raíz con `git rev-parse --show-toplevel` cuando exista un repositorio. Registra `git status --short` y las referencias que puedan cambiar.
-
-## Modelo de funcionamiento
+## Cómo funciona
 
 Una rama es una referencia que apunta a un commit. Cambiar de rama mueve HEAD; fusionar o reorganizar historial crea o reasigna commits y referencias.
 
 Distingue los commits de los nombres que los señalan. Reescribir o fusionar puede crear commits nuevos aunque el contenido final coincida.
-
-Para comprobar el resultado: `git log --graph` y `git show-ref` muestran los commits y punteros resultantes. La verificación debe observar un estado distinto del canal que produjo el cambio.
 
 ## Ejemplo mínimo
 
@@ -56,16 +33,9 @@ git switch main
 git stash pop
 ```
 
-Ejecuta el bloque en orden. Conserva los nombres del laboratorio hasta confirmar el resultado. Sustituye rutas, revisiones o URL solo después de identificar su tipo y alcance.
+La invocación `git stash push -m "portada incompleta"` ejecuta esta operación: guardar cambios sin commit y recuperar un área de trabajo limpia. Después, `git log --graph` y `git show-ref` muestran los commits y punteros resultantes. Conserva stdout, stderr y el código de terminación cuando el ejemplo forme parte de un script.
 
-### Resultado esperado
-
-- La entrada queda limitada a: las ramas, commits o rutas que participan en la operación.
-- La operación observable es: guardar cambios sin commit y recuperar un área de trabajo limpia.
-- La comprobación se realiza mediante: `git log --graph` y `git show-ref` muestran los commits y punteros resultantes.
-- stdout contiene datos o confirmaciones; stderr contiene diagnósticos. Captura ambos canales cuando automatices.
-
-## Sintaxis
+## Sintaxis y formas de invocación
 
 ```text
 git stash list [<log-options>]
@@ -98,78 +68,314 @@ git stash list [<log-options>]
 
 Los corchetes indican elementos opcionales; `<valor>` exige sustitución; los puntos suspensivos permiten repetición; `|` separa formas excluyentes. Usa `git stash -h` para consultar la sintaxis que corresponde a la instalación donde ejecutarás la orden.
 
-## Casos de uso
+## Flujos de uso
 
-| Caso | Objetivo | Criterio de verificación |
-| --- | --- | --- |
-| Caso base | guardar cambios sin commit y recuperar un área de trabajo limpia | Ejecuta el ejemplo mínimo y registra el estado antes y después. |
-| Alcance explícito | Aplicar git stash a una referencia, rango o ruta identificada. | Resuelve cada argumento antes de ejecutar y usa `--` para rutas. |
-| Validación | Comprobar el resultado de git stash con una orden de lectura independiente. | No uses la misma salida como única prueba del cambio. |
+### Caso base
 
+guardar cambios sin commit y recuperar un área de trabajo limpia. Usa el [ejemplo mínimo](#ejemplo-mínimo) como punto de partida. Ejecuta el ejemplo mínimo y registra el estado antes y después.
 
-## Opciones y variaciones
+### Alcance explícito
 
-La tabla agrupa las opciones visibles en la sintaxis y en la ayuda corta. Una opción puede tener un significado propio cuando la página lo define; ejecuta la ayuda de tu versión antes de usarla en automatización.
+Aplicar git stash a una referencia, rango o ruta identificada. Usa el [ejemplo mínimo](#ejemplo-mínimo) como punto de partida. Resuelve cada argumento antes de ejecutar y usa `--` para rutas.
 
-| Opción | Efecto que debes controlar |
-| --- | --- |
-| `-u` | Activa el modo `-u`; los argumentos y restricciones aparecen en la sintaxis y en la fuente oficial. |
-| `--include-untracked` | Incluye elementos adicionales dentro del alcance indicado. |
-| `--only-untracked` | Activa el modo `--only-untracked`; los argumentos y restricciones aparecen en la sintaxis y en la fuente oficial. |
-| `-q` | Activa la forma corta del modo sin mensajes. |
-| `--quiet` | Reduce mensajes que no representan errores. |
-| `--index` | Incluye el índice en la operación. |
-| `-p` | Activa la forma corta del modo patch o de una opción propia de la orden. |
-| `--patch` | Permite elegir hunks en vez de operar sobre el archivo completo. |
-| `-S` | Activa el modo `-S`; los argumentos y restricciones aparecen en la sintaxis y en la fuente oficial. |
-| `--staged` | Selecciona el contenido preparado en el índice. |
-| `-k` | Activa el modo `-k`; los argumentos y restricciones aparecen en la sintaxis y en la fuente oficial. |
-| `--keep-index` | Activa el modo `--keep-index`; los argumentos y restricciones aparecen en la sintaxis y en la fuente oficial. |
-| `-a` | Activa la forma corta de selección total o una opción propia de la orden. |
-| `--all` | Amplía la selección a todos los elementos del alcance definido. |
-| `-m` | Activa el modo `-m`; los argumentos y restricciones aparecen en la sintaxis y en la fuente oficial. |
-| `--message` | Activa el modo `--message`; los argumentos y restricciones aparecen en la sintaxis y en la fuente oficial. |
-| `--pathspec-from-file` | Lee pathspecs desde un archivo o desde stdin. |
-| `--pathspec-file-nul` | Interpreta los pathspecs de archivo como registros terminados en NUL. |
-| `--print` | Incluye información adicional en la salida. |
-| `--to-ref` | Selecciona o modifica referencias dentro del alcance de la orden. |
+### Validación
 
-## Selección de entradas
+Comprobar el resultado de git stash con una orden de lectura independiente. Usa el [ejemplo mínimo](#ejemplo-mínimo) como punto de partida. No uses la misma salida como única prueba del cambio.
 
-Las revisiones se resuelven antes que los pathspecs cuando la sintaxis las espera. Usa `--` para separar opciones y rutas. Cita los globos para decidir si los expande el shell o Git.
+## Opciones
 
-Comprueba cada entrada con una orden de lectura antes de una escritura. Para listas de rutas generadas por otro proceso, prefiere una interfaz terminada en NUL cuando esté disponible.
+Cada apartado usa una opción en una invocación concreta. Las opciones equivalentes comparten la explicación, pero cada alias tiene su propio ejemplo. Ejecuta una opción por vez antes de combinarlas.
 
-## Salida y códigos de terminación
+### `-u`
 
-Un código 0 indica que la operación terminó bajo el contrato solicitado. Trata cualquier código distinto de cero según la función; no deduzcas el estado solo a partir de que stdout esté vacío.
+Activa u durante guardar cambios sin commit y recuperar un área de trabajo limpia. La opción afecta esta invocación y no cambia la configuración de otras órdenes salvo que la propia función escriba esa configuración.
 
-No analices mensajes destinados a personas si existe un formato de máquina. Declara los campos, desactiva color y conserva stderr para diagnóstico.
+En `git stash`, u modifica la forma en que se ejecuta guardar cambios sin commit y recuperar un área de trabajo limpia. Mantén iguales los demás argumentos para atribuir el cambio observado a esta opción.
+
+```bash
+git stash -u push -m "portada incompleta"
+git status --short
+```
+
+La opción no recibe un valor separado en la forma mostrada por la ayuda corta. Los argumentos que aparecen después pertenecen a `git stash` o a otra opción. El estado muestra si cambió el área de trabajo, el índice o la operación en curso. Ejecuta la comprobación inmediatamente después para que ningún comando intermedio cambie el estado que estás observando.
+
+### `--include-untracked`
+
+Incluye elementos adicionales dentro del alcance indicado.
+
+La opción limita o amplía el conjunto sobre el que se ejecuta guardar cambios sin commit y recuperar un área de trabajo limpia. Comprueba la selección con una forma de lectura antes de combinarla con una opción que escriba estado.
+
+```bash
+git stash --include-untracked push -m "portada incompleta"
+git status --short
+```
+
+La opción no recibe un valor separado en la forma mostrada por la ayuda corta. Los argumentos que aparecen después pertenecen a `git stash` o a otra opción. El estado muestra si cambió el área de trabajo, el índice o la operación en curso. Ejecuta la comprobación inmediatamente después para que ningún comando intermedio cambie el estado que estás observando.
+
+### `--only-untracked`
+
+Activa only untracked durante guardar cambios sin commit y recuperar un área de trabajo limpia. La opción afecta esta invocación y no cambia la configuración de otras órdenes salvo que la propia función escriba esa configuración.
+
+En `git stash`, only untracked modifica la forma en que se ejecuta guardar cambios sin commit y recuperar un área de trabajo limpia. Mantén iguales los demás argumentos para atribuir el cambio observado a esta opción.
+
+```bash
+git stash --only-untracked push -m "portada incompleta"
+git status --short
+```
+
+La opción no recibe un valor separado en la forma mostrada por la ayuda corta. Los argumentos que aparecen después pertenecen a `git stash` o a otra opción. El estado muestra si cambió el área de trabajo, el índice o la operación en curso. Ejecuta la comprobación inmediatamente después para que ningún comando intermedio cambie el estado que estás observando.
+
+### `-q`
+
+Activa q durante guardar cambios sin commit y recuperar un área de trabajo limpia. La opción afecta esta invocación y no cambia la configuración de otras órdenes salvo que la propia función escriba esa configuración.
+
+En `git stash`, q modifica la forma en que se ejecuta guardar cambios sin commit y recuperar un área de trabajo limpia. Mantén iguales los demás argumentos para atribuir el cambio observado a esta opción.
+
+```bash
+git stash -q push -m "portada incompleta"
+git status --short
+```
+
+La opción no recibe un valor separado en la forma mostrada por la ayuda corta. Los argumentos que aparecen después pertenecen a `git stash` o a otra opción. El estado muestra si cambió el área de trabajo, el índice o la operación en curso. Ejecuta la comprobación inmediatamente después para que ningún comando intermedio cambie el estado que estás observando.
+
+### `--quiet`
+
+Reduce mensajes que no representan errores.
+
+La opción cambia la representación o el canal del resultado. Úsala cuando una persona o un script necesite campos, separadores o cantidad de mensajes definidos. El contenido mostrado puede cambiar aunque el repositorio permanezca igual.
+
+```bash
+git stash --quiet push -m "portada incompleta"
+git status --short
+```
+
+La opción no recibe un valor separado en la forma mostrada por la ayuda corta. Los argumentos que aparecen después pertenecen a `git stash` o a otra opción. El estado muestra si cambió el área de trabajo, el índice o la operación en curso. Ejecuta la comprobación inmediatamente después para que ningún comando intermedio cambie el estado que estás observando.
+
+### `--index`
+
+Incluye el índice en la operación.
+
+En `git stash`, índice modifica la forma en que se ejecuta guardar cambios sin commit y recuperar un área de trabajo limpia. Mantén iguales los demás argumentos para atribuir el cambio observado a esta opción.
+
+```bash
+git stash --index push -m "portada incompleta"
+git status --short
+```
+
+La opción no recibe un valor separado en la forma mostrada por la ayuda corta. Los argumentos que aparecen después pertenecen a `git stash` o a otra opción. El estado muestra si cambió el área de trabajo, el índice o la operación en curso. Ejecuta la comprobación inmediatamente después para que ningún comando intermedio cambie el estado que estás observando.
+
+### `-p`
+
+Activa p durante guardar cambios sin commit y recuperar un área de trabajo limpia. La opción afecta esta invocación y no cambia la configuración de otras órdenes salvo que la propia función escriba esa configuración.
+
+En `git stash`, p modifica la forma en que se ejecuta guardar cambios sin commit y recuperar un área de trabajo limpia. Mantén iguales los demás argumentos para atribuir el cambio observado a esta opción.
+
+```bash
+git stash -p push -m "portada incompleta"
+git status --short
+```
+
+La opción no recibe un valor separado en la forma mostrada por la ayuda corta. Los argumentos que aparecen después pertenecen a `git stash` o a otra opción. El estado muestra si cambió el área de trabajo, el índice o la operación en curso. Ejecuta la comprobación inmediatamente después para que ningún comando intermedio cambie el estado que estás observando.
+
+### `--patch`
+
+Permite elegir hunks en vez de operar sobre el archivo completo.
+
+En `git stash`, parche modifica la forma en que se ejecuta guardar cambios sin commit y recuperar un área de trabajo limpia. Mantén iguales los demás argumentos para atribuir el cambio observado a esta opción.
+
+```bash
+git stash --patch push -m "portada incompleta"
+git status --short
+```
+
+La opción no recibe un valor separado en la forma mostrada por la ayuda corta. Los argumentos que aparecen después pertenecen a `git stash` o a otra opción. El estado muestra si cambió el área de trabajo, el índice o la operación en curso. Ejecuta la comprobación inmediatamente después para que ningún comando intermedio cambie el estado que estás observando.
+
+### `-S`
+
+Activa S durante guardar cambios sin commit y recuperar un área de trabajo limpia. La opción afecta esta invocación y no cambia la configuración de otras órdenes salvo que la propia función escriba esa configuración.
+
+En `git stash`, S modifica la forma en que se ejecuta guardar cambios sin commit y recuperar un área de trabajo limpia. Mantén iguales los demás argumentos para atribuir el cambio observado a esta opción.
+
+```bash
+git stash -S push -m "portada incompleta"
+git status --short
+```
+
+La opción no recibe un valor separado en la forma mostrada por la ayuda corta. Los argumentos que aparecen después pertenecen a `git stash` o a otra opción. El estado muestra si cambió el área de trabajo, el índice o la operación en curso. Ejecuta la comprobación inmediatamente después para que ningún comando intermedio cambie el estado que estás observando.
+
+### `--staged`
+
+Selecciona el contenido preparado en el índice.
+
+La opción limita o amplía el conjunto sobre el que se ejecuta guardar cambios sin commit y recuperar un área de trabajo limpia. Comprueba la selección con una forma de lectura antes de combinarla con una opción que escriba estado.
+
+```bash
+git stash --staged push -m "portada incompleta"
+git status --short
+```
+
+La opción no recibe un valor separado en la forma mostrada por la ayuda corta. Los argumentos que aparecen después pertenecen a `git stash` o a otra opción. El estado muestra si cambió el área de trabajo, el índice o la operación en curso. Ejecuta la comprobación inmediatamente después para que ningún comando intermedio cambie el estado que estás observando.
+
+### `-k`
+
+Activa k durante guardar cambios sin commit y recuperar un área de trabajo limpia. La opción afecta esta invocación y no cambia la configuración de otras órdenes salvo que la propia función escriba esa configuración.
+
+En `git stash`, k modifica la forma en que se ejecuta guardar cambios sin commit y recuperar un área de trabajo limpia. Mantén iguales los demás argumentos para atribuir el cambio observado a esta opción.
+
+```bash
+git stash -k push -m "portada incompleta"
+git status --short
+```
+
+La opción no recibe un valor separado en la forma mostrada por la ayuda corta. Los argumentos que aparecen después pertenecen a `git stash` o a otra opción. El estado muestra si cambió el área de trabajo, el índice o la operación en curso. Ejecuta la comprobación inmediatamente después para que ningún comando intermedio cambie el estado que estás observando.
+
+### `--keep-index`
+
+Activa conservar índice durante guardar cambios sin commit y recuperar un área de trabajo limpia. La opción afecta esta invocación y no cambia la configuración de otras órdenes salvo que la propia función escriba esa configuración.
+
+En `git stash`, conservar índice modifica la forma en que se ejecuta guardar cambios sin commit y recuperar un área de trabajo limpia. Mantén iguales los demás argumentos para atribuir el cambio observado a esta opción.
+
+```bash
+git stash --keep-index push -m "portada incompleta"
+git status --short
+```
+
+La opción no recibe un valor separado en la forma mostrada por la ayuda corta. Los argumentos que aparecen después pertenecen a `git stash` o a otra opción. El estado muestra si cambió el área de trabajo, el índice o la operación en curso. Ejecuta la comprobación inmediatamente después para que ningún comando intermedio cambie el estado que estás observando.
+
+### `-a`
+
+Activa a durante guardar cambios sin commit y recuperar un área de trabajo limpia. La opción afecta esta invocación y no cambia la configuración de otras órdenes salvo que la propia función escriba esa configuración.
+
+En `git stash`, a modifica la forma en que se ejecuta guardar cambios sin commit y recuperar un área de trabajo limpia. Mantén iguales los demás argumentos para atribuir el cambio observado a esta opción.
+
+```bash
+git stash -a push -m "portada incompleta"
+git status --short
+```
+
+La opción no recibe un valor separado en la forma mostrada por la ayuda corta. Los argumentos que aparecen después pertenecen a `git stash` o a otra opción. El estado muestra si cambió el área de trabajo, el índice o la operación en curso. Ejecuta la comprobación inmediatamente después para que ningún comando intermedio cambie el estado que estás observando.
+
+### `--all`
+
+Amplía la selección a todos los elementos del alcance definido.
+
+La opción limita o amplía el conjunto sobre el que se ejecuta guardar cambios sin commit y recuperar un área de trabajo limpia. Comprueba la selección con una forma de lectura antes de combinarla con una opción que escriba estado.
+
+```bash
+git stash --all push -m "portada incompleta"
+git status --short
+```
+
+La opción no recibe un valor separado en la forma mostrada por la ayuda corta. Los argumentos que aparecen después pertenecen a `git stash` o a otra opción. El estado muestra si cambió el área de trabajo, el índice o la operación en curso. Ejecuta la comprobación inmediatamente después para que ningún comando intermedio cambie el estado que estás observando.
+
+### `-m`
+
+Activa m durante guardar cambios sin commit y recuperar un área de trabajo limpia. La opción afecta esta invocación y no cambia la configuración de otras órdenes salvo que la propia función escriba esa configuración.
+
+En `git stash`, m modifica la forma en que se ejecuta guardar cambios sin commit y recuperar un área de trabajo limpia. Mantén iguales los demás argumentos para atribuir el cambio observado a esta opción.
+
+```bash
+git stash -m push "portada incompleta"
+git status --short
+```
+
+La opción no recibe un valor separado en la forma mostrada por la ayuda corta. Los argumentos que aparecen después pertenecen a `git stash` o a otra opción. El estado muestra si cambió el área de trabajo, el índice o la operación en curso. Ejecuta la comprobación inmediatamente después para que ningún comando intermedio cambie el estado que estás observando.
+
+### `--message`
+
+Activa mensaje durante guardar cambios sin commit y recuperar un área de trabajo limpia. La opción afecta esta invocación y no cambia la configuración de otras órdenes salvo que la propia función escriba esa configuración.
+
+En `git stash`, mensaje modifica la forma en que se ejecuta guardar cambios sin commit y recuperar un área de trabajo limpia. Mantén iguales los demás argumentos para atribuir el cambio observado a esta opción.
+
+```bash
+git stash --message push -m "portada incompleta"
+git status --short
+```
+
+La opción no recibe un valor separado en la forma mostrada por la ayuda corta. Los argumentos que aparecen después pertenecen a `git stash` o a otra opción. El estado muestra si cambió el área de trabajo, el índice o la operación en curso. Ejecuta la comprobación inmediatamente después para que ningún comando intermedio cambie el estado que estás observando.
+
+### `--pathspec-from-file`
+
+Lee pathspecs desde un archivo o desde stdin.
+
+La opción cambia cómo `git stash` recibe datos. Define el separador, la codificación y la ruta de entrada antes de ejecutarla. Los nombres con espacios o saltos de línea requieren una interfaz terminada en NUL cuando el comando la ofrece.
+
+```bash
+git stash --pathspec-from-file push -m "portada incompleta"
+git status --short
+```
+
+La opción no recibe un valor separado en la forma mostrada por la ayuda corta. Los argumentos que aparecen después pertenecen a `git stash` o a otra opción. El estado muestra si cambió el área de trabajo, el índice o la operación en curso. Ejecuta la comprobación inmediatamente después para que ningún comando intermedio cambie el estado que estás observando.
+
+### `--pathspec-file-nul`
+
+Interpreta los pathspecs de archivo como registros terminados en NUL.
+
+La opción cambia cómo `git stash` recibe datos. Define el separador, la codificación y la ruta de entrada antes de ejecutarla. Los nombres con espacios o saltos de línea requieren una interfaz terminada en NUL cuando el comando la ofrece.
+
+```bash
+git stash --pathspec-file-nul push -m "portada incompleta"
+git status --short
+```
+
+La opción no recibe un valor separado en la forma mostrada por la ayuda corta. Los argumentos que aparecen después pertenecen a `git stash` o a otra opción. El estado muestra si cambió el área de trabajo, el índice o la operación en curso. Ejecuta la comprobación inmediatamente después para que ningún comando intermedio cambie el estado que estás observando.
+
+### `--print`
+
+Incluye información adicional en la salida.
+
+La opción cambia la representación o el canal del resultado. Úsala cuando una persona o un script necesite campos, separadores o cantidad de mensajes definidos. El contenido mostrado puede cambiar aunque el repositorio permanezca igual.
+
+```bash
+git stash --print push -m "portada incompleta"
+git status --short
+```
+
+La opción no recibe un valor separado en la forma mostrada por la ayuda corta. Los argumentos que aparecen después pertenecen a `git stash` o a otra opción. El estado muestra si cambió el área de trabajo, el índice o la operación en curso. Ejecuta la comprobación inmediatamente después para que ningún comando intermedio cambie el estado que estás observando.
+
+### `--to-ref`
+
+Selecciona o modifica referencias dentro del alcance de la orden.
+
+En `git stash`, to referencia modifica la forma en que se ejecuta guardar cambios sin commit y recuperar un área de trabajo limpia. Mantén iguales los demás argumentos para atribuir el cambio observado a esta opción.
+
+```bash
+git stash --to-ref push -m "portada incompleta"
+git status --short
+```
+
+La opción no recibe un valor separado en la forma mostrada por la ayuda corta. Los argumentos que aparecen después pertenecen a `git stash` o a otra opción. El estado muestra si cambió el área de trabajo, el índice o la operación en curso. Ejecuta la comprobación inmediatamente después para que ningún comando intermedio cambie el estado que estás observando.
+
+### `--no-keep-index`
+
+Desactiva para esta invocación el comportamiento que habilita `--keep-index`. Mantén iguales los demás argumentos y compara el resultado con la forma positiva para comprobar la diferencia.
+
+En `git stash`, desactivar conservar índice modifica la forma en que se ejecuta guardar cambios sin commit y recuperar un área de trabajo limpia. Mantén iguales los demás argumentos para atribuir el cambio observado a esta opción.
+
+```bash
+git stash --no-keep-index push -m "portada incompleta"
+git status --short
+```
+
+La opción no recibe un valor separado en la forma mostrada por la ayuda corta. Los argumentos que aparecen después pertenecen a `git stash` o a otra opción. El estado muestra si cambió el área de trabajo, el índice o la operación en curso. Ejecuta la comprobación inmediatamente después para que ningún comando intermedio cambie el estado que estás observando.
 
 ## Errores y diagnóstico
 
-| Señal | Causa que debes comprobar | Acción |
-| --- | --- | --- |
-| La referencia es ambigua | Un nombre coincide con más de un objeto o una ruta | Usa `--` para separar rutas y una revisión completa para el objeto. |
-| El cambio de rama se rechaza | Hay modificaciones que serían sobrescritas | Confirma el estado y decide entre commit, stash o descarte. |
-| La integración se detiene | Dos cambios afectan la misma región o ruta | Resuelve, añade los archivos y usa la orden `--continue` o `--abort` que corresponda. |
+### La referencia es ambigua
 
-Si una operación deja archivos de estado dentro de `.git`, usa `git status` y la acción de continuar, omitir o abortar definida por esa operación. No borres esos archivos para simular una cancelación.
+Comprueba esta causa: Un nombre coincide con más de un objeto o una ruta. Usa `--` para separar rutas y una revisión completa para el objeto.
 
-## Automatización
+### El cambio de rama se rechaza
 
-1. Declara la versión mínima de Git que necesita el script.
-2. Resuelve la raíz del repositorio y evita depender del directorio actual.
-3. Separa opciones y rutas con `--`.
-4. Captura stdout, stderr y el código de terminación.
-5. Usa formatos de máquina o terminación NUL para nombres de archivo.
-6. Ejecuta primero sobre el laboratorio y añade un caso sin coincidencias.
+Comprueba esta causa: Hay modificaciones que serían sobrescritas. Confirma el estado y decide entre commit, stash o descarte.
 
-## Seguridad y recuperación
+### La integración se detiene
+
+Comprueba esta causa: Dos cambios afectan la misma región o ruta. Resuelve, añade los archivos y usa la orden `--continue` o `--abort` que corresponda.
+
+## Automatización y recuperación
 
 Persistencia: Puede persistir el estado implicado por esta operación: guardar cambios sin commit y recuperar un área de trabajo limpia. Las opciones pueden limitar o ampliar ese efecto. Antes de una operación que mueva o elimine referencias, registra sus hashes con `git show-ref`. Antes de cambiar archivos, conserva `git diff` y `git diff --cached`. Para objetos y commits que dejaron de estar referenciados, consulta el reflog antes de ejecutar mantenimiento que pueda eliminarlos.
-
-## Práctica guiada
 
 Dibuja los commits como nodos y las ramas como nombres móviles. Ejecuta el ejemplo y vuelve a dibujar solo los punteros que cambiaron.
 

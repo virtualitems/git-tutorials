@@ -2,51 +2,28 @@
 title: "git mailinfo"
 source: "https://git-scm.com/docs/git-mailinfo"
 section: "scripting-and-helpers"
-status: "expanded"
+status: "option-expanded"
 ---
 
 # `git mailinfo`
 
 Este caso usa `git mailinfo` para separar metadatos, mensaje y parche de un correo. Los nombres de archivo, revisiones, ramas y direcciones del ejemplo representan valores que debes sustituir por los de tu repositorio.
 
-## Alcance y responsabilidad
+## Responsabilidad y efecto
 
 git mailinfo ofrece contratos de entrada y salida para scripts, hooks y procesos auxiliares. Recibe como entrada datos controlados por entrada estándar, argumentos o configuración. La operación consiste en separar metadatos, mensaje y parche de un correo.
 
-La página distingue lectura, escritura y resultado:
+El helper usa stdout, archivos auxiliares o un proceso llamado; su contrato define si persiste datos.
 
-| Elemento | Relación con la función | Comprobación |
-| --- | --- | --- |
-| Entrada | datos controlados por entrada estándar, argumentos o configuración. | Registra los argumentos y resuelve revisiones antes de ejecutar. |
-| Efecto principal | separar metadatos, mensaje y parche de un correo. | Comprueba el resultado con una orden de lectura. |
-| Persistencia | El helper usa stdout, archivos auxiliares o un proceso llamado; su contrato define si persiste datos. | Compara el estado antes y después. |
-| Resultado | La orden comunica datos por stdout y diagnósticos por stderr. | Captura también el código de terminación. |
-| Fuente de verdad | El repositorio y la configuración efectiva determinan el resultado. | Usa stdout, stderr y el código de terminación con casos positivos y negativos. |
+## Preparación
 
-## Requisitos y laboratorio
+Los ejemplos que necesitan un repositorio parten del [laboratorio base de `git init`](../getting-and-creating-projects/init.md#laboratorio-base). La posición de opciones, revisiones y rutas sigue las [convenciones de la interfaz de Git](../guides/gitcli.md#convenciones-de-la-cli). Antes de ejecutar una forma que escriba datos, registra `git status --short` y las referencias que puedan cambiar.
 
-Ejecuta los ejemplos en un script con `set -u`. Captura la salida y el código antes de activar `set -e`.
-
-```bash
-lab_dir="$(mktemp -d)"
-git init "$lab_dir/proyecto"
-git -C "$lab_dir/proyecto" config user.name "Persona de prueba"
-git -C "$lab_dir/proyecto" config user.email "prueba@example.test"
-printf 'línea base\n' > "$lab_dir/proyecto/archivo.txt"
-git -C "$lab_dir/proyecto" add archivo.txt
-git -C "$lab_dir/proyecto" commit -m "base"
-cd "$lab_dir/proyecto"
-```
-
-Antes de ejecutar el ejemplo, confirma la raíz con `git rev-parse --show-toplevel` cuando exista un repositorio. Registra `git status --short` y las referencias que puedan cambiar.
-
-## Modelo de funcionamiento
+## Cómo funciona
 
 Estos comandos resuelven una parte del flujo y suelen comunicarse mediante entrada estándar, salida estándar, configuración o códigos de salida.
 
 Define entrada, salida y código de retorno como contrato del proceso. No dependas de texto orientado a personas cuando exista un formato para scripts.
-
-Para comprobar el resultado: la salida y el código de retorno distinguen el caso aceptado del rechazado. La verificación debe observar un estado distinto del canal que produjo el cambio.
 
 ## Ejemplo mínimo
 
@@ -54,16 +31,9 @@ Para comprobar el resultado: la salida y el código de retorno distinguen el cas
 git mailinfo mensaje.txt cambio.patch < correo.eml
 ```
 
-Ejecuta el bloque en orden. Conserva los nombres del laboratorio hasta confirmar el resultado. Sustituye rutas, revisiones o URL solo después de identificar su tipo y alcance.
+La invocación `git mailinfo mensaje.txt cambio.patch < correo.eml` ejecuta esta operación: separar metadatos, mensaje y parche de un correo. Después, la salida y el código de retorno distinguen el caso aceptado del rechazado. Conserva stdout, stderr y el código de terminación cuando el ejemplo forme parte de un script.
 
-### Resultado esperado
-
-- La entrada queda limitada a: datos controlados por entrada estándar, argumentos o configuración.
-- La operación observable es: separar metadatos, mensaje y parche de un correo.
-- La comprobación se realiza mediante: la salida y el código de retorno distinguen el caso aceptado del rechazado.
-- stdout contiene datos o confirmaciones; stderr contiene diagnósticos. Captura ambos canales cuando automatices.
-
-## Sintaxis
+## Sintaxis y formas de invocación
 
 ```text
 git mailinfo [-k|-b] [-u | --encoding=<encoding> | -n]
@@ -79,67 +49,186 @@ git mailinfo [<options>] <msg> <patch> < mail >info
 
 Los corchetes indican elementos opcionales; `<valor>` exige sustitución; los puntos suspensivos permiten repetición; `|` separa formas excluyentes. Usa `git mailinfo -h` para consultar la sintaxis que corresponde a la instalación donde ejecutarás la orden.
 
-## Casos de uso
+## Flujos de uso
 
-| Caso | Objetivo | Criterio de verificación |
-| --- | --- | --- |
-| Caso base | separar metadatos, mensaje y parche de un correo | Ejecuta el ejemplo mínimo y registra el estado antes y después. |
-| Alcance explícito | Aplicar git mailinfo a una referencia, rango o ruta identificada. | Resuelve cada argumento antes de ejecutar y usa `--` para rutas. |
-| Validación | Comprobar el resultado de git mailinfo con una orden de lectura independiente. | No uses la misma salida como única prueba del cambio. |
+### Caso base
 
+separar metadatos, mensaje y parche de un correo. Usa el [ejemplo mínimo](#ejemplo-mínimo) como punto de partida. Ejecuta el ejemplo mínimo y registra el estado antes y después.
 
-## Opciones y variaciones
+### Alcance explícito
 
-La tabla agrupa las opciones visibles en la sintaxis y en la ayuda corta. Una opción puede tener un significado propio cuando la página lo define; ejecuta la ayuda de tu versión antes de usarla en automatización.
+Aplicar git mailinfo a una referencia, rango o ruta identificada. Usa el [ejemplo mínimo](#ejemplo-mínimo) como punto de partida. Resuelve cada argumento antes de ejecutar y usa `--` para rutas.
 
-| Opción | Efecto que debes controlar |
-| --- | --- |
-| `-k` | Activa el modo `-k`; los argumentos y restricciones aparecen en la sintaxis y en la fuente oficial. |
-| `-b` | Activa el modo `-b`; los argumentos y restricciones aparecen en la sintaxis y en la fuente oficial. |
-| `-u` | Activa el modo `-u`; los argumentos y restricciones aparecen en la sintaxis y en la fuente oficial. |
-| `--encoding` | Activa el modo `--encoding`; los argumentos y restricciones aparecen en la sintaxis y en la fuente oficial. |
-| `-n` | Activa la forma corta documentada por la sintaxis; en muchas órdenes corresponde a simulación o límite numérico. |
-| `--scissors` | Activa el modo `--scissors`; los argumentos y restricciones aparecen en la sintaxis y en la fuente oficial. |
-| `--quoted-cr` | Activa el modo `--quoted-cr`; los argumentos y restricciones aparecen en la sintaxis y en la fuente oficial. |
-| `-m` | Activa el modo `-m`; los argumentos y restricciones aparecen en la sintaxis y en la fuente oficial. |
-| `--message-id` | Activa el modo `--message-id`; los argumentos y restricciones aparecen en la sintaxis y en la fuente oficial. |
+### Validación
 
-## Selección de entradas
+Comprobar el resultado de git mailinfo con una orden de lectura independiente. Usa el [ejemplo mínimo](#ejemplo-mínimo) como punto de partida. No uses la misma salida como única prueba del cambio.
 
-Las revisiones se resuelven antes que los pathspecs cuando la sintaxis las espera. Usa `--` para separar opciones y rutas. Cita los globos para decidir si los expande el shell o Git.
+## Opciones
 
-Comprueba cada entrada con una orden de lectura antes de una escritura. Para listas de rutas generadas por otro proceso, prefiere una interfaz terminada en NUL cuando esté disponible.
+Cada apartado usa una opción en una invocación concreta. Las opciones equivalentes comparten la explicación, pero cada alias tiene su propio ejemplo. Ejecuta una opción por vez antes de combinarlas.
 
-## Salida y códigos de terminación
+### `-k`
 
-Un código 0 indica que la operación terminó bajo el contrato solicitado. Trata cualquier código distinto de cero según la función; no deduzcas el estado solo a partir de que stdout esté vacío.
+Activa k durante separar metadatos, mensaje y parche de un correo. La opción afecta esta invocación y no cambia la configuración de otras órdenes salvo que la propia función escriba esa configuración. En Git 2.51.1, la ayuda corta expresa el contrato como `keep subject`. Conserva esa formulación al comparar el efecto entre versiones de Git.
 
-No analices mensajes destinados a personas si existe un formato de máquina. Declara los campos, desactiva color y conserva stderr para diagnóstico.
+En `git mailinfo`, k modifica la forma en que se ejecuta separar metadatos, mensaje y parche de un correo. Mantén iguales los demás argumentos para atribuir el cambio observado a esta opción.
+
+```bash
+git mailinfo -k mensaje.txt cambio.patch < correo.eml
+printf 'exit=%s\n' "$?"
+```
+
+La opción no recibe un valor separado en la forma mostrada por la ayuda corta. Los argumentos que aparecen después pertenecen a `git mailinfo` o a otra opción. El código de terminación distingue una ejecución aceptada de un error y, en algunos comandos de consulta, de una respuesta negativa. Ejecuta la comprobación inmediatamente después para que ningún comando intermedio cambie el estado que estás observando.
+
+### `-b`
+
+Activa b durante separar metadatos, mensaje y parche de un correo. La opción afecta esta invocación y no cambia la configuración de otras órdenes salvo que la propia función escriba esa configuración. En Git 2.51.1, la ayuda corta expresa el contrato como `keep non patch brackets in subject`. Conserva esa formulación al comparar el efecto entre versiones de Git.
+
+En `git mailinfo`, b modifica la forma en que se ejecuta separar metadatos, mensaje y parche de un correo. Mantén iguales los demás argumentos para atribuir el cambio observado a esta opción.
+
+```bash
+git mailinfo -b mensaje.txt cambio.patch < correo.eml
+printf 'exit=%s\n' "$?"
+```
+
+La opción no recibe un valor separado en la forma mostrada por la ayuda corta. Los argumentos que aparecen después pertenecen a `git mailinfo` o a otra opción. El código de terminación distingue una ejecución aceptada de un error y, en algunos comandos de consulta, de una respuesta negativa. Ejecuta la comprobación inmediatamente después para que ningún comando intermedio cambie el estado que estás observando.
+
+### `-u`
+
+Activa u durante separar metadatos, mensaje y parche de un correo. La opción afecta esta invocación y no cambia la configuración de otras órdenes salvo que la propia función escriba esa configuración. En Git 2.51.1, la ayuda corta expresa el contrato como `re-code metadata to i18n.commitEncoding`. Conserva esa formulación al comparar el efecto entre versiones de Git.
+
+En `git mailinfo`, u modifica la forma en que se ejecuta separar metadatos, mensaje y parche de un correo. Mantén iguales los demás argumentos para atribuir el cambio observado a esta opción.
+
+```bash
+git mailinfo -u mensaje.txt cambio.patch < correo.eml
+printf 'exit=%s\n' "$?"
+```
+
+La opción no recibe un valor separado en la forma mostrada por la ayuda corta. Los argumentos que aparecen después pertenecen a `git mailinfo` o a otra opción. El código de terminación distingue una ejecución aceptada de un error y, en algunos comandos de consulta, de una respuesta negativa. Ejecuta la comprobación inmediatamente después para que ningún comando intermedio cambie el estado que estás observando.
+
+### `--encoding`
+
+Activa encoding durante separar metadatos, mensaje y parche de un correo. La opción afecta esta invocación y no cambia la configuración de otras órdenes salvo que la propia función escriba esa configuración.  La misma línea de ayuda también acepta `-code`. Esas formas seleccionan el mismo comportamiento; cambia la escritura del argumento, no el efecto.
+
+En `git mailinfo`, encoding modifica la forma en que se ejecuta separar metadatos, mensaje y parche de un correo. Mantén iguales los demás argumentos para atribuir el cambio observado a esta opción.
+
+```bash
+git mailinfo --encoding=valor mensaje.txt cambio.patch < correo.eml
+printf 'exit=%s\n' "$?"
+```
+
+El ejemplo usa `valor` como valor. Sustitúyelo por un valor del tipo que muestra la sintaxis de tu versión. Un valor numérico conserva su unidad y un nombre de referencia debe resolver antes de ejecutar la orden. El código de terminación distingue una ejecución aceptada de un error y, en algunos comandos de consulta, de una respuesta negativa. Ejecuta la comprobación inmediatamente después para que ningún comando intermedio cambie el estado que estás observando.
+
+### `-n`
+
+Impide n durante esta invocación de `git mailinfo`. En Git 2.51.1, la ayuda corta expresa el contrato como `disable charset re-coding of metadata`. Conserva esa formulación al comparar el efecto entre versiones de Git.
+
+En `git mailinfo`, n modifica la forma en que se ejecuta separar metadatos, mensaje y parche de un correo. Mantén iguales los demás argumentos para atribuir el cambio observado a esta opción.
+
+```bash
+git mailinfo -n mensaje.txt cambio.patch < correo.eml
+printf 'exit=%s\n' "$?"
+```
+
+La opción no recibe un valor separado en la forma mostrada por la ayuda corta. Los argumentos que aparecen después pertenecen a `git mailinfo` o a otra opción. El código de terminación distingue una ejecución aceptada de un error y, en algunos comandos de consulta, de una respuesta negativa. Ejecuta la comprobación inmediatamente después para que ningún comando intermedio cambie el estado que estás observando.
+
+### `--scissors`
+
+Reconoce la línea scissors y descarta el contenido anterior según el formato de correo. En Git 2.51.1, la ayuda corta expresa el contrato como `use scissors`. Conserva esa formulación al comparar el efecto entre versiones de Git.
+
+En `git mailinfo`, línea scissors modifica la forma en que se ejecuta separar metadatos, mensaje y parche de un correo. Mantén iguales los demás argumentos para atribuir el cambio observado a esta opción.
+
+```bash
+git mailinfo --scissors mensaje.txt cambio.patch < correo.eml
+printf 'exit=%s\n' "$?"
+```
+
+La opción no recibe un valor separado en la forma mostrada por la ayuda corta. Los argumentos que aparecen después pertenecen a `git mailinfo` o a otra opción. El código de terminación distingue una ejecución aceptada de un error y, en algunos comandos de consulta, de una respuesta negativa. Ejecuta la comprobación inmediatamente después para que ningún comando intermedio cambie el estado que estás observando.
+
+### `--quoted-cr`
+
+Define cómo se tratan los caracteres CR que aparecen al final de líneas citadas. En Git 2.51.1, la ayuda corta expresa el contrato como `action when quoted CR is found`. Conserva esa formulación al comparar el efecto entre versiones de Git.
+
+En `git mailinfo`, contenido citado retornos CR modifica la forma en que se ejecuta separar metadatos, mensaje y parche de un correo. Mantén iguales los demás argumentos para atribuir el cambio observado a esta opción.
+
+```bash
+git mailinfo --quoted-cr=warn mensaje.txt cambio.patch < correo.eml
+printf 'exit=%s\n' "$?"
+```
+
+El ejemplo usa `warn` como valor. Sustitúyelo por un valor del tipo que muestra la sintaxis de tu versión. Un valor numérico conserva su unidad y un nombre de referencia debe resolver antes de ejecutar la orden. El código de terminación distingue una ejecución aceptada de un error y, en algunos comandos de consulta, de una respuesta negativa. Ejecuta la comprobación inmediatamente después para que ningún comando intermedio cambie el estado que estás observando.
+
+### `-m` y `--message-id`
+
+Añade el identificador del mensaje de correo al mensaje de commit.  La misma línea de ayuda también acepta `-m` y `-ID`. Esas formas seleccionan el mismo comportamiento; cambia la escritura del argumento, no el efecto.
+
+Estas escrituras son alias: seleccionan el mismo comportamiento. Se documentan juntas para no duplicar la regla, pero cada una conserva su propia invocación reproducible.
+
+En `git mailinfo`, mensaje id modifica la forma en que se ejecuta separar metadatos, mensaje y parche de un correo. Mantén iguales los demás argumentos para atribuir el cambio observado a esta opción.
+
+#### Ejemplo con `-m`
+
+```bash
+git mailinfo -m mensaje.txt cambio.patch < correo.eml
+printf 'exit=%s\n' "$?"
+```
+
+Esta forma no recibe un valor separado; los argumentos posteriores pertenecen a `git mailinfo` o a otra opción. El código de terminación distingue una ejecución aceptada de un error y, en algunos comandos de consulta, de una respuesta negativa.
+
+#### Ejemplo con `--message-id`
+
+```bash
+git mailinfo --message-id mensaje.txt cambio.patch < correo.eml
+printf 'exit=%s\n' "$?"
+```
+
+Esta forma no recibe un valor separado; los argumentos posteriores pertenecen a `git mailinfo` o a otra opción. El código de terminación distingue una ejecución aceptada de un error y, en algunos comandos de consulta, de una respuesta negativa.
+
+Ejecuta una sola alternativa cada vez. Si ejecutas varias consecutivamente, el primer comando puede cambiar el estado que observa el siguiente.
+
+### `--no-scissors`
+
+Desactiva para esta invocación el comportamiento que habilita `--scissors`. Mantén iguales los demás argumentos y compara el resultado con la forma positiva para comprobar la diferencia.
+
+En `git mailinfo`, desactivar línea scissors modifica la forma en que se ejecuta separar metadatos, mensaje y parche de un correo. Mantén iguales los demás argumentos para atribuir el cambio observado a esta opción.
+
+```bash
+git mailinfo --no-scissors mensaje.txt cambio.patch < correo.eml
+printf 'exit=%s\n' "$?"
+```
+
+La opción no recibe un valor separado en la forma mostrada por la ayuda corta. Los argumentos que aparecen después pertenecen a `git mailinfo` o a otra opción. El código de terminación distingue una ejecución aceptada de un error y, en algunos comandos de consulta, de una respuesta negativa. Ejecuta la comprobación inmediatamente después para que ningún comando intermedio cambie el estado que estás observando.
+
+### `--no-message-id`
+
+Desactiva para esta invocación el comportamiento que habilita `--message-id`. Mantén iguales los demás argumentos y compara el resultado con la forma positiva para comprobar la diferencia.
+
+En `git mailinfo`, desactivar mensaje id modifica la forma en que se ejecuta separar metadatos, mensaje y parche de un correo. Mantén iguales los demás argumentos para atribuir el cambio observado a esta opción.
+
+```bash
+git mailinfo --no-message-id mensaje.txt cambio.patch < correo.eml
+printf 'exit=%s\n' "$?"
+```
+
+La opción no recibe un valor separado en la forma mostrada por la ayuda corta. Los argumentos que aparecen después pertenecen a `git mailinfo` o a otra opción. El código de terminación distingue una ejecución aceptada de un error y, en algunos comandos de consulta, de una respuesta negativa. Ejecuta la comprobación inmediatamente después para que ningún comando intermedio cambie el estado que estás observando.
 
 ## Errores y diagnóstico
 
-| Señal | Causa que debes comprobar | Acción |
-| --- | --- | --- |
-| Un nombre se divide | El script usa espacios como separador para rutas | Usa NUL o el formato estructurado que admita la orden. |
-| Un predicado detiene el script | El código 1 representa una respuesta negativa | Evalúa el código de forma explícita. |
-| El helper espera más datos | El protocolo de stdin requiere una línea vacía o longitud | Escribe el terminador definido y conserva el orden de campos. |
+### Un nombre se divide
 
-Si una operación deja archivos de estado dentro de `.git`, usa `git status` y la acción de continuar, omitir o abortar definida por esa operación. No borres esos archivos para simular una cancelación.
+Comprueba esta causa: El script usa espacios como separador para rutas. Usa NUL o el formato estructurado que admita la orden.
 
-## Automatización
+### Un predicado detiene el script
 
-1. Declara la versión mínima de Git que necesita el script.
-2. Resuelve la raíz del repositorio y evita depender del directorio actual.
-3. Separa opciones y rutas con `--`.
-4. Captura stdout, stderr y el código de terminación.
-5. Usa formatos de máquina o terminación NUL para nombres de archivo.
-6. Ejecuta primero sobre el laboratorio y añade un caso sin coincidencias.
+Comprueba esta causa: El código 1 representa una respuesta negativa. Evalúa el código de forma explícita.
 
-## Seguridad y recuperación
+### El helper espera más datos
+
+Comprueba esta causa: El protocolo de stdin requiere una línea vacía o longitud. Escribe el terminador definido y conserva el orden de campos.
+
+## Automatización y recuperación
 
 Persistencia: El helper usa stdout, archivos auxiliares o un proceso llamado; su contrato define si persiste datos. Antes de una operación que mueva o elimine referencias, registra sus hashes con `git show-ref`. Antes de cambiar archivos, conserva `git diff` y `git diff --cached`. Para objetos y commits que dejaron de estar referenciados, consulta el reflog antes de ejecutar mantenimiento que pueda eliminarlos.
-
-## Práctica guiada
 
 Pasa una entrada controlada, captura salida y código de retorno, y repite la prueba con un caso válido y otro inválido.
 

@@ -2,51 +2,28 @@
 title: "git checkout"
 source: "https://git-scm.com/docs/git-checkout"
 section: "branching-and-merging"
-status: "expanded"
+status: "option-expanded"
 ---
 
 # `git checkout`
 
 Este caso usa `git checkout` para cambiar de rama o restaurar rutas desde otro estado. Los nombres de archivo, revisiones, ramas y direcciones del ejemplo representan valores que debes sustituir por los de tu repositorio.
 
-## Alcance y responsabilidad
+## Responsabilidad y efecto
 
 git checkout consulta o cambia referencias, `HEAD`, worktrees y estados de integración. Recibe como entrada las ramas, commits o rutas que participan en la operación. La operación consiste en cambiar de rama o restaurar rutas desde otro estado.
 
-La página distingue lectura, escritura y resultado:
+Puede persistir el estado implicado por esta operación: cambiar de rama o restaurar rutas desde otro estado. Las opciones pueden limitar o ampliar ese efecto.
 
-| Elemento | Relación con la función | Comprobación |
-| --- | --- | --- |
-| Entrada | las ramas, commits o rutas que participan en la operación. | Registra los argumentos y resuelve revisiones antes de ejecutar. |
-| Efecto principal | cambiar de rama o restaurar rutas desde otro estado. | Comprueba el resultado con una orden de lectura. |
-| Persistencia | Puede persistir el estado implicado por esta operación: cambiar de rama o restaurar rutas desde otro estado. Las opciones pueden limitar o ampliar ese efecto. | Compara el estado antes y después. |
-| Resultado | La orden comunica datos por stdout y diagnósticos por stderr. | Captura también el código de terminación. |
-| Fuente de verdad | El repositorio y la configuración efectiva determinan el resultado. | Usa `git status`, `git branch -vv`, `git log --graph --oneline --decorate --all`. |
+## Preparación
 
-## Requisitos y laboratorio
+Los ejemplos que necesitan un repositorio parten del [laboratorio base de `git init`](../getting-and-creating-projects/init.md#laboratorio-base). La posición de opciones, revisiones y rutas sigue las [convenciones de la interfaz de Git](../guides/gitcli.md#convenciones-de-la-cli). Los nombres como `HEAD`, `main`, `HEAD~2` y `A..B` se explican en [revisiones y rangos](../guides/gitrevisions.md#revisiones-y-rangos). La selección de rutas se explica en [pathspecs y separación con `--`](../guides/gitcli.md#pathspecs). Antes de ejecutar una forma que escriba datos, registra `git status --short` y las referencias que puedan cambiar.
 
-Crea un commit base y dos ramas con un cambio distinto. Ejecuta la operación desde la rama indicada en el ejemplo.
-
-```bash
-lab_dir="$(mktemp -d)"
-git init "$lab_dir/proyecto"
-git -C "$lab_dir/proyecto" config user.name "Persona de prueba"
-git -C "$lab_dir/proyecto" config user.email "prueba@example.test"
-printf 'línea base\n' > "$lab_dir/proyecto/archivo.txt"
-git -C "$lab_dir/proyecto" add archivo.txt
-git -C "$lab_dir/proyecto" commit -m "base"
-cd "$lab_dir/proyecto"
-```
-
-Antes de ejecutar el ejemplo, confirma la raíz con `git rev-parse --show-toplevel` cuando exista un repositorio. Registra `git status --short` y las referencias que puedan cambiar.
-
-## Modelo de funcionamiento
+## Cómo funciona
 
 Una rama es una referencia que apunta a un commit. Cambiar de rama mueve HEAD; fusionar o reorganizar historial crea o reasigna commits y referencias.
 
 Distingue los commits de los nombres que los señalan. Reescribir o fusionar puede crear commits nuevos aunque el contenido final coincida.
-
-Para comprobar el resultado: `git log --graph` y `git show-ref` muestran los commits y punteros resultantes. La verificación debe observar un estado distinto del canal que produjo el cambio.
 
 ## Ejemplo mínimo
 
@@ -55,16 +32,9 @@ git checkout main
 git checkout HEAD~1 -- README.md
 ```
 
-Ejecuta el bloque en orden. Conserva los nombres del laboratorio hasta confirmar el resultado. Sustituye rutas, revisiones o URL solo después de identificar su tipo y alcance.
+La invocación `git checkout main` ejecuta esta operación: cambiar de rama o restaurar rutas desde otro estado. Después, `git log --graph` y `git show-ref` muestran los commits y punteros resultantes. Conserva stdout, stderr y el código de terminación cuando el ejemplo forme parte de un script.
 
-### Resultado esperado
-
-- La entrada queda limitada a: las ramas, commits o rutas que participan en la operación.
-- La operación observable es: cambiar de rama o restaurar rutas desde otro estado.
-- La comprobación se realiza mediante: `git log --graph` y `git show-ref` muestran los commits y punteros resultantes.
-- stdout contiene datos o confirmaciones; stderr contiene diagnósticos. Captura ambos canales cuando automatices.
-
-## Sintaxis
+## Sintaxis y formas de invocación
 
 ```text
 git checkout [-q] [-f] [-m] [<branch>]
@@ -82,91 +52,709 @@ git checkout [<options>] <branch>
 
 Los corchetes indican elementos opcionales; `<valor>` exige sustitución; los puntos suspensivos permiten repetición; `|` separa formas excluyentes. Usa `git checkout -h` para consultar la sintaxis que corresponde a la instalación donde ejecutarás la orden.
 
-## Casos de uso
+## Flujos de uso
 
-| Caso | Objetivo | Criterio de verificación |
-| --- | --- | --- |
-| Caso base | cambiar de rama o restaurar rutas desde otro estado | Ejecuta el ejemplo mínimo y registra el estado antes y después. |
-| Alcance explícito | Aplicar git checkout a una referencia, rango o ruta identificada. | Resuelve cada argumento antes de ejecutar y usa `--` para rutas. |
-| Validación | Comprobar el resultado de git checkout con una orden de lectura independiente. | No uses la misma salida como única prueba del cambio. |
+### Caso base
 
+cambiar de rama o restaurar rutas desde otro estado. Usa el [ejemplo mínimo](#ejemplo-mínimo) como punto de partida. Ejecuta el ejemplo mínimo y registra el estado antes y después.
 
-## Opciones y variaciones
+### Alcance explícito
 
-La tabla agrupa las opciones visibles en la sintaxis y en la ayuda corta. Una opción puede tener un significado propio cuando la página lo define; ejecuta la ayuda de tu versión antes de usarla en automatización.
+Aplicar git checkout a una referencia, rango o ruta identificada. Usa el [ejemplo mínimo](#ejemplo-mínimo) como punto de partida. Resuelve cada argumento antes de ejecutar y usa `--` para rutas.
 
-| Opción | Efecto que debes controlar |
-| --- | --- |
-| `-q` | Activa la forma corta del modo sin mensajes. |
-| `-f` | Activa la forma corta de la operación forzada. |
-| `-m` | Activa el modo `-m`; los argumentos y restricciones aparecen en la sintaxis y en la fuente oficial. |
-| `--detach` | Hace que `HEAD` apunte directamente a un commit. |
-| `-b` | Activa el modo `-b`; los argumentos y restricciones aparecen en la sintaxis y en la fuente oficial. |
-| `-B` | Activa el modo `-B`; los argumentos y restricciones aparecen en la sintaxis y en la fuente oficial. |
-| `--orphan` | Activa el modo `--orphan`; los argumentos y restricciones aparecen en la sintaxis y en la fuente oficial. |
-| `-l` | Activa el modo `-l`; los argumentos y restricciones aparecen en la sintaxis y en la fuente oficial. |
-| `--guess` | Activa el modo `--guess`; los argumentos y restricciones aparecen en la sintaxis y en la fuente oficial. |
-| `--overlay` | Activa el modo `--overlay`; los argumentos y restricciones aparecen en la sintaxis y en la fuente oficial. |
-| `--quiet` | Reduce mensajes que no representan errores. |
-| `--recurse-submodules` | Propaga la operación a submódulos dentro del alcance. |
-| `--progress` | Muestra progreso aunque la salida no sea un terminal. |
-| `--merge` | Activa el modo `--merge`; los argumentos y restricciones aparecen en la sintaxis y en la fuente oficial. |
-| `--conflict` | Activa el modo `--conflict`; los argumentos y restricciones aparecen en la sintaxis y en la fuente oficial. |
-| `-d` | Activa la forma corta de eliminación o una opción propia de la orden. |
-| `-t` | Activa el modo `-t`; los argumentos y restricciones aparecen en la sintaxis y en la fuente oficial. |
-| `--track` | Crea o ajusta la asociación de seguimiento solicitada. |
-| `--force` | Omite una protección concreta; úsala solo después de verificar el estado objetivo. |
-| `--overwrite-ignore` | Excluye elementos que cumplan la condición indicada. |
-| `--ignore-other-worktrees` | Excluye elementos que cumplan la condición indicada. |
-| `-2` | Activa el modo `-2`; los argumentos y restricciones aparecen en la sintaxis y en la fuente oficial. |
-| `--ours` | Activa el modo `--ours`; los argumentos y restricciones aparecen en la sintaxis y en la fuente oficial. |
-| `-3` | Activa el modo `-3`; los argumentos y restricciones aparecen en la sintaxis y en la fuente oficial. |
-| `--theirs` | Activa el modo `--theirs`; los argumentos y restricciones aparecen en la sintaxis y en la fuente oficial. |
-| `-p` | Activa la forma corta del modo patch o de una opción propia de la orden. |
-| `--patch` | Permite elegir hunks en vez de operar sobre el archivo completo. |
-| `-U` | Activa el modo `-U`; los argumentos y restricciones aparecen en la sintaxis y en la fuente oficial. |
-| `--unified` | Define cuántas líneas de contexto rodean cada hunk. |
-| `--inter-hunk-context` | Fusiona hunks cercanos cuando la distancia no supera el límite indicado. |
-| `--ignore-skip-worktree-bits` | Excluye elementos que cumplan la condición indicada. |
-| `--pathspec-from-file` | Lee pathspecs desde un archivo o desde stdin. |
-| `--pathspec-file-nul` | Interpreta los pathspecs de archivo como registros terminados en NUL. |
+### Validación
 
-## Selección de entradas
+Comprobar el resultado de git checkout con una orden de lectura independiente. Usa el [ejemplo mínimo](#ejemplo-mínimo) como punto de partida. No uses la misma salida como única prueba del cambio.
 
-Las revisiones se resuelven antes que los pathspecs cuando la sintaxis las espera. Usa `--` para separar opciones y rutas. Cita los globos para decidir si los expande el shell o Git.
+## Opciones
 
-Comprueba cada entrada con una orden de lectura antes de una escritura. Para listas de rutas generadas por otro proceso, prefiere una interfaz terminada en NUL cuando esté disponible.
+Cada apartado usa una opción en una invocación concreta. Las opciones equivalentes comparten la explicación, pero cada alias tiene su propio ejemplo. Ejecuta una opción por vez antes de combinarlas.
 
-## Salida y códigos de terminación
+### `-q` y `--quiet`
 
-Un código 0 indica que la operación terminó bajo el contrato solicitado. Trata cualquier código distinto de cero según la función; no deduzcas el estado solo a partir de que stdout esté vacío.
+Reduce mensajes que no representan errores.  La misma línea de ayuda también acepta `-q`. Esas formas seleccionan el mismo comportamiento; cambia la escritura del argumento, no el efecto.
 
-No analices mensajes destinados a personas si existe un formato de máquina. Declara los campos, desactiva color y conserva stderr para diagnóstico.
+Estas escrituras son alias: seleccionan el mismo comportamiento. Se documentan juntas para no duplicar la regla, pero cada una conserva su propia invocación reproducible.
+
+La opción cambia la representación o el canal del resultado. Úsala cuando una persona o un script necesite campos, separadores o cantidad de mensajes definidos. El contenido mostrado puede cambiar aunque el repositorio permanezca igual.
+
+#### Ejemplo con `-q`
+
+```bash
+git checkout -q main
+git status --short
+```
+
+Esta forma no recibe un valor separado; los argumentos posteriores pertenecen a `git checkout` o a otra opción. El estado muestra si cambió el área de trabajo, el índice o la operación en curso.
+
+#### Ejemplo con `--quiet`
+
+```bash
+git checkout --quiet main
+git status --short
+```
+
+Esta forma no recibe un valor separado; los argumentos posteriores pertenecen a `git checkout` o a otra opción. El estado muestra si cambió el área de trabajo, el índice o la operación en curso.
+
+Ejecuta una sola alternativa cada vez. Si ejecutas varias consecutivamente, el primer comando puede cambiar el estado que observa el siguiente.
+
+### `-f` y `--force`
+
+Omite una protección concreta; úsala solo después de verificar el estado objetivo.  La misma línea de ayuda también acepta `-f`. Esas formas seleccionan el mismo comportamiento; cambia la escritura del argumento, no el efecto.
+
+Estas escrituras son alias: seleccionan el mismo comportamiento. Se documentan juntas para no duplicar la regla, pero cada una conserva su propia invocación reproducible.
+
+La opción controla omitir la protección. Registra el estado de las referencias y conserva los cambios sin commit antes de usarla, porque cambiar de rama o restaurar rutas desde otro estado puede retirar o reemplazar datos dentro del alcance seleccionado.
+
+#### Ejemplo con `-f`
+
+```bash
+git checkout -f main
+git status --short
+```
+
+Esta forma no recibe un valor separado; los argumentos posteriores pertenecen a `git checkout` o a otra opción. El estado muestra si cambió el área de trabajo, el índice o la operación en curso.
+
+#### Ejemplo con `--force`
+
+```bash
+git checkout --force main
+git status --short
+```
+
+Esta forma no recibe un valor separado; los argumentos posteriores pertenecen a `git checkout` o a otra opción. El estado muestra si cambió el área de trabajo, el índice o la operación en curso.
+
+Ejecuta una sola alternativa cada vez. Si ejecutas varias consecutivamente, el primer comando puede cambiar el estado que observa el siguiente.
+
+### `-m` y `--merge`
+
+Ejecuta merge durante cambiar de rama o restaurar rutas desde otro estado. En Git 2.51.1, la ayuda corta expresa el contrato como `perform a 3-way merge with the new branch`. Conserva esa formulación al comparar el efecto entre versiones de Git. La misma línea de ayuda también acepta `-m`. Esas formas seleccionan el mismo comportamiento; cambia la escritura del argumento, no el efecto.
+
+Estas escrituras son alias: seleccionan el mismo comportamiento. Se documentan juntas para no duplicar la regla, pero cada una conserva su propia invocación reproducible.
+
+La opción limita o amplía el conjunto sobre el que se ejecuta cambiar de rama o restaurar rutas desde otro estado. Comprueba la selección con una forma de lectura antes de combinarla con una opción que escriba estado.
+
+#### Ejemplo con `-m`
+
+```bash
+git checkout -m main
+git status --short
+```
+
+Esta forma no recibe un valor separado; los argumentos posteriores pertenecen a `git checkout` o a otra opción. El estado muestra si cambió el área de trabajo, el índice o la operación en curso.
+
+#### Ejemplo con `--merge`
+
+```bash
+git checkout --merge main
+git status --short
+```
+
+Esta forma no recibe un valor separado; los argumentos posteriores pertenecen a `git checkout` o a otra opción. El estado muestra si cambió el área de trabajo, el índice o la operación en curso.
+
+Ejecuta una sola alternativa cada vez. Si ejecutas varias consecutivamente, el primer comando puede cambiar el estado que observa el siguiente.
+
+### `--detach` y `-d`
+
+Hace que `HEAD` apunte directamente a un commit.  La misma línea de ayuda también acepta `-d`. Esas formas seleccionan el mismo comportamiento; cambia la escritura del argumento, no el efecto.
+
+Estas escrituras son alias: seleccionan el mismo comportamiento. Se documentan juntas para no duplicar la regla, pero cada una conserva su propia invocación reproducible.
+
+En `git checkout`, HEAD separado modifica la forma en que se ejecuta cambiar de rama o restaurar rutas desde otro estado. Mantén iguales los demás argumentos para atribuir el cambio observado a esta opción.
+
+#### Ejemplo con `--detach`
+
+```bash
+git checkout --detach main
+git status --short
+```
+
+Esta forma no recibe un valor separado; los argumentos posteriores pertenecen a `git checkout` o a otra opción. El estado muestra si cambió el área de trabajo, el índice o la operación en curso.
+
+#### Ejemplo con `-d`
+
+```bash
+git checkout -d main
+git status --short
+```
+
+Esta forma no recibe un valor separado; los argumentos posteriores pertenecen a `git checkout` o a otra opción. El estado muestra si cambió el área de trabajo, el índice o la operación en curso.
+
+Ejecuta una sola alternativa cada vez. Si ejecutas varias consecutivamente, el primer comando puede cambiar el estado que observa el siguiente.
+
+### `-b`
+
+Crea b como parte de cambiar de rama o restaurar rutas desde otro estado. En Git 2.51.1, la ayuda corta expresa el contrato como `create and checkout a new branch`. Conserva esa formulación al comparar el efecto entre versiones de Git.
+
+La opción limita o amplía el conjunto sobre el que se ejecuta cambiar de rama o restaurar rutas desde otro estado. Comprueba la selección con una forma de lectura antes de combinarla con una opción que escriba estado.
+
+```bash
+git checkout -b main main
+git status --short
+```
+
+El ejemplo usa `main` como valor. Sustitúyelo por un valor del tipo que muestra la sintaxis de tu versión. Un valor numérico conserva su unidad y un nombre de referencia debe resolver antes de ejecutar la orden. El estado muestra si cambió el área de trabajo, el índice o la operación en curso. Ejecuta la comprobación inmediatamente después para que ningún comando intermedio cambie el estado que estás observando.
+
+### `-B`
+
+Restablece B como parte de cambiar de rama o restaurar rutas desde otro estado. En Git 2.51.1, la ayuda corta expresa el contrato como `create/reset and checkout a branch`. Conserva esa formulación al comparar el efecto entre versiones de Git.
+
+La opción limita o amplía el conjunto sobre el que se ejecuta cambiar de rama o restaurar rutas desde otro estado. Comprueba la selección con una forma de lectura antes de combinarla con una opción que escriba estado.
+
+```bash
+git checkout -B main main
+git status --short
+```
+
+El ejemplo usa `main` como valor. Sustitúyelo por un valor del tipo que muestra la sintaxis de tu versión. Un valor numérico conserva su unidad y un nombre de referencia debe resolver antes de ejecutar la orden. El estado muestra si cambió el área de trabajo, el índice o la operación en curso. Ejecuta la comprobación inmediatamente después para que ningún comando intermedio cambie el estado que estás observando.
+
+### `--orphan`
+
+Crea o cambia a una rama sin padres en el historial existente. En Git 2.51.1, la ayuda corta expresa el contrato como `new unborn branch`. Conserva esa formulación al comparar el efecto entre versiones de Git.
+
+La opción limita o amplía el conjunto sobre el que se ejecuta cambiar de rama o restaurar rutas desde otro estado. Comprueba la selección con una forma de lectura antes de combinarla con una opción que escriba estado.
+
+```bash
+git checkout --orphan=main main
+git status --short
+```
+
+El ejemplo usa `main` como valor. Sustitúyelo por un valor del tipo que muestra la sintaxis de tu versión. Un valor numérico conserva su unidad y un nombre de referencia debe resolver antes de ejecutar la orden. El estado muestra si cambió el área de trabajo, el índice o la operación en curso. Ejecuta la comprobación inmediatamente después para que ningún comando intermedio cambie el estado que estás observando.
+
+### `-l`
+
+Crea l como parte de cambiar de rama o restaurar rutas desde otro estado. En Git 2.51.1, la ayuda corta expresa el contrato como `create reflog for new branch`. Conserva esa formulación al comparar el efecto entre versiones de Git.
+
+La opción limita o amplía el conjunto sobre el que se ejecuta cambiar de rama o restaurar rutas desde otro estado. Comprueba la selección con una forma de lectura antes de combinarla con una opción que escriba estado.
+
+```bash
+git checkout -l main
+git status --short
+```
+
+La opción no recibe un valor separado en la forma mostrada por la ayuda corta. Los argumentos que aparecen después pertenecen a `git checkout` o a otra opción. El estado muestra si cambió el área de trabajo, el índice o la operación en curso. Ejecuta la comprobación inmediatamente después para que ningún comando intermedio cambie el estado que estás observando.
+
+### `--guess`
+
+Permite deducir una rama local a partir de una rama remota con el mismo nombre. En Git 2.51.1, la ayuda corta expresa el contrato como `second guess 'git checkout <no-such-branch>' (default)`. Conserva esa formulación al comparar el efecto entre versiones de Git.
+
+La opción limita o amplía el conjunto sobre el que se ejecuta cambiar de rama o restaurar rutas desde otro estado. Comprueba la selección con una forma de lectura antes de combinarla con una opción que escriba estado.
+
+```bash
+git checkout --guess main
+git status --short
+```
+
+La opción no recibe un valor separado en la forma mostrada por la ayuda corta. Los argumentos que aparecen después pertenecen a `git checkout` o a otra opción. El estado muestra si cambió el área de trabajo, el índice o la operación en curso. Ejecuta la comprobación inmediatamente después para que ningún comando intermedio cambie el estado que estás observando.
+
+### `--overlay`
+
+Define overlay para esta ejecución de `git checkout`. En Git 2.51.1, la ayuda corta expresa el contrato como `use overlay mode (default)`. Conserva esa formulación al comparar el efecto entre versiones de Git.
+
+En `git checkout`, overlay modifica la forma en que se ejecuta cambiar de rama o restaurar rutas desde otro estado. Mantén iguales los demás argumentos para atribuir el cambio observado a esta opción.
+
+```bash
+git checkout --overlay main
+git status --short
+```
+
+La opción no recibe un valor separado en la forma mostrada por la ayuda corta. Los argumentos que aparecen después pertenecen a `git checkout` o a otra opción. El estado muestra si cambió el área de trabajo, el índice o la operación en curso. Ejecuta la comprobación inmediatamente después para que ningún comando intermedio cambie el estado que estás observando.
+
+### `--recurse-submodules`
+
+Propaga la operación a submódulos dentro del alcance.
+
+La opción añade, retira o consulta una comprobación previa. Ejecuta primero la forma que no escribe cuando exista y conserva el código de terminación como parte del resultado.
+
+```bash
+git checkout --recurse-submodules=valor main
+git status --short
+```
+
+El ejemplo usa `valor` como valor. Sustitúyelo por un valor del tipo que muestra la sintaxis de tu versión. Un valor numérico conserva su unidad y un nombre de referencia debe resolver antes de ejecutar la orden. El estado muestra si cambió el área de trabajo, el índice o la operación en curso. Ejecuta la comprobación inmediatamente después para que ningún comando intermedio cambie el estado que estás observando.
+
+### `--progress`
+
+Muestra progreso aunque la salida no sea un terminal.
+
+La opción controla progreso. Registra el estado de las referencias y conserva los cambios sin commit antes de usarla, porque cambiar de rama o restaurar rutas desde otro estado puede retirar o reemplazar datos dentro del alcance seleccionado.
+
+```bash
+git checkout --progress main
+git status --short
+```
+
+La opción no recibe un valor separado en la forma mostrada por la ayuda corta. Los argumentos que aparecen después pertenecen a `git checkout` o a otra opción. El estado muestra si cambió el área de trabajo, el índice o la operación en curso. Ejecuta la comprobación inmediatamente después para que ningún comando intermedio cambie el estado que estás observando.
+
+### `--conflict`
+
+Selecciona el estilo de marcadores que Git escribe al materializar un conflicto. En Git 2.51.1, la ayuda corta expresa el contrato como `conflict style (merge, diff3, or zdiff3)`. Conserva esa formulación al comparar el efecto entre versiones de Git.
+
+En `git checkout`, conflict modifica la forma en que se ejecuta cambiar de rama o restaurar rutas desde otro estado. Mantén iguales los demás argumentos para atribuir el cambio observado a esta opción.
+
+```bash
+git checkout --conflict=short main
+git status --short
+```
+
+El ejemplo usa `short` como valor. Sustitúyelo por un valor del tipo que muestra la sintaxis de tu versión. Un valor numérico conserva su unidad y un nombre de referencia debe resolver antes de ejecutar la orden. El estado muestra si cambió el área de trabajo, el índice o la operación en curso. Ejecuta la comprobación inmediatamente después para que ningún comando intermedio cambie el estado que estás observando.
+
+### `-t` y `--track`
+
+Crea o ajusta la asociación de seguimiento solicitada.  La misma línea de ayuda también acepta `-t`. Esas formas seleccionan el mismo comportamiento; cambia la escritura del argumento, no el efecto.
+
+Estas escrituras son alias: seleccionan el mismo comportamiento. Se documentan juntas para no duplicar la regla, pero cada una conserva su propia invocación reproducible.
+
+La opción limita o amplía el conjunto sobre el que se ejecuta cambiar de rama o restaurar rutas desde otro estado. Comprueba la selección con una forma de lectura antes de combinarla con una opción que escriba estado.
+
+#### Ejemplo con `-t`
+
+```bash
+git checkout -t=valor main
+git status --short
+```
+
+En esta forma, `valor` es un valor de ejemplo. Sustitúyelo por un valor que cumpla el tipo y el alcance indicados por la sintaxis. El estado muestra si cambió el área de trabajo, el índice o la operación en curso.
+
+#### Ejemplo con `--track`
+
+```bash
+git checkout --track=valor main
+git status --short
+```
+
+En esta forma, `valor` es un valor de ejemplo. Sustitúyelo por un valor que cumpla el tipo y el alcance indicados por la sintaxis. El estado muestra si cambió el área de trabajo, el índice o la operación en curso.
+
+Ejecuta una sola alternativa cada vez. Si ejecutas varias consecutivamente, el primer comando puede cambiar el estado que observa el siguiente.
+
+### `--overwrite-ignore`
+
+Excluye elementos que cumplan la condición indicada.
+
+La opción controla overwrite ignorar. Registra el estado de las referencias y conserva los cambios sin commit antes de usarla, porque cambiar de rama o restaurar rutas desde otro estado puede retirar o reemplazar datos dentro del alcance seleccionado.
+
+```bash
+git checkout --overwrite-ignore main
+git status --short
+```
+
+La opción no recibe un valor separado en la forma mostrada por la ayuda corta. Los argumentos que aparecen después pertenecen a `git checkout` o a otra opción. El estado muestra si cambió el área de trabajo, el índice o la operación en curso. Ejecuta la comprobación inmediatamente después para que ningún comando intermedio cambie el estado que estás observando.
+
+### `--ignore-other-worktrees`
+
+Excluye elementos que cumplan la condición indicada.
+
+La opción limita o amplía el conjunto sobre el que se ejecuta cambiar de rama o restaurar rutas desde otro estado. Comprueba la selección con una forma de lectura antes de combinarla con una opción que escriba estado.
+
+```bash
+git checkout --ignore-other-worktrees main
+git status --short
+```
+
+La opción no recibe un valor separado en la forma mostrada por la ayuda corta. Los argumentos que aparecen después pertenecen a `git checkout` o a otra opción. El estado muestra si cambió el área de trabajo, el índice o la operación en curso. Ejecuta la comprobación inmediatamente después para que ningún comando intermedio cambie el estado que estás observando.
+
+### `-2` y `--ours`
+
+Selecciona la versión de la etapa ours para las rutas en conflicto. En Git 2.51.1, la ayuda corta expresa el contrato como `checkout our version for unmerged files`. Conserva esa formulación al comparar el efecto entre versiones de Git. La misma línea de ayuda también acepta `-2`. Esas formas seleccionan el mismo comportamiento; cambia la escritura del argumento, no el efecto.
+
+Estas escrituras son alias: seleccionan el mismo comportamiento. Se documentan juntas para no duplicar la regla, pero cada una conserva su propia invocación reproducible.
+
+La opción limita o amplía el conjunto sobre el que se ejecuta cambiar de rama o restaurar rutas desde otro estado. Comprueba la selección con una forma de lectura antes de combinarla con una opción que escriba estado.
+
+#### Ejemplo con `-2`
+
+```bash
+git checkout -2 main
+git status --short
+```
+
+Esta forma no recibe un valor separado; los argumentos posteriores pertenecen a `git checkout` o a otra opción. El estado muestra si cambió el área de trabajo, el índice o la operación en curso.
+
+#### Ejemplo con `--ours`
+
+```bash
+git checkout --ours main
+git status --short
+```
+
+Esta forma no recibe un valor separado; los argumentos posteriores pertenecen a `git checkout` o a otra opción. El estado muestra si cambió el área de trabajo, el índice o la operación en curso.
+
+Ejecuta una sola alternativa cada vez. Si ejecutas varias consecutivamente, el primer comando puede cambiar el estado que observa el siguiente.
+
+### `-3` y `--theirs`
+
+Selecciona la versión de la etapa theirs para las rutas en conflicto. En Git 2.51.1, la ayuda corta expresa el contrato como `checkout their version for unmerged files`. Conserva esa formulación al comparar el efecto entre versiones de Git. La misma línea de ayuda también acepta `-3`. Esas formas seleccionan el mismo comportamiento; cambia la escritura del argumento, no el efecto.
+
+Estas escrituras son alias: seleccionan el mismo comportamiento. Se documentan juntas para no duplicar la regla, pero cada una conserva su propia invocación reproducible.
+
+La opción limita o amplía el conjunto sobre el que se ejecuta cambiar de rama o restaurar rutas desde otro estado. Comprueba la selección con una forma de lectura antes de combinarla con una opción que escriba estado.
+
+#### Ejemplo con `-3`
+
+```bash
+git checkout -3 main
+git status --short
+```
+
+Esta forma no recibe un valor separado; los argumentos posteriores pertenecen a `git checkout` o a otra opción. El estado muestra si cambió el área de trabajo, el índice o la operación en curso.
+
+#### Ejemplo con `--theirs`
+
+```bash
+git checkout --theirs main
+git status --short
+```
+
+Esta forma no recibe un valor separado; los argumentos posteriores pertenecen a `git checkout` o a otra opción. El estado muestra si cambió el área de trabajo, el índice o la operación en curso.
+
+Ejecuta una sola alternativa cada vez. Si ejecutas varias consecutivamente, el primer comando puede cambiar el estado que observa el siguiente.
+
+### `-p` y `--patch`
+
+Permite elegir hunks en vez de operar sobre el archivo completo.  La misma línea de ayuda también acepta `-p`. Esas formas seleccionan el mismo comportamiento; cambia la escritura del argumento, no el efecto.
+
+Estas escrituras son alias: seleccionan el mismo comportamiento. Se documentan juntas para no duplicar la regla, pero cada una conserva su propia invocación reproducible.
+
+En `git checkout`, parche modifica la forma en que se ejecuta cambiar de rama o restaurar rutas desde otro estado. Mantén iguales los demás argumentos para atribuir el cambio observado a esta opción.
+
+#### Ejemplo con `-p`
+
+```bash
+git checkout -p main
+git status --short
+```
+
+Esta forma no recibe un valor separado; los argumentos posteriores pertenecen a `git checkout` o a otra opción. El estado muestra si cambió el área de trabajo, el índice o la operación en curso.
+
+#### Ejemplo con `--patch`
+
+```bash
+git checkout --patch main
+git status --short
+```
+
+Esta forma no recibe un valor separado; los argumentos posteriores pertenecen a `git checkout` o a otra opción. El estado muestra si cambió el área de trabajo, el índice o la operación en curso.
+
+Ejecuta una sola alternativa cada vez. Si ejecutas varias consecutivamente, el primer comando puede cambiar el estado que observa el siguiente.
+
+### `-U` y `--unified`
+
+Define cuántas líneas de contexto rodean cada hunk.  La misma línea de ayuda también acepta `-U`. Esas formas seleccionan el mismo comportamiento; cambia la escritura del argumento, no el efecto.
+
+Estas escrituras son alias: seleccionan el mismo comportamiento. Se documentan juntas para no duplicar la regla, pero cada una conserva su propia invocación reproducible.
+
+En `git checkout`, unified modifica la forma en que se ejecuta cambiar de rama o restaurar rutas desde otro estado. Mantén iguales los demás argumentos para atribuir el cambio observado a esta opción.
+
+#### Ejemplo con `-U`
+
+```bash
+git checkout -U 5 main
+git status --short
+```
+
+En esta forma, `5` es un valor de ejemplo. Sustitúyelo por un valor que cumpla el tipo y el alcance indicados por la sintaxis. El estado muestra si cambió el área de trabajo, el índice o la operación en curso.
+
+#### Ejemplo con `--unified`
+
+```bash
+git checkout --unified=5 main
+git status --short
+```
+
+En esta forma, `5` es un valor de ejemplo. Sustitúyelo por un valor que cumpla el tipo y el alcance indicados por la sintaxis. El estado muestra si cambió el área de trabajo, el índice o la operación en curso.
+
+Ejecuta una sola alternativa cada vez. Si ejecutas varias consecutivamente, el primer comando puede cambiar el estado que observa el siguiente.
+
+### `--inter-hunk-context`
+
+Fusiona hunks cercanos cuando la distancia no supera el límite indicado.
+
+La opción cambia la representación o el canal del resultado. Úsala cuando una persona o un script necesite campos, separadores o cantidad de mensajes definidos. El contenido mostrado puede cambiar aunque el repositorio permanezca igual.
+
+```bash
+git checkout --inter-hunk-context=5 main
+git status --short
+```
+
+El ejemplo usa `5` como valor. Sustitúyelo por un valor del tipo que muestra la sintaxis de tu versión. Un valor numérico conserva su unidad y un nombre de referencia debe resolver antes de ejecutar la orden. El estado muestra si cambió el área de trabajo, el índice o la operación en curso. Ejecuta la comprobación inmediatamente después para que ningún comando intermedio cambie el estado que estás observando.
+
+### `--ignore-skip-worktree-bits`
+
+Excluye elementos que cumplan la condición indicada.
+
+Esta forma se usa cuando `git checkout` ya dejó una operación en curso. Revisa `git status` antes de ejecutarla porque ignorar omitir el elemento actual área de trabajo bits actúa sobre el estado que Git registró al iniciar la secuencia.
+
+```bash
+git checkout --ignore-skip-worktree-bits main
+git status --short
+```
+
+La opción no recibe un valor separado en la forma mostrada por la ayuda corta. Los argumentos que aparecen después pertenecen a `git checkout` o a otra opción. El estado muestra si cambió el área de trabajo, el índice o la operación en curso. Ejecuta la comprobación inmediatamente después para que ningún comando intermedio cambie el estado que estás observando.
+
+### `--pathspec-from-file`
+
+Lee pathspecs desde un archivo o desde stdin.
+
+La opción cambia cómo `git checkout` recibe datos. Define el separador, la codificación y la ruta de entrada antes de ejecutarla. Los nombres con espacios o saltos de línea requieren una interfaz terminada en NUL cuando el comando la ofrece.
+
+```bash
+git checkout --pathspec-from-file=rutas.txt main
+git status --short
+```
+
+El ejemplo usa `rutas.txt` como valor. Sustitúyelo por un valor del tipo que muestra la sintaxis de tu versión. Un valor numérico conserva su unidad y un nombre de referencia debe resolver antes de ejecutar la orden. El estado muestra si cambió el área de trabajo, el índice o la operación en curso. Ejecuta la comprobación inmediatamente después para que ningún comando intermedio cambie el estado que estás observando.
+
+### `--pathspec-file-nul`
+
+Interpreta los pathspecs de archivo como registros terminados en NUL.
+
+La opción cambia cómo `git checkout` recibe datos. Define el separador, la codificación y la ruta de entrada antes de ejecutarla. Los nombres con espacios o saltos de línea requieren una interfaz terminada en NUL cuando el comando la ofrece.
+
+```bash
+git checkout --pathspec-file-nul main
+git status --short
+```
+
+La opción no recibe un valor separado en la forma mostrada por la ayuda corta. Los argumentos que aparecen después pertenecen a `git checkout` o a otra opción. El estado muestra si cambió el área de trabajo, el índice o la operación en curso. Ejecuta la comprobación inmediatamente después para que ningún comando intermedio cambie el estado que estás observando.
+
+### `--no-detach`
+
+Desactiva para esta invocación el comportamiento que habilita `--detach`. Mantén iguales los demás argumentos y compara el resultado con la forma positiva para comprobar la diferencia.
+
+En `git checkout`, desactivar HEAD separado modifica la forma en que se ejecuta cambiar de rama o restaurar rutas desde otro estado. Mantén iguales los demás argumentos para atribuir el cambio observado a esta opción.
+
+```bash
+git checkout --no-detach main
+git status --short
+```
+
+La opción no recibe un valor separado en la forma mostrada por la ayuda corta. Los argumentos que aparecen después pertenecen a `git checkout` o a otra opción. El estado muestra si cambió el área de trabajo, el índice o la operación en curso. Ejecuta la comprobación inmediatamente después para que ningún comando intermedio cambie el estado que estás observando.
+
+### `--no-orphan`
+
+Desactiva para esta invocación el comportamiento que habilita `--orphan`. Mantén iguales los demás argumentos y compara el resultado con la forma positiva para comprobar la diferencia.
+
+La opción limita o amplía el conjunto sobre el que se ejecuta cambiar de rama o restaurar rutas desde otro estado. Comprueba la selección con una forma de lectura antes de combinarla con una opción que escriba estado.
+
+```bash
+git checkout --no-orphan main
+git status --short
+```
+
+La opción no recibe un valor separado en la forma mostrada por la ayuda corta. Los argumentos que aparecen después pertenecen a `git checkout` o a otra opción. El estado muestra si cambió el área de trabajo, el índice o la operación en curso. Ejecuta la comprobación inmediatamente después para que ningún comando intermedio cambie el estado que estás observando.
+
+### `--no-guess`
+
+Desactiva para esta invocación el comportamiento que habilita `--guess`. Mantén iguales los demás argumentos y compara el resultado con la forma positiva para comprobar la diferencia.
+
+La opción limita o amplía el conjunto sobre el que se ejecuta cambiar de rama o restaurar rutas desde otro estado. Comprueba la selección con una forma de lectura antes de combinarla con una opción que escriba estado.
+
+```bash
+git checkout --no-guess main
+git status --short
+```
+
+La opción no recibe un valor separado en la forma mostrada por la ayuda corta. Los argumentos que aparecen después pertenecen a `git checkout` o a otra opción. El estado muestra si cambió el área de trabajo, el índice o la operación en curso. Ejecuta la comprobación inmediatamente después para que ningún comando intermedio cambie el estado que estás observando.
+
+### `--no-overlay`
+
+Desactiva para esta invocación el comportamiento que habilita `--overlay`. Mantén iguales los demás argumentos y compara el resultado con la forma positiva para comprobar la diferencia.
+
+En `git checkout`, desactivar overlay modifica la forma en que se ejecuta cambiar de rama o restaurar rutas desde otro estado. Mantén iguales los demás argumentos para atribuir el cambio observado a esta opción.
+
+```bash
+git checkout --no-overlay main
+git status --short
+```
+
+La opción no recibe un valor separado en la forma mostrada por la ayuda corta. Los argumentos que aparecen después pertenecen a `git checkout` o a otra opción. El estado muestra si cambió el área de trabajo, el índice o la operación en curso. Ejecuta la comprobación inmediatamente después para que ningún comando intermedio cambie el estado que estás observando.
+
+### `--no-quiet`
+
+Desactiva para esta invocación el comportamiento que habilita `--quiet`. Mantén iguales los demás argumentos y compara el resultado con la forma positiva para comprobar la diferencia.
+
+La opción cambia la representación o el canal del resultado. Úsala cuando una persona o un script necesite campos, separadores o cantidad de mensajes definidos. El contenido mostrado puede cambiar aunque el repositorio permanezca igual.
+
+```bash
+git checkout --no-quiet main
+git status --short
+```
+
+La opción no recibe un valor separado en la forma mostrada por la ayuda corta. Los argumentos que aparecen después pertenecen a `git checkout` o a otra opción. El estado muestra si cambió el área de trabajo, el índice o la operación en curso. Ejecuta la comprobación inmediatamente después para que ningún comando intermedio cambie el estado que estás observando.
+
+### `--no-recurse-submodules`
+
+Desactiva para esta invocación el comportamiento que habilita `--recurse-submodules`. Mantén iguales los demás argumentos y compara el resultado con la forma positiva para comprobar la diferencia.
+
+La opción añade, retira o consulta una comprobación previa. Ejecuta primero la forma que no escribe cuando exista y conserva el código de terminación como parte del resultado.
+
+```bash
+git checkout --no-recurse-submodules main
+git status --short
+```
+
+La opción no recibe un valor separado en la forma mostrada por la ayuda corta. Los argumentos que aparecen después pertenecen a `git checkout` o a otra opción. El estado muestra si cambió el área de trabajo, el índice o la operación en curso. Ejecuta la comprobación inmediatamente después para que ningún comando intermedio cambie el estado que estás observando.
+
+### `--no-progress`
+
+Desactiva para esta invocación el comportamiento que habilita `--progress`. Mantén iguales los demás argumentos y compara el resultado con la forma positiva para comprobar la diferencia.
+
+La opción controla desactivar progreso. Registra el estado de las referencias y conserva los cambios sin commit antes de usarla, porque cambiar de rama o restaurar rutas desde otro estado puede retirar o reemplazar datos dentro del alcance seleccionado.
+
+```bash
+git checkout --no-progress main
+git status --short
+```
+
+La opción no recibe un valor separado en la forma mostrada por la ayuda corta. Los argumentos que aparecen después pertenecen a `git checkout` o a otra opción. El estado muestra si cambió el área de trabajo, el índice o la operación en curso. Ejecuta la comprobación inmediatamente después para que ningún comando intermedio cambie el estado que estás observando.
+
+### `--no-merge`
+
+Desactiva para esta invocación el comportamiento que habilita `--merge`. Mantén iguales los demás argumentos y compara el resultado con la forma positiva para comprobar la diferencia.
+
+La opción limita o amplía el conjunto sobre el que se ejecuta cambiar de rama o restaurar rutas desde otro estado. Comprueba la selección con una forma de lectura antes de combinarla con una opción que escriba estado.
+
+```bash
+git checkout --no-merge main
+git status --short
+```
+
+La opción no recibe un valor separado en la forma mostrada por la ayuda corta. Los argumentos que aparecen después pertenecen a `git checkout` o a otra opción. El estado muestra si cambió el área de trabajo, el índice o la operación en curso. Ejecuta la comprobación inmediatamente después para que ningún comando intermedio cambie el estado que estás observando.
+
+### `--no-conflict`
+
+Desactiva para esta invocación el comportamiento que habilita `--conflict`. Mantén iguales los demás argumentos y compara el resultado con la forma positiva para comprobar la diferencia.
+
+En `git checkout`, desactivar conflict modifica la forma en que se ejecuta cambiar de rama o restaurar rutas desde otro estado. Mantén iguales los demás argumentos para atribuir el cambio observado a esta opción.
+
+```bash
+git checkout --no-conflict main
+git status --short
+```
+
+La opción no recibe un valor separado en la forma mostrada por la ayuda corta. Los argumentos que aparecen después pertenecen a `git checkout` o a otra opción. El estado muestra si cambió el área de trabajo, el índice o la operación en curso. Ejecuta la comprobación inmediatamente después para que ningún comando intermedio cambie el estado que estás observando.
+
+### `--no-track`
+
+Desactiva para esta invocación el comportamiento que habilita `--track`. Mantén iguales los demás argumentos y compara el resultado con la forma positiva para comprobar la diferencia.
+
+La opción limita o amplía el conjunto sobre el que se ejecuta cambiar de rama o restaurar rutas desde otro estado. Comprueba la selección con una forma de lectura antes de combinarla con una opción que escriba estado.
+
+```bash
+git checkout --no-track main
+git status --short
+```
+
+La opción no recibe un valor separado en la forma mostrada por la ayuda corta. Los argumentos que aparecen después pertenecen a `git checkout` o a otra opción. El estado muestra si cambió el área de trabajo, el índice o la operación en curso. Ejecuta la comprobación inmediatamente después para que ningún comando intermedio cambie el estado que estás observando.
+
+### `--no-force`
+
+Desactiva para esta invocación el comportamiento que habilita `--force`. Mantén iguales los demás argumentos y compara el resultado con la forma positiva para comprobar la diferencia.
+
+La opción controla desactivar omitir la protección. Registra el estado de las referencias y conserva los cambios sin commit antes de usarla, porque cambiar de rama o restaurar rutas desde otro estado puede retirar o reemplazar datos dentro del alcance seleccionado.
+
+```bash
+git checkout --no-force main
+git status --short
+```
+
+La opción no recibe un valor separado en la forma mostrada por la ayuda corta. Los argumentos que aparecen después pertenecen a `git checkout` o a otra opción. El estado muestra si cambió el área de trabajo, el índice o la operación en curso. Ejecuta la comprobación inmediatamente después para que ningún comando intermedio cambie el estado que estás observando.
+
+### `--no-overwrite-ignore`
+
+Desactiva para esta invocación el comportamiento que habilita `--overwrite-ignore`. Mantén iguales los demás argumentos y compara el resultado con la forma positiva para comprobar la diferencia.
+
+La opción controla desactivar overwrite ignorar. Registra el estado de las referencias y conserva los cambios sin commit antes de usarla, porque cambiar de rama o restaurar rutas desde otro estado puede retirar o reemplazar datos dentro del alcance seleccionado.
+
+```bash
+git checkout --no-overwrite-ignore main
+git status --short
+```
+
+La opción no recibe un valor separado en la forma mostrada por la ayuda corta. Los argumentos que aparecen después pertenecen a `git checkout` o a otra opción. El estado muestra si cambió el área de trabajo, el índice o la operación en curso. Ejecuta la comprobación inmediatamente después para que ningún comando intermedio cambie el estado que estás observando.
+
+### `--no-ignore-other-worktrees`
+
+Desactiva para esta invocación el comportamiento que habilita `--ignore-other-worktrees`. Mantén iguales los demás argumentos y compara el resultado con la forma positiva para comprobar la diferencia.
+
+La opción limita o amplía el conjunto sobre el que se ejecuta cambiar de rama o restaurar rutas desde otro estado. Comprueba la selección con una forma de lectura antes de combinarla con una opción que escriba estado.
+
+```bash
+git checkout --no-ignore-other-worktrees main
+git status --short
+```
+
+La opción no recibe un valor separado en la forma mostrada por la ayuda corta. Los argumentos que aparecen después pertenecen a `git checkout` o a otra opción. El estado muestra si cambió el área de trabajo, el índice o la operación en curso. Ejecuta la comprobación inmediatamente después para que ningún comando intermedio cambie el estado que estás observando.
+
+### `--no-patch`
+
+Desactiva para esta invocación el comportamiento que habilita `--patch`. Mantén iguales los demás argumentos y compara el resultado con la forma positiva para comprobar la diferencia.
+
+En `git checkout`, desactivar parche modifica la forma en que se ejecuta cambiar de rama o restaurar rutas desde otro estado. Mantén iguales los demás argumentos para atribuir el cambio observado a esta opción.
+
+```bash
+git checkout --no-patch main
+git status --short
+```
+
+La opción no recibe un valor separado en la forma mostrada por la ayuda corta. Los argumentos que aparecen después pertenecen a `git checkout` o a otra opción. El estado muestra si cambió el área de trabajo, el índice o la operación en curso. Ejecuta la comprobación inmediatamente después para que ningún comando intermedio cambie el estado que estás observando.
+
+### `--no-ignore-skip-worktree-bits`
+
+Desactiva para esta invocación el comportamiento que habilita `--ignore-skip-worktree-bits`. Mantén iguales los demás argumentos y compara el resultado con la forma positiva para comprobar la diferencia.
+
+Esta forma se usa cuando `git checkout` ya dejó una operación en curso. Revisa `git status` antes de ejecutarla porque desactivar ignorar omitir el elemento actual área de trabajo bits actúa sobre el estado que Git registró al iniciar la secuencia.
+
+```bash
+git checkout --no-ignore-skip-worktree-bits main
+git status --short
+```
+
+La opción no recibe un valor separado en la forma mostrada por la ayuda corta. Los argumentos que aparecen después pertenecen a `git checkout` o a otra opción. El estado muestra si cambió el área de trabajo, el índice o la operación en curso. Ejecuta la comprobación inmediatamente después para que ningún comando intermedio cambie el estado que estás observando.
+
+### `--no-pathspec-from-file`
+
+Desactiva para esta invocación el comportamiento que habilita `--pathspec-from-file`. Mantén iguales los demás argumentos y compara el resultado con la forma positiva para comprobar la diferencia.
+
+La opción cambia cómo `git checkout` recibe datos. Define el separador, la codificación y la ruta de entrada antes de ejecutarla. Los nombres con espacios o saltos de línea requieren una interfaz terminada en NUL cuando el comando la ofrece.
+
+```bash
+git checkout --no-pathspec-from-file main
+git status --short
+```
+
+La opción no recibe un valor separado en la forma mostrada por la ayuda corta. Los argumentos que aparecen después pertenecen a `git checkout` o a otra opción. El estado muestra si cambió el área de trabajo, el índice o la operación en curso. Ejecuta la comprobación inmediatamente después para que ningún comando intermedio cambie el estado que estás observando.
+
+### `--no-pathspec-file-nul`
+
+Desactiva para esta invocación el comportamiento que habilita `--pathspec-file-nul`. Mantén iguales los demás argumentos y compara el resultado con la forma positiva para comprobar la diferencia.
+
+La opción cambia cómo `git checkout` recibe datos. Define el separador, la codificación y la ruta de entrada antes de ejecutarla. Los nombres con espacios o saltos de línea requieren una interfaz terminada en NUL cuando el comando la ofrece.
+
+```bash
+git checkout --no-pathspec-file-nul main
+git status --short
+```
+
+La opción no recibe un valor separado en la forma mostrada por la ayuda corta. Los argumentos que aparecen después pertenecen a `git checkout` o a otra opción. El estado muestra si cambió el área de trabajo, el índice o la operación en curso. Ejecuta la comprobación inmediatamente después para que ningún comando intermedio cambie el estado que estás observando.
 
 ## Errores y diagnóstico
 
-| Señal | Causa que debes comprobar | Acción |
-| --- | --- | --- |
-| La referencia es ambigua | Un nombre coincide con más de un objeto o una ruta | Usa `--` para separar rutas y una revisión completa para el objeto. |
-| El cambio de rama se rechaza | Hay modificaciones que serían sobrescritas | Confirma el estado y decide entre commit, stash o descarte. |
-| La integración se detiene | Dos cambios afectan la misma región o ruta | Resuelve, añade los archivos y usa la orden `--continue` o `--abort` que corresponda. |
+### La referencia es ambigua
 
-Si una operación deja archivos de estado dentro de `.git`, usa `git status` y la acción de continuar, omitir o abortar definida por esa operación. No borres esos archivos para simular una cancelación.
+Comprueba esta causa: Un nombre coincide con más de un objeto o una ruta. Usa `--` para separar rutas y una revisión completa para el objeto.
 
-## Automatización
+### El cambio de rama se rechaza
 
-1. Declara la versión mínima de Git que necesita el script.
-2. Resuelve la raíz del repositorio y evita depender del directorio actual.
-3. Separa opciones y rutas con `--`.
-4. Captura stdout, stderr y el código de terminación.
-5. Usa formatos de máquina o terminación NUL para nombres de archivo.
-6. Ejecuta primero sobre el laboratorio y añade un caso sin coincidencias.
+Comprueba esta causa: Hay modificaciones que serían sobrescritas. Confirma el estado y decide entre commit, stash o descarte.
 
-## Seguridad y recuperación
+### La integración se detiene
+
+Comprueba esta causa: Dos cambios afectan la misma región o ruta. Resuelve, añade los archivos y usa la orden `--continue` o `--abort` que corresponda.
+
+## Automatización y recuperación
 
 Persistencia: Puede persistir el estado implicado por esta operación: cambiar de rama o restaurar rutas desde otro estado. Las opciones pueden limitar o ampliar ese efecto. Antes de una operación que mueva o elimine referencias, registra sus hashes con `git show-ref`. Antes de cambiar archivos, conserva `git diff` y `git diff --cached`. Para objetos y commits que dejaron de estar referenciados, consulta el reflog antes de ejecutar mantenimiento que pueda eliminarlos.
-
-## Práctica guiada
 
 Dibuja los commits como nodos y las ramas como nombres móviles. Ejecuta el ejemplo y vuelve a dibujar solo los punteros que cambiaron.
 

@@ -2,51 +2,28 @@
 title: "scalar"
 source: "https://git-scm.com/docs/scalar"
 section: "administration"
-status: "expanded"
+status: "option-expanded"
 ---
 
 # `scalar`
 
 Este caso usa `scalar` para administrar repositorios con funciones orientadas a conjuntos de archivos extensos. Los nombres de archivo, revisiones, ramas y direcciones del ejemplo representan valores que debes sustituir por los de tu repositorio.
 
-## Alcance y responsabilidad
+## Responsabilidad y efecto
 
 scalar comprueba integridad, administra reflogs y reorganiza o elimina datos del almacén. Recibe como entrada los objetos, referencias o archivos de almacenamiento que se van a inspeccionar. La operación consiste en administrar repositorios con funciones orientadas a conjuntos de archivos extensos.
 
-La página distingue lectura, escritura y resultado:
+Puede persistir el estado implicado por esta operación: administrar repositorios con funciones orientadas a conjuntos de archivos extensos. Las opciones pueden limitar o ampliar ese efecto.
 
-| Elemento | Relación con la función | Comprobación |
-| --- | --- | --- |
-| Entrada | los objetos, referencias o archivos de almacenamiento que se van a inspeccionar. | Registra los argumentos y resuelve revisiones antes de ejecutar. |
-| Efecto principal | administrar repositorios con funciones orientadas a conjuntos de archivos extensos. | Comprueba el resultado con una orden de lectura. |
-| Persistencia | Puede persistir el estado implicado por esta operación: administrar repositorios con funciones orientadas a conjuntos de archivos extensos. Las opciones pueden limitar o ampliar ese efecto. | Compara el estado antes y después. |
-| Resultado | La orden comunica datos por stdout y diagnósticos por stderr. | Captura también el código de terminación. |
-| Fuente de verdad | El repositorio y la configuración efectiva determinan el resultado. | Usa `git fsck`, `git count-objects -vH` y una lista de referencias antes y después. |
+## Preparación
 
-## Requisitos y laboratorio
+Los ejemplos que necesitan un repositorio parten del [laboratorio base de `git init`](../getting-and-creating-projects/init.md#laboratorio-base). La posición de opciones, revisiones y rutas sigue las [convenciones de la interfaz de Git](../guides/gitcli.md#convenciones-de-la-cli). Los nombres como `HEAD`, `main`, `HEAD~2` y `A..B` se explican en [revisiones y rangos](../guides/gitrevisions.md#revisiones-y-rangos). Antes de ejecutar una forma que escriba datos, registra `git status --short` y las referencias que puedan cambiar.
 
-Clona o copia un repositorio de prueba. Registra referencias y tamaño antes de una operación que elimine datos.
-
-```bash
-lab_dir="$(mktemp -d)"
-git init "$lab_dir/proyecto"
-git -C "$lab_dir/proyecto" config user.name "Persona de prueba"
-git -C "$lab_dir/proyecto" config user.email "prueba@example.test"
-printf 'línea base\n' > "$lab_dir/proyecto/archivo.txt"
-git -C "$lab_dir/proyecto" add archivo.txt
-git -C "$lab_dir/proyecto" commit -m "base"
-cd "$lab_dir/proyecto"
-```
-
-Antes de ejecutar el ejemplo, confirma la raíz con `git rev-parse --show-toplevel` cuando exista un repositorio. Registra `git status --short` y las referencias que puedan cambiar.
-
-## Modelo de funcionamiento
+## Cómo funciona
 
 Git almacena objetos sueltos, packs, referencias y reflogs. Las tareas de administración reorganizan o eliminan datos según su alcanzabilidad y antigüedad.
 
 Relaciona cada archivo con su alcanzabilidad y retención. La compactación cambia la representación; la poda puede cambiar qué datos se pueden recuperar.
-
-Para comprobar el resultado: los modos de simulación y las consultas de tamaño muestran el efecto antes y después. La verificación debe observar un estado distinto del canal que produjo el cambio.
 
 ## Ejemplo mínimo
 
@@ -55,16 +32,9 @@ scalar clone https://example.test/equipo/biblioteca.git biblioteca
 scalar list
 ```
 
-Ejecuta el bloque en orden. Conserva los nombres del laboratorio hasta confirmar el resultado. Sustituye rutas, revisiones o URL solo después de identificar su tipo y alcance.
+La invocación `scalar clone https://example.test/equipo/biblioteca.git biblioteca` ejecuta esta operación: administrar repositorios con funciones orientadas a conjuntos de archivos extensos. Después, los modos de simulación y las consultas de tamaño muestran el efecto antes y después. Conserva stdout, stderr y el código de terminación cuando el ejemplo forme parte de un script.
 
-### Resultado esperado
-
-- La entrada queda limitada a: los objetos, referencias o archivos de almacenamiento que se van a inspeccionar.
-- La operación observable es: administrar repositorios con funciones orientadas a conjuntos de archivos extensos.
-- La comprobación se realiza mediante: los modos de simulación y las consultas de tamaño muestran el efecto antes y después.
-- stdout contiene datos o confirmaciones; stderr contiene diagnósticos. Captura ambos canales cuando automatices.
-
-## Sintaxis
+## Sintaxis y formas de invocación
 
 ```text
 scalar clone [--single-branch] [--branch <main-branch>] [--full-clone]
@@ -81,66 +51,145 @@ scalar [-C <directory>] [-c <key>=<value>] <command> [<options>]
 
 Los corchetes indican elementos opcionales; `<valor>` exige sustitución; los puntos suspensivos permiten repetición; `|` separa formas excluyentes. Usa `scalar -h` para consultar la sintaxis que corresponde a la instalación donde ejecutarás la orden.
 
-## Casos de uso
+## Flujos de uso
 
-| Caso | Objetivo | Criterio de verificación |
-| --- | --- | --- |
-| Caso base | administrar repositorios con funciones orientadas a conjuntos de archivos extensos | Ejecuta el ejemplo mínimo y registra el estado antes y después. |
-| Alcance explícito | Aplicar scalar a una referencia, rango o ruta identificada. | Resuelve cada argumento antes de ejecutar y usa `--` para rutas. |
-| Validación | Comprobar el resultado de scalar con una orden de lectura independiente. | No uses la misma salida como única prueba del cambio. |
+### Caso base
 
+administrar repositorios con funciones orientadas a conjuntos de archivos extensos. Usa el [ejemplo mínimo](#ejemplo-mínimo) como punto de partida. Ejecuta el ejemplo mínimo y registra el estado antes y después.
 
-## Opciones y variaciones
+### Alcance explícito
 
-La tabla agrupa las opciones visibles en la sintaxis y en la ayuda corta. Una opción puede tener un significado propio cuando la página lo define; ejecuta la ayuda de tu versión antes de usarla en automatización.
+Aplicar scalar a una referencia, rango o ruta identificada. Usa el [ejemplo mínimo](#ejemplo-mínimo) como punto de partida. Resuelve cada argumento antes de ejecutar y usa `--` para rutas.
 
-| Opción | Efecto que debes controlar |
-| --- | --- |
-| `--single-branch` | Selecciona o modifica referencias dentro del alcance de la orden. |
-| `--branch` | Selecciona o modifica referencias dentro del alcance de la orden. |
-| `--full-clone` | Activa el modo `--full-clone`; los argumentos y restricciones aparecen en la sintaxis y en la fuente oficial. |
-| `--src` | Activa el modo `--src`; los argumentos y restricciones aparecen en la sintaxis y en la fuente oficial. |
-| `--tags` | Incluye o selecciona etiquetas según la operación. |
-| `--maintenance` | Activa el modo `--maintenance`; los argumentos y restricciones aparecen en la sintaxis y en la fuente oficial. |
-| `-C` | Ejecuta Git como si se hubiera iniciado en el directorio indicado. |
-| `-c` | Aplica una clave de configuración solo a esta invocación. |
+### Validación
 
-## Selección de entradas
+Comprobar el resultado de scalar con una orden de lectura independiente. Usa el [ejemplo mínimo](#ejemplo-mínimo) como punto de partida. No uses la misma salida como única prueba del cambio.
 
-Distingue identificadores de objeto, referencias y rutas. Resuelve revisiones con `git rev-parse --verify`; inspecciona tipo y tamaño con `git cat-file`; usa actualización condicional al escribir referencias.
+## Opciones
 
-Comprueba cada entrada con una orden de lectura antes de una escritura. Para listas de rutas generadas por otro proceso, prefiere una interfaz terminada en NUL cuando esté disponible.
+Cada apartado usa una opción en una invocación concreta. Las opciones equivalentes comparten la explicación, pero cada alias tiene su propio ejemplo. Ejecuta una opción por vez antes de combinarlas.
 
-## Salida y códigos de terminación
+### `--single-branch`
 
-Un código 0 indica que la operación terminó bajo el contrato solicitado. Trata cualquier código distinto de cero según la función; no deduzcas el estado solo a partir de que stdout esté vacío.
+Selecciona o modifica referencias dentro del alcance de la orden.
 
-No analices mensajes destinados a personas si existe un formato de máquina. Declara los campos, desactiva color y conserva stderr para diagnóstico.
+La opción limita o amplía el conjunto sobre el que se ejecuta administrar repositorios con funciones orientadas a conjuntos de archivos extensos. Comprueba la selección con una forma de lectura antes de combinarla con una opción que escriba estado.
+
+```bash
+scalar --single-branch clone https://example.test/equipo/biblioteca.git biblioteca
+git count-objects -vH
+```
+
+La opción no recibe un valor separado en la forma mostrada por la ayuda corta. Los argumentos que aparecen después pertenecen a `scalar` o a otra opción. La salida permite comprobar objetos sueltos, packs y espacio registrado. Ejecuta la comprobación inmediatamente después para que ningún comando intermedio cambie el estado que estás observando.
+
+### `--branch`
+
+Selecciona o modifica referencias dentro del alcance de la orden.
+
+La opción limita o amplía el conjunto sobre el que se ejecuta administrar repositorios con funciones orientadas a conjuntos de archivos extensos. Comprueba la selección con una forma de lectura antes de combinarla con una opción que escriba estado.
+
+```bash
+scalar --branch clone https://example.test/equipo/biblioteca.git biblioteca
+git count-objects -vH
+```
+
+La opción no recibe un valor separado en la forma mostrada por la ayuda corta. Los argumentos que aparecen después pertenecen a `scalar` o a otra opción. La salida permite comprobar objetos sueltos, packs y espacio registrado. Ejecuta la comprobación inmediatamente después para que ningún comando intermedio cambie el estado que estás observando.
+
+### `--full-clone`
+
+Activa full clone durante administrar repositorios con funciones orientadas a conjuntos de archivos extensos. La opción afecta esta invocación y no cambia la configuración de otras órdenes salvo que la propia función escriba esa configuración.
+
+En `scalar`, full clone modifica la forma en que se ejecuta administrar repositorios con funciones orientadas a conjuntos de archivos extensos. Mantén iguales los demás argumentos para atribuir el cambio observado a esta opción.
+
+```bash
+scalar --full-clone clone https://example.test/equipo/biblioteca.git biblioteca
+git count-objects -vH
+```
+
+La opción no recibe un valor separado en la forma mostrada por la ayuda corta. Los argumentos que aparecen después pertenecen a `scalar` o a otra opción. La salida permite comprobar objetos sueltos, packs y espacio registrado. Ejecuta la comprobación inmediatamente después para que ningún comando intermedio cambie el estado que estás observando.
+
+### `--src`
+
+Activa src durante administrar repositorios con funciones orientadas a conjuntos de archivos extensos. La opción afecta esta invocación y no cambia la configuración de otras órdenes salvo que la propia función escriba esa configuración.
+
+En `scalar`, src modifica la forma en que se ejecuta administrar repositorios con funciones orientadas a conjuntos de archivos extensos. Mantén iguales los demás argumentos para atribuir el cambio observado a esta opción.
+
+```bash
+scalar --src clone https://example.test/equipo/biblioteca.git biblioteca
+git count-objects -vH
+```
+
+La opción no recibe un valor separado en la forma mostrada por la ayuda corta. Los argumentos que aparecen después pertenecen a `scalar` o a otra opción. La salida permite comprobar objetos sueltos, packs y espacio registrado. Ejecuta la comprobación inmediatamente después para que ningún comando intermedio cambie el estado que estás observando.
+
+### `--tags`
+
+Incluye o selecciona etiquetas según la operación.
+
+La opción limita o amplía el conjunto sobre el que se ejecuta administrar repositorios con funciones orientadas a conjuntos de archivos extensos. Comprueba la selección con una forma de lectura antes de combinarla con una opción que escriba estado.
+
+```bash
+scalar --tags clone https://example.test/equipo/biblioteca.git biblioteca
+git count-objects -vH
+```
+
+La opción no recibe un valor separado en la forma mostrada por la ayuda corta. Los argumentos que aparecen después pertenecen a `scalar` o a otra opción. La salida permite comprobar objetos sueltos, packs y espacio registrado. Ejecuta la comprobación inmediatamente después para que ningún comando intermedio cambie el estado que estás observando.
+
+### `--maintenance`
+
+Activa maintenance durante administrar repositorios con funciones orientadas a conjuntos de archivos extensos. La opción afecta esta invocación y no cambia la configuración de otras órdenes salvo que la propia función escriba esa configuración.
+
+En `scalar`, maintenance modifica la forma en que se ejecuta administrar repositorios con funciones orientadas a conjuntos de archivos extensos. Mantén iguales los demás argumentos para atribuir el cambio observado a esta opción.
+
+```bash
+scalar --maintenance clone https://example.test/equipo/biblioteca.git biblioteca
+git count-objects -vH
+```
+
+La opción no recibe un valor separado en la forma mostrada por la ayuda corta. Los argumentos que aparecen después pertenecen a `scalar` o a otra opción. La salida permite comprobar objetos sueltos, packs y espacio registrado. Ejecuta la comprobación inmediatamente después para que ningún comando intermedio cambie el estado que estás observando.
+
+### `-C`
+
+Ejecuta Git como si se hubiera iniciado en el directorio indicado.
+
+En `scalar`, C modifica la forma en que se ejecuta administrar repositorios con funciones orientadas a conjuntos de archivos extensos. Mantén iguales los demás argumentos para atribuir el cambio observado a esta opción.
+
+```bash
+scalar -C clone https://example.test/equipo/biblioteca.git biblioteca
+git count-objects -vH
+```
+
+La opción no recibe un valor separado en la forma mostrada por la ayuda corta. Los argumentos que aparecen después pertenecen a `scalar` o a otra opción. La salida permite comprobar objetos sueltos, packs y espacio registrado. Ejecuta la comprobación inmediatamente después para que ningún comando intermedio cambie el estado que estás observando.
+
+### `-c`
+
+Aplica una clave de configuración solo a esta invocación.
+
+En `scalar`, c modifica la forma en que se ejecuta administrar repositorios con funciones orientadas a conjuntos de archivos extensos. Mantén iguales los demás argumentos para atribuir el cambio observado a esta opción.
+
+```bash
+scalar -c clone https://example.test/equipo/biblioteca.git biblioteca
+git count-objects -vH
+```
+
+La opción no recibe un valor separado en la forma mostrada por la ayuda corta. Los argumentos que aparecen después pertenecen a `scalar` o a otra opción. La salida permite comprobar objetos sueltos, packs y espacio registrado. Ejecuta la comprobación inmediatamente después para que ningún comando intermedio cambie el estado que estás observando.
 
 ## Errores y diagnóstico
 
-| Señal | Causa que debes comprobar | Acción |
-| --- | --- | --- |
-| Un objeto aparece como inalcanzable | Ninguna referencia o reflog lo conserva | Determina si debe recuperarse antes de podar. |
-| El tamaño no disminuye | Los objetos siguen alcanzables o aún están protegidos por reflogs | Inspecciona alcanzabilidad y vencimientos. |
-| La operación se interrumpe | Otro proceso mantiene un lock | Comprueba procesos activos antes de retirar un lock obsoleto. |
+### Un objeto aparece como inalcanzable
 
-Si una operación deja archivos de estado dentro de `.git`, usa `git status` y la acción de continuar, omitir o abortar definida por esa operación. No borres esos archivos para simular una cancelación.
+Comprueba esta causa: Ninguna referencia o reflog lo conserva. Determina si debe recuperarse antes de podar.
 
-## Automatización
+### El tamaño no disminuye
 
-1. Declara la versión mínima de Git que necesita el script.
-2. Resuelve la raíz del repositorio y evita depender del directorio actual.
-3. Separa opciones y rutas con `--`.
-4. Captura stdout, stderr y el código de terminación.
-5. Usa formatos de máquina o terminación NUL para nombres de archivo.
-6. Ejecuta primero sobre el laboratorio y añade un caso sin coincidencias.
+Comprueba esta causa: Los objetos siguen alcanzables o aún están protegidos por reflogs. Inspecciona alcanzabilidad y vencimientos.
 
-## Seguridad y recuperación
+### La operación se interrumpe
+
+Comprueba esta causa: Otro proceso mantiene un lock. Comprueba procesos activos antes de retirar un lock obsoleto.
+
+## Automatización y recuperación
 
 Persistencia: Puede persistir el estado implicado por esta operación: administrar repositorios con funciones orientadas a conjuntos de archivos extensos. Las opciones pueden limitar o ampliar ese efecto. Antes de una operación que mueva o elimine referencias, registra sus hashes con `git show-ref`. Antes de cambiar archivos, conserva `git diff` y `git diff --cached`. Para objetos y commits que dejaron de estar referenciados, consulta el reflog antes de ejecutar mantenimiento que pueda eliminarlos.
-
-## Práctica guiada
 
 Haz la prueba en una copia. Ejecuta primero el modo de inspección o simulación disponible y registra referencias, reflogs y tamaño antes de modificar datos.
 
